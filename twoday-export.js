@@ -1037,8 +1037,7 @@
                 }
               });
               $('#btnVersion').on('click', function () {
-                var package = 'https://rawgit.com/NeonWilderness/twodayExport/master/dist/version.json';
-                $.getJSON(package, function (data) {
+                $.getJSON('https://rawgit.com/NeonWilderness/twodayExport/master/dist/version.json', function (data) {
                   var newVersion = false, release, msgClass, msgText;
                   $.each(data.packages, function () {
                     if (this.name === 'twodayExport') {

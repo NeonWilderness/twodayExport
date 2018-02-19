@@ -213,7 +213,7 @@ a.tip { cursor: help; border-radius: 50%; background-color: #eee; width: 18px; d
         <div id="wrapper">
             <h3>Liste der gefundenen Twoday-Ressourcen für <span>{{&blog}}</span></h3>
             <p class="hint">
-                Die nachstehende Auflistung enthält alle Ressourcen der während des Exportlaufs selektierten Beiträge, die ein auf Twoday gespeichertes Bild (Bildadresse beginnt mit "{{&staticImgUrl}}") oder Datei (Dateiadresse beginnt mit "{{&staticFileUrl}}") verwenden. {{#imgUrlChange}}Gemäß Ihrer Anforderung wurden alle diese Adressen in der Exportdatei auf das neue Blog-Medienverzeichnis "{{wpMediaUrl}}" geändert.{{/imgUrlChange}}
+                Die nachstehende Auflistung enthält alle Ressourcen der während des Exportlaufs selektierten Beiträge, die ein auf Twoday gespeichertes Bild (Bildadresse beginnt mit "{{&staticImgUrl}}") oder eine Datei (Dateiadresse beginnt mit "{{&staticFileUrl}}") verwenden. {{#imgUrlChange}}Gemäß Ihrer Anforderung wurden alle diese Adressen in der Exportdatei auf das neue Blog-Medienverzeichnis "{{wpMediaUrl}}" geändert.{{/imgUrlChange}}
             </p>
             {{#storyResources}}{{&.}}{{/storyResources}}
         </div>
