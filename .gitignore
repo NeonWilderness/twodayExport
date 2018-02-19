@@ -1,0 +1,6 @@
+.env
+.idea
+.vscode
+*.log
+node_modules
+todo.md

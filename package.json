@@ -1,0 +1,38 @@
+{
+  "name": "twodayexport",
+  "version": "0.97.0",
+  "description": "Blog Export on steroids",
+  "main": "index.html",
+  "scripts": {
+    "build": "gulp4 --production",
+    "dev": "gulp4",
+    "bump": "gulp4 bump",
+    "deploySkin": "node ./utils/uploadSkin --blog=talkstraight",
+    "deployVersion": "node ./utils/uploadFile --blog=neonwilderness",
+    "release": "gulp4 release"
+  },
+  "author": "NeonWilderness",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jquery": "^3.3.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "cheerio": "^1.0.0-rc.2",
+    "cp-file": "^5.0.0",
+    "dotenv-safe": "^4.0.4",
+    "gulp-bump": "^3.1.0",
+    "gulp-htmlmin": "^4.0.0",
+    "gulp-jshint": "^2.1.0",
+    "gulp-load-plugins": "^1.5.0",
+    "gulp-replace": "^0.6.1",
+    "gulp-util": "^3.0.8",
+    "gulp4": "^4.0.2",
+    "jshint": "^2.9.5",
+    "jshint-stylish": "^2.2.1",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5",
+    "semver": "^5.5.0",
+    "yargs": "^11.0.0"
+  }
+}

@@ -1,0 +1,78 @@
+'use strict';
+
+import fs from 'fs';
+import gulp from 'gulp4';
+import plugins from 'gulp-load-plugins';
+import semver from 'semver';
+import yargs from 'yargs';
+
+// Load all Gulp plugins into one variable
+const $ = plugins();
+
+// Check for --production flag
+const PRODUCTION = !!(yargs.argv.production);
+if (PRODUCTION) console.log($.util.colors.inverse.cyan('--- Production version in progress ---'));
+
+const hint = () => {
+  return gulp.src('./twoday-export.js')
+    .pipe($.jshint(require('./.jshintrc')))
+    .pipe($.jshint.reporter('jshint-stylish', {beep: true}));  
+};
+
+const build = () => {
+  let js = fs.readFileSync('./twoday-export.js', 'utf-8');
+  return gulp.src(['./twoday-export.html'])
+    .pipe($.replace('{{twodayExport-js}}', js))
+    .pipe($.htmlmin({
+      collapseWhitespace: true,
+      conservativeCollapse: true,
+      html5: true,
+      keepClosingSlash: true,
+      minifyCSS: PRODUCTION,
+      minifyJS: PRODUCTION,
+      preserveLineBreaks: true,
+      processScripts: ['text/html', 'text/x-mustache-html']
+    }))
+    .pipe($.replace('{{scriptversion}}', getShortVersion()))
+    .pipe(gulp.dest('dist'));
+}
+
+const getShortVersion = () => {
+  let version = getPackageJson().version;
+  return version.substr(0, version.lastIndexOf('.'));
+};
+
+const getPackageJson = () => {
+  return JSON.parse(fs.readFileSync('./package.json'));
+};
+
+/**
+ * Bump minor version and update package.json and version.json
+ */
+const bump = (bumpVersion=true) => {
+  let pkg = getPackageJson();
+  let newVersion;
+  let releaseDate = new Date().toISOString().substr(0,10).split('-').reverse().join('.');
+  if (bumpVersion) {
+    newVersion = semver.inc(pkg.version, 'minor');
+    console.log('Bumping to new version...');
+    gulp.src(['./package.json'])
+    .pipe($.bump({version: newVersion}))
+    .pipe(gulp.dest('./'));
+  } else {
+    newVersion = pkg.version;
+    console.log('Setting new release date only...');
+  }
+  
+  let shortVersion = newVersion.substr(0, newVersion.lastIndexOf('.'));
+  return gulp.src(['./version.json'])
+    .pipe($.replace('{{versionID}}', `v${shortVersion.replace('.', '')}`))
+    .pipe($.replace('{{version}}', shortVersion))
+    .pipe($.replace('{{date}}', releaseDate))
+    .pipe(gulp.dest('dist'));
+}
+
+gulp.task('default', gulp.series(hint, build));
+gulp.task('bump', bump);
+gulp.task('hint', hint);
+gulp.task('release', (done) => { bump(false); done(); });

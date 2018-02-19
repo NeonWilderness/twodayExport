@@ -1,0 +1,228 @@
+<!-- Client-side Twoday Blog Export on Steroids, (C) 2014-2018 NeonWilderness, https://neonwilderness.twoday.net, MIT license -->
+
+<!-- mustache template for twoday stories -->
+<script type="text/x-mustache-template" id="musStory">TITLE: {{&title}}
+CATEGORY: {{&category}}
+BASENAME: {{&basename}}
+DATE: {{date}}
+AUTHOR: {{author}}
+URL: {{&url}}
+STATUS: {{status}}
+ALLOW COMMENTS: {{allowcomments}}
+-----
+BODY:
+{{&body}}
+-----
+{{#comments}}{{>musComment}}{{/comments}}--------
+</script>
+
+<!-- mustache template for twoday comments and replies -->
+<script type="text/x-mustache-template" id="musComment">{{type}}:
+DATE: {{date}}
+AUTHOR: {{author}}
+URL: {{&url}}
+{{&body}}
+-----
+</script>
+
+<!-- css inline style information for blog export function and main export divs -->
+<script type="text/html" id="mainExport">
+<style>
+/* export button */
+.actionButton { padding: 8px 16px; color: #fff; border-radius: 3px; border: none; opacity: .8; cursor: pointer; }
+.actionButton:hover, .actionButton:focus { opacity: 1; box-shadow: 2px 2px 6px #222; }
+#btnExport { position: fixed; top: 50px; left: 4px; background: #27ae60; width: 38px; height: 38px; text-align: center; border-radius: 50%; margin-bottom: 0; padding: 0; z-index: 8999; }
+#btnExport:hover, #btnExport:focus { outline:none; border: none; }
+/* export selection / status screen */
+#selOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; background-color: rgba(0,0,0,.6); }
+#selScreen { width: 600px; margin: 20px auto; padding: 15px; background: #fff; z-index: 9001; color: #444; }
+#selScreen button:hover, #selScreen button:focus { outline:none; border: none; }
+#btnIntro, #btnVersion { float: right; font-size: 13px; background: #444; border: none; padding: 3px 6px; border-radius: 10px; color: #fff; cursor: pointer; margin-bottom: 0; }
+#btnIntro:hover, #btnIntro:focus, #btnVersion:hover, #btnVersion:focus { color: #ffd055; }
+#selIntro p { font-size: 12px; margin-bottom: 1em; }
+#selMessage { background: #f04124; color: #fff; padding: 10px; margin-bottom: 12px; font-size: 13px; }
+#selMessage span { display: block; }
+#selMessage i { margin-right: 8px }
+#selHint { font-size: .8em; margin: 10px 10px 3px 0; border-left: 2px solid #f5f5f5; padding: 3px 0 3px 10px; line-height: 1.6; }
+#selScreen h3 { border-bottom: 2px solid #ddd; padding-bottom: 10px; font-size: 18px; }
+#selScreen h3 span { color: #27ae60; font-size: .95em; }
+#selScreen fieldset { margin: 12px 0 0; border: 1px solid #ddd; padding: 8px 15px 12px; width: 100%; }
+#selScreen fieldset table { width:95%; margin: 0 auto; }
+#selScreen fieldset .leftCol { width: 40%; }
+#selScreen fieldset .statCol { width: 20%; text-align: center; }
+#selScreen .btnContainer .actionButton { font-size: 14px; margin-bottom: 0; }
+#selScreen thead .statCol { color: #777; }
+#selScreen legend { padding: 0 8px; font-size: .9em; color: #27ae60; }
+#selScreen legend i { margin-right: 8px; }
+#selScreen input[type=text] { display: inline; margin: 4px 10px 0; padding: 2px 4px; font-family: Arial, Helvetica, sans-serif; font-size: 13px; }
+#selScreen input[type="checkbox"], #selScreen input[type="radio"] { margin-bottom: 0; }
+#selScreen label { display: inline; }
+#selScreen label[for=radDateSpan] { margin-right: 15px; }
+#radStatusPublic, #radStatusOffline, #radNumberMax, #btnInfosOnly, #btnCancel { margin-left: 20px; }
+#txtFromDate, #txtToDate { width: 90px; text-align: center; }
+#txtNumberMax, #txtNumberFrom { width: 40px; text-align: center; }
+#txtNewBlogUrl { width: 315px; margin: 0 0 0 4px!important; }
+#wpMediaUrl { font-size: 11px; }
+#btnInfosOnly { background: #008cba; }
+#btnCancel { background: #f04124; }
+.bgGreen, #btnStartExport { background: #27ae60!important; }
+.bgYellow { background: #fac000!important; }
+.bgRed { background: #f04124!important; }
+.btnContainer { text-align: center; margin: 10px 0 0;  }
+.btnContainer i { margin-right: 6px; }
+#btnOK, #btnFile { background: #fff; color: #777; cursor: pointer; border: none; border-radius: 10px; text-decoration: none; padding: 3px 10px; }
+#btnFile { margin-right: 10px; }
+#btnOK:hover, #btnFile:hover { color:#444; }
+.picker__select--month, .picker__select--year { padding: 0 .5em!important; font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
+.chosen-choices, .chosen-results { font-size: 14px; }
+a.tip { cursor: help; border-radius: 50%; background-color: #eee; width: 18px; display: inline-block; line-height: 18px; text-align: center; padding: 1px; }
+#txtTimeouts { width: 110px; }
+#txtVideoWidth { width: 48px; }
+</style>
+<div id="selOverlay" style="display:none"><div id="selScreen"></div></div>
+</script>
+
+<!-- mustache blog export selection screen template -->
+<script type="text/x-mustache-html" id="musSelectionScreen">
+    <h3>Folgende Beiträge sollen exportiert werden:<button id="btnIntro" class="onSelect"><i class="fa fa-question"></i> Info</button></h3>
+    <div id="selIntro" style="display:none">
+        <p>Hallo <b>{{alias}}</b> &mdash; mit diesem Auswahlbildschirm wählen Sie die aus Ihrem Twoday-Blog <b>{{blog}}</b> zu exportierenden Beiträge aus.
+        Sie können Ihre Beiträge nach zeitlichen Kriterien, nach Status (öffentlich/offline), nach Kategorie/n oder nach Anzahl selektieren. Falls Ihre Exportdatei zu groß wird, können Sie mit Hilfe der Zeiteingrenzung oder der Anzahlbegrenzung kleinere Exportpakete erstellen, die Sie separat weiter
+        verarbeiten.</p>
+        <p><b>Wichtig:</b> Exportdateien können nicht unmittelbar in einen Wordpress-Blog eingespielt werden, sondern müssen über ein spezielles
+        Plugin importiert werden, das z.B. die korrekte Twoday-Kommentarstruktur (Kommentar/Antworten) in Wordpress herstellt. <span style="color:#f04124;font-weight:bold">Falls Sie in Ihrem Blog keine Plugins installieren können, aktivieren Sie unten das Auswahlkästchen "Für wordpress.com exportieren".</span> Weitere Details und Informationen finden Sie im zugehörigen <a target="_blank" href="https://neonwilderness.twoday.net/stories/blog-export-on-steroids/">Blogbeitrag</a>.</p>
+        <p><i class="fa fa-copyright"></i> 2014-2018 <a target="_blank" href="https://neonwilderness.twoday.net">NeonWilderness</a>, Version {{version}}, lizensiert unter <a target="_blank" href="https://opensource.org/licenses/MIT">MIT</a><button id="btnVersion"><i class="fa fa-star-o"></i> Versionscheck</button></p>
+        <fieldset><legend><i class="fa fa-cogs"></i>Einstellungen</legend>
+            <input type="checkbox" id="chkAutolink" checked="checked"><label for="chkAutolink">Twoday-Textlinks in klickbare HTML-Links wandeln</label><br>
+            <input type="checkbox" id="chkDelGuest" checked="checked"><label for="chkDelGuest">(Gast)-Kennung aus Benutzernamen entfernen</label><br>
+            <input type="checkbox" id="chkWrdPress"><label for="chkWrdPress">Für wordpress.com exportieren (fortlaufende Kommentare)</label><a class="tip" title="Wordpress.com erlaubt für Free-User keine Installation eigener Plugins. Daher können Kommentare nur fortlaufend, d.h. ohne strukturelle Einrückungen (Twoday: Antwort auf Kommentar) eingespielt werden."><i class="fa fa-question"></i></a><br>
+            <input type="checkbox" id="chkDebug"><label for="chkDebug">Testphase: Debug-Nachrichten über Console ausgeben</label><br>
+            <label for="txtVideoWidth">Videobreite (Videoload-Anwender)<input type="text" id="txtVideoWidth" value="600">Pixel (0=keine iframe-Konvertierung)</label><br>
+            <label for="txtTimeouts">Timeout-Grenzen (in ms)<input type="text" id="txtTimeouts" placeholder="500/5/5">(keine Eingabe=Standard)<a class="tip" style="margin-left:1rem" title="Nur für erfahrene Benutzer: Wartezeiten zwischen Serverzugriffen für Stories/Body/Comment; einzugeben in der Form nnnn/nnnn/nnnn, wobei nnnn=Millisekundenzahl"><i class="fa fa-question"></i></a></label>
+        </fieldset>
+    </div>
+    <div id="selMessage" style="display:none"></div>
+    <div id="selOptions">
+        <fieldset><legend><i class="fa fa-calendar"></i>Zeitliche Eingrenzung</legend>
+            <input type="radio" name="selDate" value="all" id="radDateAll" checked="checked"><label for="radDateAll">Alle</label><br />
+            <input type="radio" name="selDate" value="dates" id="radDateSpan"><label for="radDateSpan">Zeitspanne:</label>
+                <label for="txtFromDate">Von-Datum<input type="text" id="txtFromDate" class="datepicker"></label>
+                <label for="txtToDate">Bis-Datum<input type="text" id="txtToDate" class="datepicker"></label>
+        </fieldset>
+        <fieldset><legend><i class="fa fa-tag"></i>Status</legend>
+            <input type="radio" name="selStatus" value="main" id="radStatusAll" checked="checked"><label for="radStatusAll">Alle</label>
+            <input type="radio" name="selStatus" value="mystories" id="radStatusPublic"><label for="radStatusPublic">Nur Veröffentlichte</label>
+            <input type="radio" name="selStatus" value="offline" id="radStatusOffline"><label for="radStatusOffline">Nur Unveröffentlichte</label>
+        </fieldset>
+        <fieldset><legend><i class="fa fa-th-large"></i>Kategorie</legend>
+            <select data-placeholder="Bitte Kategorie/n auswählen..." multiple style="width:100%" class="chooseCategory">
+                <option selected="selected">Alle</option>
+                <option>Unkategorisiert</option>
+                <option>Unveröffentlicht</option>
+                {{#categories}}<option>{{.}}</option>{{/categories}}
+            </select>
+        </fieldset>
+        <fieldset><legend><i class="fa fa-list-ol"></i>Anzahl</legend>
+            <input type="radio" name="selNumber" value="all" id="radNumberAll"><label for="radNumberAll">Alle</label>
+            <input type="radio" name="selNumber" value="max" id="radNumberMax" checked="checked"><label for="radNumberMax">Maximal<input type="text" id="txtNumberMax" value="10">Beiträge,&nbsp;</label> <label for="txtNumberFrom">Start ab Beitrag<input type="text" id="txtNumberFrom" value="1"></label>
+        </fieldset>
+        <fieldset><legend><i class="fa fa-image"></i>Bildadressen</legend>
+            <input type="checkbox" id="chkImgUrlChange"><label for="chkImgUrlChange" style="margin-right:0">Twoday-Bild-URLs ändern auf</label>
+            <input type="text" id="txtNewBlogUrl" placeholder="https://www.meinneuerblog.me/wp-content/uploads">
+        </fieldset>
+        <div class="btnContainer">
+            <button id="btnStartExport" class="actionButton">Export starten...</button>
+            <button id="btnInfosOnly" class="actionButton">Nur Infos (Probelauf)...</button>
+            <button id="btnCancel" class="actionButton">Abbrechen</button>
+        </div>
+    </div>
+</script>
+
+<!-- mustache blog export status template -->
+<script type="text/x-mustache-html" id="musStatusScreen">
+    <h3>Export Blog <span>{{blog}}</span> in Bearbeitung...<button id="btnIntro" class="onStatus"><i class="fa fa-question"></i> Info</button></h3>
+    <div id="selIntro" style="display:none">
+        <p>Während des Exports angezeigte Fehler sind i.d.R. Timeout-Lesefehler, d.h. dass die ent&shy;sprechenden Beiträge nicht in der regulären Zeit erfolgreich gelesen werden konnten. Timeouts entstehen bei schlechtem Antwort&shy;zeit&shy;verhalten des Twoday-Servers bzw. der Helma-Datenbank.</p>
+        <p>Nach einem Lesefehler wird der Exportlauf abgebrochen, da sonst die Exportdatei unvollständig wäre. Bitte versuchen Sie es dann erneut zu anderen Zeiten.</p>
+        <p><i class="fa fa-copyright"></i> 2014-2018 <a target="_blank" href="https://neonwilderness.twoday.net">NeonWilderness</a>, lizensiert unter <a target="_blank" href="https://opensource.org/licenses/MIT">MIT</a></p>
+    </div>
+    <fieldset><legend><i class="fa fa-dashboard"></i>Exportfortschritt</legend>
+        <table>
+            <thead>
+                <tr>
+                    <th class="leftCol"></th>
+                    <th class="statCol">gelesen</th>
+                    <th class="statCol">selektiert</th>
+                    <th class="statCol">exportiert</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="leftCol">Beiträge (öffentlich)</td>
+                    <td class="statCol" id="pubArtRead">0</td>
+                    <td class="statCol" id="pubArtSelected">0</td>
+                    <td class="statCol" id="pubArtWrite">0</td>
+                </tr>
+                <tr>
+                    <td class="leftCol">Beiträge (offline)</td>
+                    <td class="statCol" id="offArtRead">0</td>
+                    <td class="statCol" id="offArtSelected">0</td>
+                    <td class="statCol" id="offArtWrite">0</td>
+                </tr>
+                <tr>
+                    <td class="leftCol">Beitragstexte</td>
+                    <td class="statCol" id="styRead">0</td>
+                    <td class="statCol"></td>
+                    <td class="statCol" id="styWrite">0</td>
+                </tr>
+                <tr>
+                    <td class="leftCol">Kommentare</td>
+                    <td class="statCol" id="comRead">0</td>
+                    <td class="statCol"></td>
+                    <td class="statCol" id="comWrite">0</td>
+                </tr>
+                <tr>
+                    <td class="leftCol">Antworten auf Kommentare</td>
+                    <td class="statCol" id="repRead">0</td>
+                    <td class="statCol"></td>
+                    <td class="statCol" id="repWrite">0</td>
+                </tr>
+            </tbody>
+        </table>
+    </fieldset>
+    <div id="selMessage" class="{{msgColor}}" style="display:none;margin-bottom:0"><span></span><span id="selHint" style="display:none">Klicken Sie auf "Datei...", um die aufbereiteten Blogdaten dauerhaft in die Exportdatei <b>"{{filenameExport}}"</b> zu speichern. Die Übersichtsliste statischer Twoday-Bilder wird in Datei <b>"{{filenameImgList}}"</b> bereitgestellt.</span><span class="btnContainer"><a id="btnFile" href="#" target="_blank" title="Blogdaten speichern" style="display:none"><i class="fa fa-fw fa-download"></i>Datei...</a><a id="btnOK" href="#" title="Fenster schließen"><i class="fa fa-fw fa-check"></i>OK</a></span></div>
+</script>
+
+<!-- mustache template for list of static twoday images and url changes -->
+<script type="text/x-mustache-html" id="musResourceList"><!doctype html>
+<html lang="de">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Statische Twoday-Bildadressen</title>
+        <style>
+            body { background: #fff; color: #444; padding: 10px 20px; font-family: Tahoma, sans-serif; }
+            #wrapper { width: 800px; margin: 0 auto; }
+            h3 span { color: #27ae60; font-weight: normal; font-size: .9em; }
+            .hint { font-size: .8em; background-color: #f5f5f5; border-top: 2px solid #666; border-bottom: 2px solid #666; padding: 10px; }
+            .file { background-color: #ededed; }
+        </style>
+    </head>
+    <body>
+        <div id="wrapper">
+            <h3>Liste der gefundenen Twoday-Ressourcen für <span>{{&blog}}</span></h3>
+            <p class="hint">
+                Die nachstehende Auflistung enthält alle Ressourcen der während des Exportlaufs selektierten Beiträge, die ein auf Twoday gespeichertes Bild (Bildadresse beginnt mit "{{&staticImgUrl}}") oder Datei (Dateiadresse beginnt mit "{{&staticFileUrl}}") verwenden. {{#imgUrlChange}}Gemäß Ihrer Anforderung wurden alle diese Adressen in der Exportdatei auf das neue Blog-Medienverzeichnis "{{wpMediaUrl}}" geändert.{{/imgUrlChange}}
+            </p>
+            {{#storyResources}}{{&.}}{{/storyResources}}
+        </div>
+    </body>
+</html>
+</script>
+<style>
+#msgButton { background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAAEEfUpiAAAACXBIWXMAAFxGAABcRgEUlENBAAAACXRFWHRDb21tZW50AACJKo0GAAAEcklEQVR4nI1XTUxUVxQeCIkGlkBcwKKbbkiEjO1CdIGrBmqNsc5CDG6aYUNDHMIkRhfuSNwMie0CTNMOGd1QRCNGE40NxkXTJo2pojFuABPxB5VgYDTNDHN6v+G78867770ZXnKY9+499zvfPff8XGIiEoMkk8k0fssfLRclc/EfkfKAmRk1A+UHvzG7hIMxu77FTuDjAWYh5n17NJ4VKYkHKkpjOaZ4LIoyAkW7otla1XSIUO+j9ePdgEK3D9JIJ9/PGVmq7EMpnTRySI/ZiU3YU4oDRhKW5FnL4cQNn/0Gq7BiBjYw+O9bT8HIbjNXgMIQBorGVU/fi7T+JPLFRFlhvOxKem7S+uDlRsUfmLuPP43kUFDwKTM+oXcRN7LgujngB+UkoSwYuWNkjd/r1mIAwEzkjZwnnQ4jJUUJMke9OoLFNUXhwja96OEb/9lS8lyTNZLCS7+RMR0xVh6vhgJA0tYw/vQYyWmAUze3F374LJXnTd4H0FsB4MtHI10uizP3RRbXA9YHuWbLSKt2YoLOaSJQu5FfjNwyMqz0po2UIo+RSgiEojpOyLxO36oABDmEesEcCSwMBUCQMFiEwXOHwWRZnIsEUD4YiGBUj8qB5AzL2DgX19GBc47nEZUd1D2PqHUBKhmsF06Z9Pnykg8oQ/0HthJYj2e5OK8B8By7FoiDNh3+eClgf2ZilxuyeI5cDQBsEGAFRVMnUjoM4NuZYC4QYAx5pAEymOyf88IXzzfTIhf+EvlzJQAwhO6hAXqtQmFLZI2J9Hpz+/fA5QBADolYLmyo4e4JlLxElK+nfFuYdJ3YiswiwKDrg87fQvffhQzWcbBsqygqakgBgRRUVIqtjTpUS0hV+40UZiojpdup08TFiahkWgpLGrQ1lVTxqumM1GXu61qA2pCqmc5RQtAUgd1C4xqap25kDdkRAWb4kgKHC9C0Oqus6aSOrkFLrttquTDBAxXW3yY9z1o9rOq1Pehhe9gKq4kYQsxEJAFW02UqTzhGU07zryXQTTlkJoi9nFTt3U42s5SjVXUpw4NRRv5+5WXq99erkhlUJLpoA7aaNQEbtd3K+GS1XT586xE4OlvTI5OKRDdtzdtS0sOBnDLeV8vNj1Y9At+FlNwQ6VMkcrRZLoaj/BhSBMZdgMMz/vb05J1HoPd3b/zgFZE9P4cSGFcEhmhz1F6u8DGmCPiay3Fzxv8Vt42hvMPIs/ceAXSt2efe9+onka+mAgTSisAYbfbbACyyxdWTANrjhruLH26LbOk+4Twgtz8Xuntg7aLxetoqllsqB0fIKKu8gLtqPgRMRv7wG35hGsu+bOTZA6NN7T5LWyOVLOCEvZrjytGgiGSiAuv0PZG9v1YNvIzCbyC2r9mEld88lXCBqlNEcO3Hhcu9+mspUadDYdYRS4hdvZuJV443uQjXwYGk+l+tlvCcB7hWiBUow5EEFFAjj8ZeeK2sJb3/oOwFeM3RWefaxmo2drQjhxRaM67uuLank94VHmM7asFa/gdN40X5ePFv7gAAAABJRU5ErkJggg==) no-repeat #ccc 1em center; padding: 16px 16px 17px 4em; opacity: 1; border-radius: 0; box-shadow: none; margin-left: 15px; }
+#msgButton:hover { background-color: #666; }
+</style>
+<div id="exportLoginStatus" style="display:none"><% site.loginstatus %></div>
+<script type="text/javascript">{{twodayExport-js}}</script>

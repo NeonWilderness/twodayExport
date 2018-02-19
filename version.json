@@ -1,0 +1,13 @@
+{
+  "packages": [
+    {
+      "name": "twodayExport",
+      "url": "http://www.s522667522.online.de/public/site/twoday/export/twodayExport-{{versionID}}.zip",
+      "version": "{{version}}",
+      "released": "{{date}}"
+    },
+    {
+      "name": "N/A"
+    }
+  ]
+}
