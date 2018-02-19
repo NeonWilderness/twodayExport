@@ -1,6 +1,6 @@
 {
   "name": "twodayexport",
-  "version": "0.97.0",
+  "version": "0.98.0",
   "description": "Blog Export on steroids",
   "main": "index.html",
   "scripts": {

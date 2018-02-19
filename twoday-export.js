@@ -639,6 +639,27 @@
         return body;
       }
 
+      // expand poll macros <% poll id="{id}" %> or <% poll id="{alias}/{id}" %> to the skin's HTML
+      function expandPollMacros(body, $content) {
+        var pollMatch, pollID, $renderedPoll;
+        // matches a Twoday poll macro
+        pollMatch = body.match(/<\%\s+poll\s+id="(.*?)"\s+\%>/);
+        // as long as the result is not null
+        while (pollMatch) {
+          // isolate poll-id (eliminate potential alias)
+          pollID = pollMatch[1].split('/').reverse()[0];
+          // get the rendered poll div
+          $renderedPoll = $content.find('#twodayPoll-' + pollID);
+          // found? then replace poll macro with actual rendered poll HTML
+          if ($renderedPoll.length) {
+            body = body.replace(pollMatch[0], $renderedPoll[0].outerHTML);
+          }
+          // check again, if there are any more image macros
+          pollMatch = body.match(/<\%\s+poll\s+id="(.*?)"\s+\%>/);
+        }
+        return body;
+      }
+
       function changeStaticImgUrls(body) {
         // change all actual static img references if user requested an URL change
         return (p.imgUrlChange ? body.replace(p.regStaticImg, p.wpMediaUrl) : body);
@@ -649,7 +670,7 @@
         return (p.imgUrlChange ? body.replace(p.regStaticFile, p.wpMediaUrl) : body);
       }
 
-      //----- change <% image %> and <% file %> macros, then adapt static URLs
+      //----- change image and file macros, then adapt static URLs
       function changeMacros(body) {
         body = changeImgMacros(body);
         body = changeFileMacros(body);
@@ -707,6 +728,9 @@
         //--------- change the url of static resources (img/files) in the story's body
         story.body = changeMacros(story.body);
 
+        //--------- expand poll macros with their full skin HTML
+        story.body = expandPollMacros(story.body, $content);
+
         //--------- save processed comments/replies
         story.comments = [];
         var $comments = $content.find(s.comments);
@@ -755,12 +779,13 @@
     },
 
     mergeImageAndFileResources: function (story) {
-      var resources = [];
+      var resources = [], file;
       story.images.map(function (imageName) {
         resources.push({ isImage: true, name: imageName, source: this.params.staticImgUrl + imageName });
       }, this);
       Object.keys(story.files).map(function (fileName) {
-        resources.push({ isImage: false, name: fileName, source: story.files[fileName].url });
+        file = story.files[fileName];
+        resources.push({ isImage: false, name: fileName + '.' + file.ext, source: file.url });
       });
       return resources;
     },
@@ -774,7 +799,7 @@
           date: story.date,
           resources: this.mergeImageAndFileResources(story)
         },
-        partials = { resource: '<li><a class="resource {{#isImage}}image{{/isImage}}{{^isImage}}file{{/isImage}}" target="_blank" href="{{source}}">{{name}}</a>' + (this.params.imgUrlChange ? ' geändert in ' + this.params.wpMediaUrl + '{{name}}' : '') + '</li>' },
+        partials = { resource: '<li><a class="resource {{#isImage}}image{{/isImage}}{{^isImage}}file{{/isImage}}" target="_blank" href="{{source}}">{{name}}</a>{{^isImage}} (Datei){{/isImage}}' + (this.params.imgUrlChange ? ' geändert in ' + this.params.wpMediaUrl + '{{name}}' : '') + '</li>' },
         output = Mustache.render(musResources, dataResources, partials);
       this.resourceList.push(output);
     },
