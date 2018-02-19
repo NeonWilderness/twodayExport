@@ -1255,18 +1255,16 @@ macroStart = body.search(/<\% image(.*?)\%>/);
                 }
               });
               $('#btnVersion').on('click', function () {
-                var yql = 'https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D%22http%3A%2F%2Fstatic.twoday.net%2FNeonWilderness%2Ffiles%2Fversion.json%22&format=json&callback=';
-                $.getJSON(yql, function (data) {
+                var package = 'https://rawgit.com/NeonWilderness/twodayExport/master/dist/version.json';
+                $.getJSON(package, function (data) {
                   var newVersion = false, release, msgClass, msgText;
-                  if (data.query.count > 0) {
-                    $.each(data.query.results.json.packages, function () {
-                      if (this.name === 'twodayExport') {
-                        newVersion = (parseFloat(this.version) > parseFloat(twodayExport.musSelectionScreen.version));
-                        release = this;
-                        return false;
-                      }
-                    });
-                  }
+                  $.each(data.packages, function () {
+                    if (this.name === 'twodayExport') {
+                      newVersion = (parseFloat(this.version) > parseFloat(twodayExport.musSelectionScreen.version));
+                      release = this;
+                      return false;
+                    }
+                  });
                   if (newVersion) {
                     msgClass = 'bgYellow';
                     msgText = Mustache.render('<i class="fa fa-info-circle"></i>Es existiert eine neuere Version {{version}} vom {{released}}! Bitte <a target="_blank" href="{{url}}">laden</a> Sie die gepackte Layout-Datei herunter, löschen dann das bisherige Layout "twodayExport" und importieren danach die neue Version!', release);
@@ -1275,7 +1273,11 @@ macroStart = body.search(/<\% image(.*?)\%>/);
                     msgText = '<i class="fa fa-check"></i>Es gibt keine neuere Exportversion!';
                   }
                   $("#selMessage").html(msgText).addClass(msgClass).show(0);
-                });
+                })
+                  .fail(function () {
+                    var msgText = '<i class="fa fa-medkit"></i>Versionsinfos konnten nicht geladen werden.';
+                    $("#selMessage").html(msgText).addClass('bgRed').show(0);
+                  });
               });
               $('.btnContainer .actionButton').on('click', function (e) {
                 e.preventDefault();
