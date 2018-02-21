@@ -20,7 +20,7 @@
     "babel-register": "^6.26.0",
     "cheerio": "^1.0.0-rc.2",
     "cp-file": "^5.0.0",
-    "dotenv-safe": "^4.0.4",
+    "dotenv-safe": "^5.0.0",
     "gulp-bump": "^3.1.0",
     "gulp-htmlmin": "^4.0.0",
     "gulp-jshint": "^2.1.0",

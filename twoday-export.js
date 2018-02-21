@@ -415,6 +415,10 @@
         story.body = $admin.find(".formText").text();
         if (twodayExport.params.debugMode) console.log("Read source of story: ", storyEditUrl);
         story.body = story.body.replace(/http:\/\/static\.twoday\.net/gi, 'https://static.twoday.net');
+        var missingProtocol = story.body.match(/\/\/<% site.alias %>\.twoday\.net\/stories\//gi);
+        if (missingProtocol) missingProtocol.map(function (url) {
+          story.body = story.body.replace(url, 'https:' + url);
+        });
         if (twodayExport.params.videowidth > 0) story.body = twodayExport.transformVideoloadRefs(story.body);
         if (twodayExport.params.autoLink) story.body = twodayExport.autoLinker.link(story.body);
         if (slug.length === 0) slug = (story.title.length ? twodayExport.legitSlugChars(story.title) : 'notitle');
@@ -536,6 +540,8 @@
         p = this.params;
 
       function getFullImgName(imgName) {
+        // early exit if no name given
+        if (!imgName.length) return '';
         // check if alias name was used, e.g. name="seenia/IMG_12345"
         if (imgName.indexOf('/') >= 0) {
           var imgParts = imgName.split('/');
@@ -548,150 +554,163 @@
         // finds the full image name (incl. extension) or returns an empty string
         for (var i = 0, len = story.images.length, fullname; i < len; ++i) {
           fullname = story.images[i];
-          if (imgName === fullname.split('.')[0]) { return fullname; }
+          if (imgName === fullname.split('.')[0]) return fullname;
         }
         return '';
       }
 
-      function buildFileTag(fromMacro) {
-        var nameMatch = fromMacro.match(/name="(.*?)"/i);
-        if (nameMatch && story.files.hasOwnProperty(nameMatch[1])) {
-          var fileName = nameMatch[1];
-          var file = story.files[fileName];
-          return '<a target="_blank" href="' + file.url + '">' + fileName + ' (' + file.ext + ')</a>';
-        } else return '';
+      // macro: file name="name"
+      function fileMacro(attrSet) {
+        var template = '<a target="_blank" href="{{&url}}">{{&name}} ({{&ext}})</a>';
+        var name = attrSet.name || '';
+        if (name && story.files.hasOwnProperty(name)) {
+          var file = story.files[name];
+          file.name = name;
+          return Mustache.render(template, file);
+        } else
+          return '';
       }
 
-      function buildImageTag(fromMacro) {
-        //--------- mustache img template string with vars
-        var musImgTag = '{{#linkTo}}<a target="_blank" href="{{&linkTo}}">{{/linkTo}}<img src="{{&staticImgUrl}}{{&imgName}}"{{&class}}{{&align}}{{&width}}{{&height}}{{&border}}>{{#linkTo}}</a>{{/linkTo}}',
-          musTagVars = {
-            align: '',
-            border: '',
-            class: '',
-            height: '',
-            imgName: '',
-            linkTo: '',
-            staticImgUrl: p.staticImgUrl,
-            width: ''
-          },
-          imgAttr, attr, value;
-        //--------- split image macro along space delimiter and inspect parts
-        $.each(fromMacro.split(' '), function () {
-          //------------- skip parts that don't feature a relevant attribute
-          if (this.indexOf('=') < 0) return true;
-          //------------- split the attribute at the equal sign
-          imgAttr = this.split('=');
-          //------------- sanitize parts
-          attr = imgAttr[0].toLowerCase();
-          value = (imgAttr[1] || '').replace(/["”']/g, '');
-          //------------- now check the 1st attribute part and save the mustache template variable
-          switch (attr) {
-            case 'align':
-            case 'border': musTagVars[attr] = ' ' + this; break;
-            case 'class': if (value.indexOf('autolink') < 0) musTagVars.class = ' ' + this; break;
-            case 'height': musTagVars.height = ' height="' + value + '"'; break;
-            case 'name': musTagVars.imgName = getFullImgName(value); break;
-            case 'linkto':
-            case 'href': musTagVars.linkTo = value; break;
-            case 'width': musTagVars.width = ' width="' + value + '"'; break;
-          }
+      // macro: image name="name" align="align" border="border" class="class" height="height" linkto="linkto" href="linkto" width="width"
+      function imageMacro(attrSet) {
+        var template = '{{#linkto}}<a{{&target}} href="{{&linkto}}">{{/linkto}}<img src="{{&fullName}}"{{&class}}{{&align}}{{&width}}{{&height}}{{&border}}>{{#linkto}}</a>{{/linkto}}';
+        var sanitize = function (prop, quote) {
+          if (attrSet[prop])
+            attrSet[prop] = ' ' + prop + '=' + (quote ? '"' + attrSet[prop] + '"' : attrSet.prop);
+        };
+        sanitize('align', true);
+        sanitize('border', true);
+        sanitize('class', true);
+        sanitize('height', true);
+        if (!attrSet.fullName) attrSet.fullName = p.staticImgUrl + getFullImgName(attrSet.name || '');
+        if (attrSet.href) attrSet.linkto = attrSet.href;
+        sanitize('target', true);
+        sanitize('width', true);
+        return Mustache.render(template, attrSet);
+      }
+
+      // macro: link to="to" text="text"
+      function linkMacro(attrSet) {
+        var template = '<a{{#target}}{{&target}}{{/target}} href="{{&to}}">{{&text}}</a>';
+        attrSet.to = attrSet.to || '';
+        attrSet.text = attrSet.text || attrSet.to;
+        if (attrSet.target) attrSet.target = ' target="' + attrSet.target + '"';
+        return Mustache.render(template, attrSet);
+      }
+
+      // macro: gallery images="imagename, imagename, imagename, imagename..."
+      function galleryMacro(attrSet, index, $content) {
+        // find the matching entire table gallery in the rendered html
+        var $gallery = $content.find('table.gallery')
+          .eq(index)
+          .css('width', '100%')
+          .addClass('regenerated');
+        // find all links in the table  
+        $gallery.find('a').each(function () {
+          this.innerHTML = imageMacro({
+            fullName: this.href,
+            width: '100%'
+          });
         });
-        //--------- return the rendered mustache template if the full image name was found
-        return (musTagVars.imgName.length > 0 ? Mustache.render(musImgTag, musTagVars) : '');
+        return $gallery[0].outerHTML;
       }
 
-      //----- change all twoday file macros <% image name="xyz" %> to genuine a/href tags (file macros are only allowed in body text, not in a comment text)
-      function changeFileMacros(body) {
-        var macroStart, macroEnd, fileMacro;
-        // locate a Twoday resource macro <% resource ... %>
-        macroStart = body.search(/<\% file(.*?)\%>/);
-        // as long as there is an resource macro in the body
-        while (macroStart >= 0) {
-          // find the end of this macro
-          macroEnd = body.indexOf("%>", macroStart + 7);
-          // and copy it for further inspection
-          fileMacro = body.slice(macroStart, macroEnd + 2);
-          // build the file element as the replacement for the resource macro
-          body = body.replace(fileMacro, buildFileTag(fileMacro));
-          // check again, if there are any more resource macros
-          macroStart = body.search(/<\% file(.*?)\%>/);
-        }
-        return body;
+      function fixManualTableGalleries(body) {
+        if (body.indexOf('"gallery') < 0) return body; // early exit if nothing to do
+        var $body = $('<div>').html(body);
+        $body.find('table.gallery').not('.regenerated').each(function (index, gallery) {
+          $(gallery)
+            .css('width', '100%')
+            .addClass('manual')
+            .find('a').each(function () {
+              var imageName = this.href.split('/').pop().split('.')[0];
+              var fullName = p.staticImgUrl + getFullImgName(imageName);
+              this.outerHTML = imageMacro({
+                href: fullName,
+                fullName: fullName,
+                width: '100%'
+              });
+            });
+        });
+        return $body.html();
       }
 
-      //----- change all twoday image macros <% image name="xyz" %> to genuine img tags (image macros are only allowed in body text, not in a comment text)
-      function changeImgMacros(body) {
-        var macroStart, macroEnd, imgMacro;
-        //--------- locates a Twoday image macro <% image ... %>
-        macroStart = body.search(/<\% image(.*?)\%>/);
-        //--------- as long as there is an image macro in the body
-        while (macroStart >= 0) {
-          //------------- find the end of this macro
-          macroEnd = body.indexOf("%>", macroStart + 8);
-          //------------- and copy it for further inspection
-          imgMacro = body.slice(macroStart, macroEnd + 2);
-          //------------- build the img element as the replacement for the image macro
-          body = body.replace(imgMacro, buildImageTag(imgMacro));
-          //------------- check again, if there are any more image macros
-          macroStart = body.search(/<\% image(.*?)\%>/);
-        }
-        return body;
+      // macro: poll id="alias/id" as="results"
+      function pollMacro(attrSet, index, $content) {
+        // isolate poll-id (eliminate potential alias)
+        attrSet.id = attrSet.id.split('/').reverse()[0];
+        // get the rendered poll div
+        var $renderedPoll = $content.find('#twodayPoll-' + attrSet.id);
+        // found? then replace poll macro with actual rendered poll HTML
+        return ($renderedPoll.length ? $renderedPoll[0].outerHTML : '');
       }
 
-      // expand poll macros <% poll id="{id}" %> or <% poll id="{alias}/{id}" %> to the skin's HTML
-      function expandPollMacros(body, $content) {
-        var pollMatch, pollID, $renderedPoll;
-        // matches a Twoday poll macro
-        pollMatch = body.match(/<\%\s+poll\s+id="(.*?)"\s+\%>/);
-        // as long as the result is not null
-        while (pollMatch) {
-          // isolate poll-id (eliminate potential alias)
-          pollID = pollMatch[1].split('/').reverse()[0];
-          // get the rendered poll div
-          $renderedPoll = $content.find('#twodayPoll-' + pollID);
-          // found? then replace poll macro with actual rendered poll HTML
-          if ($renderedPoll.length) {
-            body = body.replace(pollMatch[0], $renderedPoll[0].outerHTML);
-          }
-          // check again, if there are any more image macros
-          pollMatch = body.match(/<\%\s+poll\s+id="(.*?)"\s+\%>/);
-        }
+      // macro: story.link text="text"
+      function storyMacro(attrSet) {
+        return linkMacro({
+          to: story.url,
+          text: attrSet.text || 'Link zum Beitrag'
+        });
+      }
+
+      function processTwodayMacro(body, $content, macroName, callback) {
+        var reg = new RegExp('<\\%\\s*' + macroName + '\\s.*\\s*%>', 'gi');
+        var macros = body.match(reg);
+        if (macros) macros.map(function (macro, index) {
+          var subs = macro.substr(2, macro.length - 4).trim().split(' ');
+          var attrSet = subs.reduce(function (all, item) {
+            if (item.indexOf('=') >= 0) {
+              var attr = item.split('=');
+              all[attr[0]] = attr[1].replace(/^["'](.+)["']$/, '$1');
+            }
+            return all;
+          }, {});
+          body = body.replace(macro, callback(attrSet, index, $content));
+        });
         return body;
       }
 
       function changeStaticImgUrls(body) {
         // change all actual static img references if user requested an URL change
-        return (p.imgUrlChange ? body.replace(p.regStaticImg, p.wpMediaUrl) : body);
+        return (p.urlChange ? body.replace(p.regStaticImg, p.wpMediaUrl) : body);
       }
 
       function changeStaticFileUrls(body) {
         // change all actual static file references if user requested an URL change
-        return (p.imgUrlChange ? body.replace(p.regStaticFile, p.wpMediaUrl) : body);
+        return (p.urlChange ? body.replace(p.regStaticFile, p.wpMediaUrl) : body);
       }
 
-      //----- change image and file macros, then adapt static URLs
-      function changeMacros(body) {
-        body = changeImgMacros(body);
-        body = changeFileMacros(body);
+      function processAllTwodayMacros(body, $content) {
+        var tdMacros = [
+          { tag: 'file', cb: fileMacro },
+          { tag: 'gallery', cb: galleryMacro },
+          { tag: 'image', cb: imageMacro },
+          { tag: 'link', cb: linkMacro },
+          { tag: 'poll', cb: pollMacro },
+          { tag: 'story\\.link', cb: storyMacro }
+        ];
+        tdMacros.map(function (macro) {
+          body = processTwodayMacro(body, $content, macro.tag, macro.cb);
+        });
+        body = fixManualTableGalleries(body);
         body = changeStaticImgUrls(body);
         return changeStaticFileUrls(body);
       }
 
-      //----- processes a comment or reply block and extracts relevant information
+      // processes a comment or reply block and extracts relevant information
       function processCommentOrReply($item, type, counter) {
         var comment = {},
           title = s.retrieveDOMValue($item, 'commentTitle'),
           body = s.retrieveDOMValue($item, 'commentBody'),
-          dateStr;
-        dateStr = s.retrieveDOMValue($item, 'commentDate');
+          dateStr = s.retrieveDOMValue($item, 'commentDate');
         comment.date = s.extractDate(dateStr, story.date);
         comment.type = type;
         comment.author = s.retrieveDOMValue($item, 'commentAuthor');
         if (comment.author.length === 0) comment.author = s.anonymousAuthor($item);
         if (p.delGuest) comment.author = comment.author.replace(' (Gast)', '');
         comment.url = s.retrieveDOMValue($item, 'commentUrl');
-        comment.body = changeStaticImgUrls(title.length > 0 ? title + ' ' + body : body);
+        comment.body = fixManualTableGalleries(title.length > 0 ? title + ' ' + body : body);
+        comment.body = changeStaticImgUrls(comment.body);
         if (p.videowidth > 0) comment.body = twodayExport.transformVideoloadRefs(comment.body);
         twodayExport.musStatusScreen.incValue(counter === 'C' ? 'comRead' : 'repRead');
         return comment;
@@ -725,11 +744,8 @@
           story.files[this.dataset.name] = { url: this.dataset.url, ext: this.dataset.ext };
         });
 
-        //--------- change the url of static resources (img/files) in the story's body
-        story.body = changeMacros(story.body);
-
-        //--------- expand poll macros with their full skin HTML
-        story.body = expandPollMacros(story.body, $content);
+        // render important Twoday macros and replace static Twoday url if requested
+        story.body = processAllTwodayMacros(story.body, $content);
 
         //--------- save processed comments/replies
         story.comments = [];
@@ -799,7 +815,7 @@
           date: story.date,
           resources: this.mergeImageAndFileResources(story)
         },
-        partials = { resource: '<li><a class="resource {{#isImage}}image{{/isImage}}{{^isImage}}file{{/isImage}}" target="_blank" href="{{source}}">{{name}}</a>{{^isImage}} (Datei){{/isImage}}' + (this.params.imgUrlChange ? ' geändert in ' + this.params.wpMediaUrl + '{{name}}' : '') + '</li>' },
+        partials = { resource: '<li><a class="resource {{#isImage}}image{{/isImage}}{{^isImage}}file{{/isImage}}" target="_blank" href="{{source}}">{{name}}</a>{{^isImage}} (Datei){{/isImage}}' + (this.params.urlChange ? ' geändert in ' + this.params.wpMediaUrl + '{{name}}' : '') + '</li>' },
         output = Mustache.render(musResources, dataResources, partials);
       this.resourceList.push(output);
     },
@@ -903,7 +919,7 @@
         cntNumber: 0,
         maxNumber: $('#txtNumberMax').val(),
         fromNumber: $('#txtNumberFrom').val(),
-        imgUrlChange: $('#chkImgUrlChange').prop('checked'),
+        urlChange: $('#chkUrlChange').prop('checked'),
         newBlogUrl: $('#txtNewBlogUrl').val(),
         staticImgUrl: '<% staticURL %><% site.alias %>/images/',
         staticFileUrl: '<% staticURL %><% site.alias %>/files/',
@@ -917,7 +933,8 @@
         validMaxNumber: function () { return (!this.selNumber || !isNaN(parseInt(this.maxNumber, 10))); },
         validFromNumber: function () { return (!this.selNumber || !isNaN(parseInt(this.fromNumber, 10))); },
         validBlogUrl: function () {
-          return !this.imgUrlChange || (/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/.test(this.newBlogUrl));
+          return !this.urlChange || this.newBlogUrl.indexOf('localhost') ||
+            (/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/.test(this.newBlogUrl));
         },
       };
       selParams.regStaticImg = new RegExp(selParams.staticImgUrl
@@ -926,7 +943,6 @@
       selParams.regStaticFile = new RegExp(selParams.staticFileUrl
         .replace('https:', 'https?:')
         .replace(/\//gi, '\\/'), 'gi');
-      selParams.staticLen = selParams.staticImgUrl.length;
       //----- validate parameters and exit if input check has raised errors
       if (!this.validateSelectionParams(selParams)) return false;
       //----- modify timeout-specs if user has entered individual values
@@ -941,7 +957,7 @@
         });
       }
       //----- derive wordpress media upload url from new blog address
-      if (selParams.imgUrlChange) {
+      if (selParams.urlChange) {
         if (selParams.newBlogUrl.substr(selParams.newBlogUrl.length - 1) !== '/') selParams.newBlogUrl += '/';
         selParams.wpMediaUrl = selParams.newBlogUrl;
       }

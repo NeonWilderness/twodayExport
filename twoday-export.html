@@ -93,7 +93,7 @@ a.tip { cursor: help; border-radius: 50%; background-color: #eee; width: 18px; d
         Plugin importiert werden, das z.B. die korrekte Twoday-Kommentarstruktur (Kommentar/Antworten) in Wordpress herstellt. <span style="color:#f04124;font-weight:bold">Falls Sie in Ihrem Blog keine Plugins installieren können, aktivieren Sie unten das Auswahlkästchen "Für wordpress.com exportieren".</span> Weitere Details und Informationen finden Sie im zugehörigen <a target="_blank" href="https://neonwilderness.twoday.net/stories/blog-export-on-steroids/">Blogbeitrag</a>.</p>
         <p><i class="fa fa-copyright"></i> 2014-2018 <a target="_blank" href="https://neonwilderness.twoday.net">NeonWilderness</a>, Version {{version}}, lizensiert unter <a target="_blank" href="https://opensource.org/licenses/MIT">MIT</a><button id="btnVersion"><i class="fa fa-star-o"></i> Versionscheck</button></p>
         <fieldset><legend><i class="fa fa-cogs"></i>Einstellungen</legend>
-            <input type="checkbox" id="chkAutolink" checked="checked"><label for="chkAutolink">Twoday-Textlinks in klickbare HTML-Links wandeln</label><br>
+            <input type="checkbox" id="chkAutolink"><label for="chkAutolink">Twoday-Textlinks in klickbare HTML-Links wandeln</label><br>
             <input type="checkbox" id="chkDelGuest" checked="checked"><label for="chkDelGuest">(Gast)-Kennung aus Benutzernamen entfernen</label><br>
             <input type="checkbox" id="chkWrdPress"><label for="chkWrdPress">Für wordpress.com exportieren (fortlaufende Kommentare)</label><a class="tip" title="Wordpress.com erlaubt für Free-User keine Installation eigener Plugins. Daher können Kommentare nur fortlaufend, d.h. ohne strukturelle Einrückungen (Twoday: Antwort auf Kommentar) eingespielt werden."><i class="fa fa-question"></i></a><br>
             <input type="checkbox" id="chkDebug"><label for="chkDebug">Testphase: Debug-Nachrichten über Console ausgeben</label><br>
@@ -127,7 +127,7 @@ a.tip { cursor: help; border-radius: 50%; background-color: #eee; width: 18px; d
             <input type="radio" name="selNumber" value="max" id="radNumberMax" checked="checked"><label for="radNumberMax">Maximal<input type="text" id="txtNumberMax" value="10">Beiträge,&nbsp;</label> <label for="txtNumberFrom">Start ab Beitrag<input type="text" id="txtNumberFrom" value="1"></label>
         </fieldset>
         <fieldset><legend><i class="fa fa-image"></i>Bildadressen</legend>
-            <input type="checkbox" id="chkImgUrlChange"><label for="chkImgUrlChange" style="margin-right:0">Twoday-Bild-URLs ändern auf</label>
+            <input type="checkbox" id="chkUrlChange"><label for="chkUrlChange" style="margin-right:0">Twoday-Bild-URLs ändern auf</label>
             <input type="text" id="txtNewBlogUrl" placeholder="https://www.meinneuerblog.me/wp-content/uploads">
         </fieldset>
         <div class="btnContainer">
@@ -212,7 +212,7 @@ a.tip { cursor: help; border-radius: 50%; background-color: #eee; width: 18px; d
         <div id="wrapper">
             <h3>Liste der gefundenen Twoday-Ressourcen für <span>{{&blog}}</span></h3>
             <p class="hint">
-                Die nachstehende Auflistung enthält alle Ressourcen der während des Exportlaufs selektierten Beiträge, die ein auf Twoday gespeichertes Bild (Bildadresse beginnt mit "{{&staticImgUrl}}") oder eine Datei (Dateiadresse beginnt mit "{{&staticFileUrl}}") verwenden. {{#imgUrlChange}}Gemäß Ihrer Anforderung wurden alle diese Adressen in der Exportdatei auf das neue Blog-Medienverzeichnis "{{wpMediaUrl}}" geändert.{{/imgUrlChange}}
+                Die nachstehende Auflistung enthält alle Ressourcen der während des Exportlaufs selektierten Beiträge, die ein auf Twoday gespeichertes Bild (Bildadresse beginnt mit "{{&staticImgUrl}}") oder eine Datei (Dateiadresse beginnt mit "{{&staticFileUrl}}") verwenden. {{#urlChange}}Gemäß Ihrer Anforderung wurden alle diese Adressen in der Exportdatei auf das neue Blog-Medienverzeichnis "{{wpMediaUrl}}" geändert.{{/urlChange}}
             </p>
             {{#storyResources}}{{&.}}{{/storyResources}}
         </div>
