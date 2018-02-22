@@ -11,12 +11,14 @@ const validBodyTestcases = require('./checks/validBody');
 const validCommentsTestcases = require('./checks/validComments');
 
 const readFrontmatter = (chunk) => {
-  return chunk.split('\n').reduce((all, line, index) => {
+  let fm = chunk.split('\n').reduce((all, line, index) => {
     let parts = line.split(': ');
     let key = parts[0].toLowerCase().replace(/\s/g, '');
     if (key.length) all[key] = parts.slice(1).join('');
     return all;
   }, {});
+  fm.id = fm.basename.split('-').pop();
+  return fm;
 };
 
 const readBody = (chunk) => {
@@ -48,7 +50,7 @@ if (!argv.blog) {
 }
 let blog = argv.blog.toLowerCase();
 let dir = `D:/Dokumente/Dev/twodayexport/clients/${blog}/`;
-let file; // --file="seenia export v4" or undefined
+let file; // --file="seenia export vx" or undefined
 if (argv.file)
   file = `${dir}${argv.file}.txt`;
 else {
@@ -75,8 +77,16 @@ let stories = fs.readFileSync(file)
     return all;
   }, []);
 
+let global = {
+  blog,
+  regNumericStoryId: new RegExp('https?:\\/\\/' + blog + '\\.twoday\\.net\\/stories\\/[^0-9]+'),
+  regStaticResources: new RegExp('https?:\/\/static\.twoday\.net\/' + blog + '\/(files|images)\/'),
+  regStaticImages: new RegExp('https?:\/\/static\.twoday\.net\/' + blog + '\/images\/'),
+  validator: '<!DOCTYPE html><html><head><title>Test</title></head><body>{{body}}</body></html>'
+};
+
 stories.map((story) => {
-  validFmTestcases(story);
-  validBodyTestcases(story);
-  validCommentsTestcases(story);
+  validFmTestcases(story, global);
+  validBodyTestcases(story, global);
+  validCommentsTestcases(story, global);
 });

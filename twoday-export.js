@@ -235,8 +235,10 @@
           lastPage = Math.floor(totalFiles / 20);
         }
         if (currPage < lastPage) {
+          document.getElementById('mMain').style.width = (currPage+1)*20/totalFiles*100+'%';
           setTimeout(function () { return twodayExport.recursiveStories(currPage + 1, stories); }, twodayExport.timeoutStories);
         } else if (stories.length > 0) {
+          document.getElementById('mMain').style.width = '100%';
           // sorts storyarray descending (newest to the top)
           stories.sort(function (a, b) { return Date.parse(b.date) - Date.parse(a.date); });
           // crunch down the stories array to the requested number package (if so requested)
@@ -425,9 +427,11 @@
         twodayExport.musStatusScreen.incValue("styRead");
         currStoryIdx += 1;
         if (currStoryIdx < stories.length) {
+          document.getElementById('mStories').style.width = currStoryIdx/stories.length*100+'%';
           setTimeout(function () { return twodayExport.recursiveBody(currStoryIdx, stories); }, twodayExport.timeoutBody);
         } else {
           if (twodayExport.params.debugMode) console.log('>>> xrefs:', JSON.stringify(twodayExport.xrefs, null, 2));
+          document.getElementById('mStories').style.width = '100%';
           return twodayExport.recursiveComments(0, stories);
         }
       })
@@ -779,8 +783,10 @@
         //--------- recursively process all stories
         currStoryIdx += 1;
         if (currStoryIdx < stories.length) {
+          document.getElementById('mComments').style.width = currStoryIdx/stories.length*100+'%';
           setTimeout(function () { return twodayExport.recursiveComments(currStoryIdx, stories); }, twodayExport.timeoutComments);
         } else {
+          document.getElementById('mComments').style.width = '100%';
           twodayExport.assignNiceUrlsStoryID();
           var xrefKeys = Object.keys(twodayExport.xrefs);
           if (xrefKeys.length > 0) {

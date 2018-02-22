@@ -1,8 +1,8 @@
 const { assert } = require('chai');
 
-module.exports = (story) => {
+module.exports = (story, global) => {
 
-  describe(`checking frontmatter of story ${story.fm.basename}`, () => {
+  describe(`checking frontmatter of story basename: ${story.fm.basename} @ https://${global.blog}.twoday.net/stories/${story.fm.id}`, () => {
 
     it('should have a category', () => {
       assert.notEqual(story.fm.category.length, 0, 'missing category');

@@ -43,7 +43,7 @@ URL: {{&url}}
 #selMessage { background: #f04124; color: #fff; padding: 10px; margin-bottom: 12px; font-size: 13px; }
 #selMessage span { display: block; }
 #selMessage i { margin-right: 8px }
-#selHint { font-size: .8em; margin: 10px 10px 3px 0; border-left: 2px solid #f5f5f5; padding: 3px 0 3px 10px; line-height: 1.6; }
+#selHint { font-size: .85em; margin: 10px 10px 3px 0; border-left: 2px solid #f5f5f5; padding: 3px 0 3px 10px; line-height: 1.6; }
 #selScreen h3 { border-bottom: 2px solid #ddd; padding-bottom: 10px; font-size: 18px; }
 #selScreen h3 span { color: #27ae60; font-size: .95em; }
 #selScreen fieldset { margin: 12px 0 0; border: 1px solid #ddd; padding: 8px 15px 12px; width: 100%; }
@@ -78,6 +78,8 @@ URL: {{&url}}
 a.tip { cursor: help; border-radius: 50%; background-color: #eee; width: 18px; display: inline-block; line-height: 18px; text-align: center; padding: 1px; }
 #txtTimeouts { width: 110px; }
 #txtVideoWidth { width: 48px; }
+#progressBars { font-size:.8rem; }
+.progress { height: 1rem; }
 </style>
 <div id="selOverlay" style="display:none"><div id="selScreen"></div></div>
 </script>
@@ -190,7 +192,23 @@ a.tip { cursor: help; border-radius: 50%; background-color: #eee; width: 18px; d
             </tbody>
         </table>
     </fieldset>
-    <div id="selMessage" class="{{msgColor}}" style="display:none;margin-bottom:0"><span></span><span id="selHint" style="display:none">Klicken Sie auf "Datei...", um die aufbereiteten Blogdaten dauerhaft in die Exportdatei <b>"{{filenameExport}}"</b> zu speichern. Die Übersichtsliste statischer Twoday-Bilder wird in Datei <b>"{{filenameImgList}}"</b> bereitgestellt.</span><span class="btnContainer"><a id="btnFile" href="#" target="_blank" title="Blogdaten speichern" style="display:none"><i class="fa fa-fw fa-download"></i>Datei...</a><a id="btnOK" href="#" title="Fenster schließen"><i class="fa fa-fw fa-check"></i>OK</a></span></div>
+    <fieldset>
+        <div id="progressBars">
+            <div class="row">
+                <div class="small-3 columns">Übersichtsdaten</div>        
+                <div class="small-9 columns"><div class="progress"><span id="mMain" class="meter" style="width:1%"></span></div></div>
+            </div>
+            <div class="row">
+                <div class="small-3 columns">Beiträge</div>        
+                <div class="small-9 columns"><div class="progress"><span id="mStories" class="meter" style="width:1%"></span></div></div>
+            </div>
+            <div class="row">
+                <div class="small-3 columns">Kommentare</div>        
+                <div class="small-9 columns"><div class="progress" style="margin-bottom:0"><span id="mComments" class="meter" style="width:1%"></span></div></div>
+            </div>
+        </div>
+    </fieldset>
+    <div id="selMessage" class="{{msgColor}}" style="display:none;margin-bottom:0"><span></span><span id="selHint" style="display:none">Klicken Sie auf "Datei...", um die aufbereiteten Blogdaten dauerhaft in die Exportdatei <b>"{{filenameExport}}"</b> zu speichern. Die Übersichtsliste statischer Twoday-Bilder wird in Datei <b>"{{filenameResourceList}}"</b> bereitgestellt.</span><span class="btnContainer"><a id="btnFile" href="#" target="_blank" title="Blogdaten speichern" style="display:none"><i class="fa fa-fw fa-download"></i>Datei...</a><a id="btnOK" href="#" title="Fenster schließen"><i class="fa fa-fw fa-check"></i>OK</a></span></div>
 </script>
 
 <!-- mustache template for list of static twoday images and url changes -->

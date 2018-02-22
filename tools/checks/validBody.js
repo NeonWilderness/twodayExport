@@ -2,9 +2,9 @@ const { assert } = require('chai');
 const cheerio = require('cheerio');
 const isUri = require('isuri');
 
-module.exports = (story) => {
+module.exports = (story, global) => {
 
-  describe(`checking body of story ${story.fm.basename}`, () => {
+  describe(`checking body of story basename: ${story.fm.basename} @ https://${global.blog}.twoday.net/stories/${story.fm.id}`, () => {
     var $;
 
     before(() => {
@@ -19,7 +19,7 @@ module.exports = (story) => {
       $('a').each(function (index, el) {
         var link = $(el).attr('href');
         assert.isTrue(isUri.isValid(link), `invalid link url: ${link}`);
-        assert.notMatch(link, /https?:\/\/.*\.twoday\.net\/stories\/[^0-9]+/,
+        assert.notMatch(link, global.regNumericStoryId,
           `link to non-numeric story id: ${link}`);
       });
     });
@@ -27,16 +27,14 @@ module.exports = (story) => {
     it('should not have links to static Twoday resources', function () {
       $('a').each(function (index, el) {
         var link = $(el).attr('href');
-        assert.notMatch(link, /https?:\/\/static\.twoday\.net\/.*\/(files|images)\//,
-          `unconverted static img/file link: ${link}`);
+        assert.notMatch(link, global.regStaticResources, `unconverted static img/file link: ${link}`);
       });
     });
 
-    it('should not have image sources from static Twoday resources', function () {
+    it('should not have image sources from static Twoday images', function () {
       $('img').each(function (index, el) {
         var src = $(el).attr('src');
-        assert.notMatch(src, /https?:\/\/static\.twoday\.net\/.*\/images\//,
-          `unconverted static img link: ${src}`);
+        assert.notMatch(src, global.regStaticImages, `unconverted static img link: ${src}`);
       });
     });
 
