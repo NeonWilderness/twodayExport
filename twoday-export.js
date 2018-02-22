@@ -415,10 +415,7 @@
         story.body = $admin.find(".formText").text();
         if (twodayExport.params.debugMode) console.log("Read source of story: ", storyEditUrl);
         story.body = story.body.replace(/http:\/\/static\.twoday\.net/gi, 'https://static.twoday.net');
-        var missingProtocol = story.body.match(/\/\/<% site.alias %>\.twoday\.net\/stories\//gi);
-        if (missingProtocol) missingProtocol.map(function (url) {
-          story.body = story.body.replace(url, 'https:' + url);
-        });
+        story.body = story.body.replace(/"\/\/<% site.alias %>/gi, '"https://<% site.alias %>');
         if (twodayExport.params.videowidth > 0) story.body = twodayExport.transformVideoloadRefs(story.body);
         if (twodayExport.params.autoLink) story.body = twodayExport.autoLinker.link(story.body);
         if (slug.length === 0) slug = (story.title.length ? twodayExport.legitSlugChars(story.title) : 'notitle');
@@ -648,20 +645,34 @@
       // macro: story.link text="text"
       function storyMacro(attrSet) {
         return linkMacro({
-          to: story.url,
+          to: '<% site.href %>stories/'+story.id,
           text: attrSet.text || 'Link zum Beitrag'
         });
+      }
+
+      function convertInQuoteSpaces(param, hide) {
+        var search = new RegExp(hide ? ' ' : '\xa0', 'g');
+        var replace = (hide ? '\xa0' : ' ');
+        var literals = param.match(/(".*?")/g);
+        if (literals) literals.map( function(literal){
+          param = param.replace(literal, literal.replace(search, replace));
+        });
+        return param;
+      }
+
+      function splitMacroParams(macro) {
+        return convertInQuoteSpaces(macro, true).split(' '); // hide in-quote-spaces then split by space
       }
 
       function processTwodayMacro(body, $content, macroName, callback) {
         var reg = new RegExp('<\\%\\s*' + macroName + '\\s.*\\s*%>', 'gi');
         var macros = body.match(reg);
         if (macros) macros.map(function (macro, index) {
-          var subs = macro.substr(2, macro.length - 4).trim().split(' ');
+          var subs = splitMacroParams(macro.substr(2, macro.length - 4).trim());
           var attrSet = subs.reduce(function (all, item) {
             if (item.indexOf('=') >= 0) {
               var attr = item.split('=');
-              all[attr[0]] = attr[1].replace(/^["'](.+)["']$/, '$1');
+              all[attr[0]] = convertInQuoteSpaces(attr[1], false).replace(/^["'](.+)["']$/, '$1');
             }
             return all;
           }, {});
