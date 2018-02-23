@@ -18,6 +18,7 @@ const readFrontmatter = (chunk) => {
     return all;
   }, {});
   fm.id = fm.basename.split('-').pop();
+  console.log(`Reading basename: ${fm.basename}.`);
   return fm;
 };
 
@@ -64,10 +65,10 @@ else {
 console.log(`Reading export file: ${file}.`);
 let stories = fs.readFileSync(file)
   .toString()
-  .split('-----\n--------\n')
+  .split('\n-----\n--------\n')
   .reduce((all, story, index) => {
     if (story.trim().length) {
-      let chunks = story.split('-----\n');
+      let chunks = story.split('\n-----\n');
       all.push({
         fm: readFrontmatter(chunks[0]),
         body: readBody(chunks[1]),

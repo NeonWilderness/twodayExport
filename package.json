@@ -7,10 +7,10 @@
     "build": "gulp4 --production",
     "dev": "gulp4",
     "bump": "gulp4 bump",
-    "deploySkin": "node ./utils/uploadSkin --blog=seenia",
+    "deploySkin": "node ./utils/uploadSkin --blog=talkstraight",
     "deployVersion": "node ./utils/uploadFile --blog=talkstraight",
     "release": "gulp4 release",
-    "test": "mocha ./tools/checkExport --blog=seenia --reporter progress"
+    "test": "mocha ./tools/checkExport --blog=paradeiser --reporter progress"
   },
   "author": "NeonWilderness",
   "license": "MIT",
