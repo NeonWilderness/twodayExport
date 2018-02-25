@@ -832,7 +832,7 @@
           date: story.date,
           resources: this.mergeImageAndFileResources(story)
         },
-        partials = { resource: '<li><a class="resource {{#isImage}}image{{/isImage}}{{^isImage}}file{{/isImage}}" target="_blank" href="{{source}}">{{name}}</a>{{^isImage}} (Datei){{/isImage}}' + (this.params.urlChange ? ' geändert in ' + this.params.wpMediaUrl + '{{name}}' : '') + '</li>' },
+        partials = { resource: '<li><a class="resource {{#isImage}}image{{/isImage}}{{^isImage}}file{{/isImage}}" target="_blank" href="{{&source}}">{{name}}</a>{{^isImage}} (Datei){{/isImage}}' + (this.params.urlChange ? ' geändert in ' + this.params.wpMediaUrl + '{{name}}' : '') + '</li>' },
         output = Mustache.render(musResources, dataResources, partials);
       this.resourceList.push(output);
     },

@@ -14,9 +14,16 @@ const PRODUCTION = !!(yargs.argv.production);
 if (PRODUCTION) console.log($.util.colors.inverse.cyan('--- Production version in progress ---'));
 
 const hint = () => {
-  return gulp.src('./twoday-export.js')
-    .pipe($.jshint(require('./.jshintrc')))
-    .pipe($.jshint.reporter('jshint-stylish', {beep: true}));  
+  gulp.src('./twoday-export.js')
+    .pipe($.jshint(require('./.jshintrc'))) // ES5 (target is Browser)
+    .pipe($.jshint.reporter('jshint-stylish', { beep: true }));
+  return gulp.src(['./tools/res*.js'])
+    .pipe($.jshint(Object.assign(
+      {}, 
+      require('./.jshintrc'),
+      { esversion: 6, browser: false, node: true }
+    ))) // ES6 (target is Node)
+    .pipe($.jshint.reporter('jshint-stylish', { beep: true }));
 };
 
 const build = () => {
@@ -49,21 +56,21 @@ const getPackageJson = () => {
 /**
  * Bump minor version and update package.json and version.json
  */
-const bump = (bumpVersion=true) => {
+const bump = (bumpVersion = true) => {
   let pkg = getPackageJson();
   let newVersion;
-  let releaseDate = new Date().toISOString().substr(0,10).split('-').reverse().join('.');
+  let releaseDate = new Date().toISOString().substr(0, 10).split('-').reverse().join('.');
   if (bumpVersion) {
     newVersion = semver.inc(pkg.version, 'minor');
     console.log('Bumping to new version...');
     gulp.src(['./package.json'])
-    .pipe($.bump({version: newVersion}))
-    .pipe(gulp.dest('./'));
+      .pipe($.bump({ version: newVersion }))
+      .pipe(gulp.dest('./'));
   } else {
     newVersion = pkg.version;
     console.log('Setting new release date only...');
   }
-  
+
   let shortVersion = newVersion.substr(0, newVersion.lastIndexOf('.'));
   return gulp.src(['./version.json'])
     .pipe($.replace('{{versionID}}', `v${shortVersion.replace('.', '')}`))

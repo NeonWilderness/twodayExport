@@ -82,8 +82,7 @@ let global = {
   blog,
   regNumericStoryId: new RegExp('https?:\\/\\/' + blog + '\\.twoday\\.net\\/stories\\/[^0-9]+'),
   regStaticResources: new RegExp('https?:\/\/static\.twoday\.net\/' + blog + '\/(files|images)\/'),
-  regStaticImages: new RegExp('https?:\/\/static\.twoday\.net\/' + blog + '\/images\/'),
-  validator: '<!DOCTYPE html><html><head><title>Test</title></head><body>{{body}}</body></html>'
+  regStaticImages: new RegExp('https?:\/\/static\.twoday\.net\/' + blog + '\/images\/')
 };
 
 stories.map((story) => {
