@@ -674,9 +674,11 @@
         if (macros) macros.map(function (macro, index) {
           var subs = splitMacroParams(macro.substr(2, macro.length - 4).trim());
           var attrSet = subs.reduce(function (all, item) {
-            if (item.indexOf('=') >= 0) {
-              var attr = item.split('=');
-              all[attr[0]] = convertInQuoteSpaces(attr[1], false).replace(/^["'](.+)["']$/, '$1');
+            var i = item.indexOf('=');
+            if (i >= 0) {
+              var param = item.substr(0,i);
+              var value = item.substr(i+1);
+              all[param] = convertInQuoteSpaces(value, false).replace(/^["'](.+)["']$/, '$1');
             }
             return all;
           }, {});
