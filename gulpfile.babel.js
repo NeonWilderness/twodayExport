@@ -23,7 +23,7 @@ const hint = () => {
       require('./.jshintrc'),
       { esversion: 6, browser: false, node: true }
     ))) // ES6 (target is Node)
-    .pipe($.jshint.reporter('jshint-stylish', { beep: true }));
+    .pipe($.jshint.reporter('jshint-stylish', { beep: false }));
 };
 
 const build = () => {

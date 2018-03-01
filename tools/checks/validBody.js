@@ -12,7 +12,7 @@ module.exports = (story, global) => {
     });
 
     it('should not be empty', () => {
-      assert.notEqual(story.body.length, 0, 'empty story body');
+      assert.notEqual(story.fm.title.length + story.body.length, 0, 'empty story body');
     });
 
     it('should have valid link urls', function () {

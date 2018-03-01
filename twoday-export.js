@@ -8,14 +8,14 @@
       var node = document.getElementById('exportLoginStatus'),
         text = node.textContent || node.innerText,
         role = text.match(/\((.*)\)/);
-      return (role ? role[1] === "Administrator" : false);
+      return (role ? role[1] === 'Administrator' : false);
     },
 
     // check if the Font Awesome css is already loaded
     isFontAwesomePresent: function () {
       var isLoaded = false;
       $.each(document.styleSheets, function () {
-        isLoaded = ((this.href || "").indexOf("font-awesome.min.css") >= 0);
+        isLoaded = ((this.href || '').indexOf('font-awesome.min.css') >= 0);
         return !isLoaded; // isLoaded=false: next iteration(=continue); isLoaded=true: quits each-loop(=break)
       });
       return isLoaded;
@@ -23,9 +23,9 @@
 
     // data models for the mustache templating process
     musSelectionScreen: {
-      alias: "<% site.alias %>",
-      blog: "<% site.href %>",
-      version: "{{scriptversion}}", // will be set during dev/build stage
+      alias: '<% site.alias %>',
+      blog: '<% site.href %>',
+      version: '{{scriptversion}}', // will be set during dev/build stage
       categories: []
     },
 
@@ -42,8 +42,8 @@
       comWrite: 0,
       repRead: 0,
       repWrite: 0,
-      filenameExport: "<% site.alias %> export.txt",
-      filenameResourceList: "<% site.alias %> url liste.html",
+      filenameExport: '<% site.alias %> export.txt',
+      filenameResourceList: '<% site.alias %> url liste.html',
       init: function (isTestRun) {
         this.pubArtRead = 0;
         this.pubArtSelected = 0;
@@ -79,7 +79,7 @@
     },
 
     // hold the mustache templates for a story and comment/reply (mustache partial)
-    musStory: "",
+    musStory: '',
     musPartials: {},
 
     // output data
@@ -100,8 +100,8 @@
     // gets the input date's longint from pickadate js
     getPicker: function (selector) {
       var $input = $(selector).pickadate(),
-        picker = $input.pickadate("picker"),
-        item = picker.get("select");
+        picker = $input.pickadate('picker'),
+        item = picker.get('select');
       return (item === null ? 0 : item.pick);
     },
 
@@ -235,7 +235,7 @@
           lastPage = Math.floor(totalFiles / 20);
         }
         if (currPage < lastPage) {
-          document.getElementById('mMain').style.width = (currPage+1)*20/totalFiles*100+'%';
+          document.getElementById('mMain').style.width = (currPage + 1) * 20 / totalFiles * 100 + '%';
           setTimeout(function () { return twodayExport.recursiveStories(currPage + 1, stories); }, twodayExport.timeoutStories);
         } else if (stories.length > 0) {
           document.getElementById('mMain').style.width = '100%';
@@ -406,6 +406,17 @@
       return $body.html();
     },
 
+    staticURL: 'https://static.twoday.net',
+
+    sanitizeLinks: function (body) {
+      body = body.replace(/http:\/\/static\.twoday\.net/gi, this.staticURL);
+      body = body.replace(/https?:\/\/twoday\.net\/static/gi, this.staticURL);
+      var siteRef = '<% site.href %>'.match(/https?:\/\/(.+)\//)[1],
+        siteReg = new RegExp('"\\/\\/' + siteRef, 'gi');
+      body = body.replace(siteReg, '"https://'+siteRef);
+      return body;
+    },
+
     //- reads the body html of all selected stories
     recursiveBody: function (currStoryIdx, stories) {
       var story = stories[currStoryIdx],
@@ -416,8 +427,7 @@
           slug = $admin.find("#modNiceUrlsText").text();
         story.body = $admin.find(".formText").text();
         if (twodayExport.params.debugMode) console.log("Read source of story: ", storyEditUrl);
-        story.body = story.body.replace(/http:\/\/static\.twoday\.net/gi, 'https://static.twoday.net');
-        story.body = story.body.replace(/"\/\/<% site.alias %>/gi, '"https://<% site.alias %>');
+        story.body = twodayExport.sanitizeLinks(story.body);
         if (twodayExport.params.videowidth > 0) story.body = twodayExport.transformVideoloadRefs(story.body);
         if (twodayExport.params.autoLink) story.body = twodayExport.autoLinker.link(story.body);
         if (slug.length === 0) slug = (story.title.length ? twodayExport.legitSlugChars(story.title) : 'notitle');
@@ -427,7 +437,7 @@
         twodayExport.musStatusScreen.incValue("styRead");
         currStoryIdx += 1;
         if (currStoryIdx < stories.length) {
-          document.getElementById('mStories').style.width = currStoryIdx/stories.length*100+'%';
+          document.getElementById('mStories').style.width = currStoryIdx / stories.length * 100 + '%';
           setTimeout(function () { return twodayExport.recursiveBody(currStoryIdx, stories); }, twodayExport.timeoutBody);
         } else {
           if (twodayExport.params.debugMode) console.log('>>> xrefs:', JSON.stringify(twodayExport.xrefs, null, 2));
@@ -557,7 +567,14 @@
           fullname = story.images[i];
           if (imgName === fullname.split('.')[0]) return fullname;
         }
-        return '';
+        // img was not found: does user want to keep img tag?
+        if (p.keepImg) {
+          // yes, then just assume a jpg extension
+          imgName += '.jpg'; 
+          // and add the img to the url list
+          story.images.push(imgName);
+          return '|'+imgName;
+        } else return '';
       }
 
       // macro: file name="name"
@@ -579,11 +596,25 @@
           if (attrSet[prop])
             attrSet[prop] = ' ' + prop + '=' + (quote ? '"' + attrSet[prop] + '"' : attrSet.prop);
         };
+        if (!attrSet.fullName) {
+          // try to find the name/ext of the image
+          var name = getFullImgName(attrSet.name || '');
+          // not found and user does not want to keep the tag
+          if (name.length===0) return '';
+          // is it a deleted img that should be kept as img tag
+          if (name.charAt(0)==='|') {
+            name = name.substr(1);
+            if (attrSet.class)
+              attrSet.class += ' notFound';
+            else  
+              attrSet.class = 'notFound';
+          }
+          attrSet.fullName = p.staticImgUrl + name;
+        }
         sanitize('align', true);
         sanitize('border', true);
         sanitize('class', true);
         sanitize('height', true);
-        if (!attrSet.fullName) attrSet.fullName = p.staticImgUrl + getFullImgName(attrSet.name || '');
         if (attrSet.href) attrSet.linkto = attrSet.href;
         sanitize('target', true);
         sanitize('width', true);
@@ -647,18 +678,23 @@
       }
 
       // macro: story.link text="text"
-      function storyMacro(attrSet) {
+      function storyLinkMacro(attrSet) {
         return linkMacro({
-          to: '<% site.href %>stories/'+story.id,
+          to: '<% site.href %>stories/' + story.id,
           text: attrSet.text || 'Link zum Beitrag'
         });
+      }
+
+      // macro: story.url
+      function storyUrlMacro(attrSet) {
+        return '<% site.href %>stories/' + story.id;
       }
 
       function convertInQuoteSpaces(param, hide) {
         var search = new RegExp(hide ? ' ' : '\xa0', 'g');
         var replace = (hide ? '\xa0' : ' ');
         var literals = param.match(/(".*?")/g);
-        if (literals) literals.map( function(literal){
+        if (literals) literals.map(function (literal) {
           param = param.replace(literal, literal.replace(search, replace));
         });
         return param;
@@ -676,8 +712,8 @@
           var attrSet = subs.reduce(function (all, item) {
             var i = item.indexOf('=');
             if (i >= 0) {
-              var param = item.substr(0,i);
-              var value = item.substr(i+1);
+              var param = item.substr(0, i);
+              var value = item.substr(i + 1);
               all[param] = convertInQuoteSpaces(value, false).replace(/^["'](.+)["']$/, '$1');
             }
             return all;
@@ -704,7 +740,8 @@
           { tag: 'image', cb: imageMacro },
           { tag: 'link', cb: linkMacro },
           { tag: 'poll', cb: pollMacro },
-          { tag: 'story\\.link', cb: storyMacro }
+          { tag: 'story\\.link', cb: storyLinkMacro },
+          { tag: 'story\\.url', cb: storyUrlMacro }
         ];
         tdMacros.map(function (macro) {
           body = processTwodayMacro(body, $content, macro.tag, macro.cb);
@@ -785,7 +822,7 @@
         //--------- recursively process all stories
         currStoryIdx += 1;
         if (currStoryIdx < stories.length) {
-          document.getElementById('mComments').style.width = currStoryIdx/stories.length*100+'%';
+          document.getElementById('mComments').style.width = currStoryIdx / stories.length * 100 + '%';
           setTimeout(function () { return twodayExport.recursiveComments(currStoryIdx, stories); }, twodayExport.timeoutComments);
         } else {
           document.getElementById('mComments').style.width = '100%';
@@ -915,6 +952,7 @@
       var selParams = {
         autoLink: $('#chkAutolink').prop('checked'),
         delGuest: $('#chkDelGuest').prop('checked'),
+        keepImg: $('#chkKeepImg').prop('checked'),
         typeReply: ($('#chkWrdPress').prop('checked') ? 'COMMENT' : 'REPLY'),
         debugMode: $('#chkDebug').prop('checked'),
         videowidth: parseInt($('#txtVideoWidth').val()),
