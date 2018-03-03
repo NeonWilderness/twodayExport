@@ -17,7 +17,7 @@ const hint = () => {
   gulp.src('./twoday-export.js')
     .pipe($.jshint(require('./.jshintrc'))) // ES5 (target is Browser)
     .pipe($.jshint.reporter('jshint-stylish', { beep: true }));
-  return gulp.src(['./tools/res*.js'])
+  return gulp.src(['./tools/res*.js', './tools/checkExport.js'])
     .pipe($.jshint(Object.assign(
       {}, 
       require('./.jshintrc'),

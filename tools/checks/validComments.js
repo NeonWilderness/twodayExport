@@ -6,17 +6,25 @@ module.exports = (story, global) => {
 
   describe(`checking comments of story basename: ${story.fm.basename} @ https://${global.blog}.twoday.net/stories/${story.fm.id}`, () => {
 
-    story.comments.map( (comment, index) => {
+    story.comments.map((comment, index) => {
 
       describe(`validating comment ${index}`, () => {
         var $;
 
+        // strip chars " and / from the end of the link
+        const sanitizeLink = (link => {
+          for (var i = link.length - 1; i >= 0; i--) {
+            if (link[i] !== '/' && link[i] !== '"') break;
+          };
+          return link.substr(0, i + 1).split('/').pop();
+        });
+
         before(() => {
           $ = cheerio.load(comment.body);
         });
-    
+
         it('should be a valid comment type', () => {
-          assert.isTrue(comment.type==='C' || comment.type==='R', 'invalid comment type');
+          assert.isTrue(comment.type === 'C' || comment.type === 'R', 'invalid comment type');
         });
 
         it('should not be empty', () => {
@@ -35,7 +43,7 @@ module.exports = (story, global) => {
           $('a').each(function (index, el) {
             var link = $(el).attr('href');
             assert.isTrue(isUri.isValid(link), `invalid link url: ${link}`);
-            assert.notMatch(link, global.regNumericStoryId,
+            assert.notMatch(link, global.regAlphaNumericStoryId,
               `link to non-numeric story id: ${link}`);
           });
         });
@@ -46,14 +54,14 @@ module.exports = (story, global) => {
             assert.notMatch(link, global.regStaticResources, `unconverted static img/file link: ${link}`);
           });
         });
-    
+
         it('should not have image sources from static Twoday images', function () {
           $('img').each(function (index, el) {
             var src = $(el).attr('src');
             assert.notMatch(src, global.regStaticImages, `unconverted static img link: ${src}`);
           });
         });
-        
+
         it('should not have any remaining Twoday macros', () => {
           assert.notMatch(comment.body, /<%\s*.*\s*%>/, 'unconverted Twoday macro');
         });
@@ -63,7 +71,25 @@ module.exports = (story, global) => {
             assert.notEqual($(el).html().length, 0, 'empty .moblog_image');
           });
         });
-                    
+
+        it('should have valid topic id in topic links', function () {
+          let topicLinks = comment.body.match(global.regTopicLinks);
+          if (topicLinks)
+            topicLinks.forEach((topicLink) => {
+              let topicID = sanitizeLink(topicLink);
+              assert.include(global.topics, topicID, `linked topic ${topicID} does not exist`);
+            });
+        });
+
+        it('should have a valid story id in story links', function () {
+          let storyLinks = comment.body.match(global.regNumericStoryId);
+          if (storyLinks)
+            storyLinks.forEach((storyLink) => {
+              let storyID = sanitizeLink(storyLink);
+              assert.include(global.storyIDs, storyID, `linked storyID ${storyID} does not exist`);
+            });
+        });
+
       });
 
     });

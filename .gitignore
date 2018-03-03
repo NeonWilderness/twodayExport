@@ -3,5 +3,6 @@
 .vscode
 *.log
 node_modules
+process.md
 todo.md
 tools/res*.*

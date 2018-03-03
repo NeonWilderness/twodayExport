@@ -3,9 +3,11 @@
  * ===========
  * 
  */
+const argv = require('yargs').argv;
+const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
-const argv = require('yargs').argv;
+const request = require('request-promise-native');
 const validFmTestcases = require('./checks/validFm');
 const validBodyTestcases = require('./checks/validBody');
 const validCommentsTestcases = require('./checks/validComments');
@@ -45,11 +47,39 @@ const readComments = (chunks) => {
   }, []);
 };
 
+const getTopics = (blog => {
+  return new Promise((resolve, reject) => {
+    request.get({
+      uri: `https://${blog}.twoday.net/topics/`,
+      transform: body => cheerio.load(body)
+    })
+      .then($ => {
+        let topics = [];
+        $('.listItem td>a').each(function () {
+          topics.push(this.attribs.href.split('/').reverse()[1]);
+        });
+        resolve(topics);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+});
+
+const getSortedStoryIDs = () => {
+  return stories
+    .reduce((all, story, index) => {
+      all.push(story.fm.id);
+      return all;
+    }, [])
+    .sort();
+};
+
 if (!argv.blog) {
   console.log('Blogname must be specified with --blog=blogname or -b blogname.');
   return;
 }
-let blog = argv.blog.toLowerCase();
+var blog = argv.blog.toLowerCase();
 let dir = `D:/Dokumente/Dev/twodayexport/clients/${blog}/`;
 let file; // --file="seenia export vx" or undefined
 if (argv.file)
@@ -62,8 +92,9 @@ else {
   }, '');
 }
 
+if (!!argv.fixed) file = file.replace('.txt', '-f.txt');
 console.log(`Reading export file: ${file}.`);
-let stories = fs.readFileSync(file)
+var stories = fs.readFileSync(file)
   .toString()
   .split('\n-----\n--------\n')
   .reduce((all, story, index) => {
@@ -78,15 +109,26 @@ let stories = fs.readFileSync(file)
     return all;
   }, []);
 
-let global = {
+var global = {
   blog,
-  regNumericStoryId: new RegExp('https?:\\/\\/' + blog + '\\.twoday\\.net\\/stories\\/[^0-9]+'),
+  regAlphaNumericStoryId: new RegExp('https?:\\/\\/' + blog + '\\.twoday\\.net\\/stories\\/[^0-9]+'),
+  regNumericStoryId: new RegExp('https?:\\/\\/' + blog + '\\.twoday\\.net\\/stories\\/[0-9]+[\\/"]', 'gi'),
   regStaticResources: new RegExp('https?:\/\/static\.twoday\.net\/' + blog + '\/(files|images)\/'),
-  regStaticImages: new RegExp('https?:\/\/static\.twoday\.net\/' + blog + '\/images\/')
+  regStaticImages: new RegExp('https?:\/\/static\.twoday\.net\/' + blog + '\/images\/'),
+  regTopicLinks: new RegExp('https?:\\/\\/' + blog + '\\.twoday\\.net\\/topics\\/.*?[\\/"]', 'gi'),
+  storyIDs: getSortedStoryIDs()
 };
+  
+describe(`validating ${blog} stories...`, () => {
 
-stories.map((story) => {
-  validFmTestcases(story, global);
-  validBodyTestcases(story, global);
-  validCommentsTestcases(story, global);
+  before(async () => {
+    global.topics = await getTopics(blog);
+  });
+
+  stories.forEach((story) => {
+    validFmTestcases(story, global);
+    validBodyTestcases(story, global);
+    validCommentsTestcases(story, global);
+  });
+
 });

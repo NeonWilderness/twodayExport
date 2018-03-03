@@ -1,0 +1,12 @@
+[
+  {
+    "search": "http:\/\/http:\/\/",
+    "flags": "gi",
+    "replace": "http://"
+  },
+  {
+    "search": "URL: http:\\/\\/{blog}\\.twoday\\.net",
+    "flags": "g",
+    "replace": "URL: https://{blog}.wordpress.com"
+  }
+]

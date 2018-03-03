@@ -10,10 +10,13 @@
     "deploySkin": "node ./utils/uploadSkin --blog=seenia",
     "deployVersion": "node ./utils/uploadFile --blog=talkstraight",
     "hint": "gulp4 hint",
+    "init": "node ./tools/resInit --blog=newblog",
     "release": "gulp4 release",
     "resources": "node ./tools/resResources --blog=seenia --dir=../clients/",
-    "download": "node ./tools/resDownload --blog=seenia --dir=../clients/",
-    "test": "mocha ./tools/checkExport --blog=seenia --reporter progress"
+    "static": "node ./tools/resStaticRefs --blog=seenia",
+    "download": "node ./tools/resDownload --blog=seenia --dir=../clients/ --download",
+    "test": "mocha ./tools/checkExport --blog=seenia --reporter progress --require mocha-clean",
+    "testfixed": "mocha ./tools/checkExport --blog=seenia --reporter progress --require mocha-clean --fixed"
   },
   "author": "NeonWilderness",
   "license": "MIT",
@@ -24,6 +27,7 @@
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
     "cheerio": "^1.0.0-rc.2",
     "cp-file": "^5.0.0",
     "dotenv-safe": "^5.0.1",
@@ -38,6 +42,7 @@
     "jshint": "^2.9.5",
     "jshint-stylish": "^2.2.1",
     "mocha": "^5.0.1",
+    "mocha-clean": "^1.0.0",
     "mustache": "^2.3.0",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
@@ -45,6 +50,5 @@
     "yargs": "^11.0.0"
   },
   "dependencies": {
-    "chai": "^4.1.2"
   }
 }
