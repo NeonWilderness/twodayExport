@@ -21,7 +21,7 @@ const hint = () => {
     .pipe($.jshint(Object.assign(
       {}, 
       require('./.jshintrc'),
-      { esversion: 6, browser: false, node: true }
+      { esversion: 6, browser: false, latedef: false, node: true }
     ))) // ES6 (target is Node)
     .pipe($.jshint.reporter('jshint-stylish', { beep: false }));
 };
@@ -71,15 +71,14 @@ const bump = (bumpVersion = true) => {
     console.log('Setting new release date only...');
   }
 
-  let shortVersion = newVersion.substr(0, newVersion.lastIndexOf('.'));
   return gulp.src(['./version.json'])
-    .pipe($.replace('{{versionID}}', `v${shortVersion.replace('.', '')}`))
-    .pipe($.replace('{{version}}', shortVersion))
+    .pipe($.replace('{{versionID}}', `v${newVersion.replace(/\./g, '')}`))
+    .pipe($.replace('{{version}}', newVersion))
     .pipe($.replace('{{date}}', releaseDate))
     .pipe(gulp.dest('dist'));
 }
 
-gulp.task('default', gulp.series(hint, build));
+gulp.task('default', build);
 gulp.task('bump', bump);
 gulp.task('hint', hint);
 gulp.task('release', (done) => { bump(false); done(); });

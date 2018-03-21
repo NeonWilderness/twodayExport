@@ -241,6 +241,10 @@
           document.getElementById('mMain').style.width = '100%';
           // sorts storyarray descending (newest to the top)
           stories.sort(function (a, b) { return Date.parse(b.date) - Date.parse(a.date); });
+          // save the oldest=first story-id to help filter niceurls
+          var oldestID = stories[stories.length - 1].id;
+          twodayExport.params.oldestIDLen = oldestID.length;
+          twodayExport.params.oldestIDVal = parseInt(oldestID);
           // crunch down the stories array to the requested number package (if so requested)
           if (twodayExport.params.selNumber) twodayExport.stories = stories.slice(twodayExport.params.sliceFrom(), twodayExport.params.sliceTo());
           return twodayExport.recursiveBody(0, twodayExport.stories);
@@ -263,8 +267,9 @@
       }
       if (xref.storyID.length > 0) {
         var story,
-          regNiceUrl = new RegExp('/stories/' + slug, 'gi'),
-          strStoryidUrl = '/stories/' + xref.storyID;
+          storyHref = twodayExport.params.siteStoriesHref + '/', // e.g. "neonwilderness.twoday.net/stories/"
+          regNiceUrl = new RegExp(storyHref + slug, 'gi'),
+          strStoryidUrl = storyHref + xref.storyID;
         // for each of the found references for the same slug: get the story's body and replace slug for storyid
         for (var i = 0, arr = xref.refIdx, len = arr.length; i < len; ++i) {
           story = twodayExport.stories[arr[i]];
@@ -332,11 +337,20 @@
       if (twodayExport.params.debugMode) console.log("End of assignNiceUrlsStoryID: #xrefs=", lenXrefs, "#IDs found=", found);
     },
 
+    // returns TRUE if basename is a niceurl
+    isNiceUrl: function(basename) {
+      if (basename.length === 0) return false;
+      if ($.isNumeric(basename))
+        return (basename.length < twodayExport.params.oldestIDLen &&
+          parseInt(basename) < twodayExport.params.oldestIDVal);
+      else return true;
+    },
+
     //- save all identified nice url cross references to other stories to a global xref array for later processing
     saveNiceUrlXrefs: function (story, index) {
       var match, niceUrl, i, l, xref;
       // find all internal story cross references in this story.body
-      $("<div>").html(story.body).find('a[href*="<% site.alias %>.twoday.net/stories/"]').each(function () {
+      $("<div>").html(story.body).find('a[href*="' + twodayExport.params.siteStoriesHref + '"]').each(function () {
         // extract the last part of the url
         match = this.href.match(/\/stories\/(.*)\/?/);
         if (match === null) return true;
@@ -345,7 +359,7 @@
         niceUrl = niceUrl.split('?')[0];  // eliminate query params
         niceUrl = niceUrl.split('/')[0];  // eliminate /main or /edit additions
         // if it is not a number (i.e. the plain Twoday storyID) but a real alphanumeric niceurl instead
-        if (niceUrl.length > 0 && !$.isNumeric(niceUrl)) {
+        if (twodayExport.isNiceUrl(niceUrl)) {
           // then check if this is the first xref for this niceurl
           if (typeof twodayExport.xrefs[niceUrl] === "undefined") {
             // yes, then put initial entry and index reference to the story where it occured
@@ -412,8 +426,8 @@
       body = body.replace(/http:\/\/static\.twoday\.net/gi, this.staticURL);
       body = body.replace(/https?:\/\/twoday\.net\/static/gi, this.staticURL);
       var siteRef = '<% site.href %>'.match(/https?:\/\/(.+)\//)[1],
-        siteReg = new RegExp('"\\/\\/' + siteRef, 'gi');
-      body = body.replace(siteReg, '"https://'+siteRef);
+        siteReg = new RegExp('"//' + siteRef, 'gi');
+      body = body.replace(siteReg, '"https://' + siteRef);
       return body;
     },
 
@@ -430,7 +444,10 @@
         story.body = twodayExport.sanitizeLinks(story.body);
         if (twodayExport.params.videowidth > 0) story.body = twodayExport.transformVideoloadRefs(story.body);
         if (twodayExport.params.autoLink) story.body = twodayExport.autoLinker.link(story.body);
-        if (slug.length === 0) slug = (story.title.length ? twodayExport.legitSlugChars(story.title) : 'notitle');
+        if (slug.length === 0) { 
+          slug = twodayExport.legitSlugChars(story.title);
+          if (slug.length === 0) slug = 'notitle';
+        }
         story.basename = slug + "-" + story.id;
         story.allowcomments = Math.abs(!$admin.find("#discussions").prop("checked") - 1).toString();
         twodayExport.saveNiceUrlXrefs(story, currStoryIdx);
@@ -488,7 +505,7 @@
       commentBody: ">div:nth-child(3)|html",
       reply: ">.reply",
       extractDate: function (dateStr) {
-        return dateStr.split(" - ")[1];
+        return dateStr.split(" - ").pop();
       },
       anonymousAuthor: function ($item) { return ($item.find(">.commentDate").text().split(" - ")[0]); }
     },
@@ -570,10 +587,10 @@
         // img was not found: does user want to keep img tag?
         if (p.keepImg) {
           // yes, then just assume a jpg extension
-          imgName += '.jpg'; 
+          imgName += '.jpg';
           // and add the img to the url list
           story.images.push(imgName);
-          return '|'+imgName;
+          return '|' + imgName;
         } else return '';
       }
 
@@ -600,13 +617,13 @@
           // try to find the name/ext of the image
           var name = getFullImgName(attrSet.name || '');
           // not found and user does not want to keep the tag
-          if (name.length===0) return '';
+          if (name.length === 0) return '';
           // is it a deleted img that should be kept as img tag
-          if (name.charAt(0)==='|') {
+          if (name.charAt(0) === '|') {
             name = name.substr(1);
             if (attrSet.class)
               attrSet.class += ' notFound';
-            else  
+            else
               attrSet.class = 'notFound';
           }
           attrSet.fullName = p.staticImgUrl + name;
@@ -980,7 +997,8 @@
         newBlogUrl: $('#txtNewBlogUrl').val(),
         staticImgUrl: '<% staticURL %><% site.alias %>/images/',
         staticFileUrl: '<% staticURL %><% site.alias %>/files/',
-        wpMediaUrl: "",
+        wpMediaUrl: '',
+        siteStoriesHref: '<% site.url action="stories" %>'.substr('<% site.url %>'.indexOf('//') + 2),
         sliceFrom: function () { return (parseInt(this.fromNumber, 10) - 1); },
         sliceTo: function () { return (parseInt(this.maxNumber, 10) + this.sliceFrom()); },
         properDates: function () { return (this.selDate ? this.fromDate > 0 && this.toDate > 0 : true); },

@@ -11,6 +11,7 @@ const request = require('request-promise-native');
 const validFmTestcases = require('./checks/validFm');
 const validBodyTestcases = require('./checks/validBody');
 const validCommentsTestcases = require('./checks/validComments');
+const fixNiceUrls = require('./checks/fixNiceUrls');
 
 const readFrontmatter = (chunk) => {
   let fm = chunk.split('\n').reduce((all, line, index) => {
@@ -19,8 +20,12 @@ const readFrontmatter = (chunk) => {
     if (key.length) all[key] = parts.slice(1).join('');
     return all;
   }, {});
-  fm.id = fm.basename.split('-').pop();
-  console.log(`Reading basename: ${fm.basename}.`);
+  let i = fm.basename.lastIndexOf('-');
+  if (i >= 0) {
+    fm.slug = fm.basename.substr(0, i);
+    fm.id = fm.basename.substr(i + 1);
+  }
+  console.log(`Read basename: ${fm.basename}.`);
   return fm;
 };
 
@@ -80,19 +85,20 @@ if (!argv.blog) {
   return;
 }
 var blog = argv.blog.toLowerCase();
-let dir = `D:/Dokumente/Dev/twodayexport/clients/${blog}/`;
+var dir = (!!argv.dir ? path.resolve(process.cwd(), argv.dir, blog) : '.');
+console.log(`Using output directory: ${dir}.`);
+
 let file; // --file="seenia export vx" or undefined
 if (argv.file)
-  file = `${dir}${argv.file}.txt`;
+  file = `${dir}/${argv.file}.txt`;
 else {
   file = fs.readdirSync(dir).reduce((all, filename, index) => {
-    let [name, ext] = filename.split('.');
-    if (ext === 'txt') all = `${dir}${filename}`;
+    let ext = filename.split('.').pop();
+    if (ext === 'txt') all = `${dir}/${filename}`;
     return all;
   }, '');
 }
 
-if (!!argv.fixed) file = file.replace('.txt', '-f.txt');
 console.log(`Reading export file: ${file}.`);
 var stories = fs.readFileSync(file)
   .toString()
@@ -111,24 +117,29 @@ var stories = fs.readFileSync(file)
 
 var global = {
   blog,
-  regAlphaNumericStoryId: new RegExp('https?:\\/\\/' + blog + '\\.twoday\\.net\\/stories\\/[^0-9]+'),
-  regNumericStoryId: new RegExp('https?:\\/\\/' + blog + '\\.twoday\\.net\\/stories\\/[0-9]+[\\/"]', 'gi'),
-  regStaticResources: new RegExp('https?:\/\/static\.twoday\.net\/' + blog + '\/(files|images)\/'),
-  regStaticImages: new RegExp('https?:\/\/static\.twoday\.net\/' + blog + '\/images\/'),
-  regTopicLinks: new RegExp('https?:\\/\\/' + blog + '\\.twoday\\.net\\/topics\\/.*?[\\/"]', 'gi'),
-  storyIDs: getSortedStoryIDs()
+  dir,
+  regAlphaNumericStoryId: new RegExp('https?://' + blog + '\\.twoday\\.net/stories/[^0-9]+'),
+  regNumericStoryId: new RegExp('https?://' + blog + '\\.twoday\\.net/stories/[0-9]+[/"]', 'gi'),
+  regStaticResources: new RegExp('https?://static\\.twoday\\.net/' + blog + '/(files|images)/'),
+  regStaticImages: new RegExp('https?://static\\.twoday\\.net/' + blog + '/images/'),
+  regTopicLinks: new RegExp('https?://' + blog + '\\.twoday\\.net/topics/.*?[/"]', 'gi'),
+  storyIDs: getSortedStoryIDs(),
+  stories,
+  xrefs: {}
 };
-  
+
 describe(`validating ${blog} stories...`, () => {
 
-  before(async () => {
-    global.topics = await getTopics(blog);
-  });
+  before(async () => {  // jshint ignore:line
+    global.topics = await getTopics(blog); // jshint ignore:line
+  }); // jshint ignore:line
 
   stories.forEach((story) => {
     validFmTestcases(story, global);
     validBodyTestcases(story, global);
     validCommentsTestcases(story, global);
   });
+
+  fixNiceUrls(global);
 
 });

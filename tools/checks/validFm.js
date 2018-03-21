@@ -10,7 +10,7 @@ module.exports = (story, global) => {
 
     it('should have a basename', () => {
       assert.notEqual(story.fm.basename.length, 0, 'missing basename');
-      if (story.fm.title.length === 0)
+      if (story.fm.title.length === 0 && story.fm.status !== 'draft')
         assert.equal(story.fm.basename.split('-')[0], 'notitle', 'unmatching basename on empty title');
     });
 

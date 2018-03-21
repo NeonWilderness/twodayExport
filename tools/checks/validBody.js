@@ -20,15 +20,32 @@ module.exports = (story, global) => {
     });
 
     it('should not be empty', () => {
-      assert.notEqual(story.fm.title.length + story.body.length, 0, 'empty story body');
+      if (story.fm.status !== 'draft')
+        assert.notEqual(story.fm.title.length + story.body.length, 0, 'empty story body');
     });
 
     it('should have valid link urls', function () {
       $('a').each(function (index, el) {
-        var link = $(el).attr('href');
-        assert.isTrue(isUri.isValid(link), `invalid link url: ${link}`);
-        assert.notMatch(link, global.regAlphaNumericStoryId,
-          `link to non-numeric story id: ${link}`);
+        var $el = $(el);
+        var link = $el.attr('href') || '';
+        if (link.substr(0, 1) === '#' ||
+          /[äüöß]/.test(link) ||
+          el.attribs.name ||
+          link.substr(0, 2) === '//' ||
+          $el.hasClass('tip') ||
+          $el.hasClass('googledrive') ||
+          $el.hasClass('close-reveal-modal')) return true;
+        assert.isTrue(isUri.isValid(link), `invalid link url: ${link || 'no href!'}`);
+        if (link.match(global.regAlphaNumericStoryId)) {
+          var baseurl = link.match(/\/stories\/(.*)\/?/), basename;
+          if (baseurl) {
+            basename = baseurl[1].split('#')[0]; // eliminate comment-ID
+            basename = basename.split('?')[0];   // eliminate query params
+            basename = basename.split('/')[0];   // eliminate /main or /edit additions
+            global.xrefs[basename] = true;
+          }
+          //assert.notMatch(link, global.regAlphaNumericStoryId, `link to non-numeric story id: ${link}`);
+        }
       });
     });
 
