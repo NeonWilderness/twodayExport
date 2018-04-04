@@ -428,6 +428,7 @@
       var siteRef = '<% site.href %>'.match(/https?:\/\/(.+)\//)[1],
         siteReg = new RegExp('"//' + siteRef, 'gi');
       body = body.replace(siteReg, '"https://' + siteRef);
+      body = body.replace(new RegExp('//+"'), '/');
       return body;
     },
 
@@ -450,14 +451,14 @@
         }
         story.basename = slug + "-" + story.id;
         story.allowcomments = Math.abs(!$admin.find("#discussions").prop("checked") - 1).toString();
-        twodayExport.saveNiceUrlXrefs(story, currStoryIdx);
+        //twodayExport.saveNiceUrlXrefs(story, currStoryIdx);
         twodayExport.musStatusScreen.incValue("styRead");
         currStoryIdx += 1;
         if (currStoryIdx < stories.length) {
           document.getElementById('mStories').style.width = currStoryIdx / stories.length * 100 + '%';
           setTimeout(function () { return twodayExport.recursiveBody(currStoryIdx, stories); }, twodayExport.timeoutBody);
         } else {
-          if (twodayExport.params.debugMode) console.log('>>> xrefs:', JSON.stringify(twodayExport.xrefs, null, 2));
+          //if (twodayExport.params.debugMode) console.log('>>> xrefs:', JSON.stringify(twodayExport.xrefs, null, 2));
           document.getElementById('mStories').style.width = '100%';
           return twodayExport.recursiveComments(0, stories);
         }
@@ -818,6 +819,9 @@
         // render important Twoday macros and replace static Twoday url if requested
         story.body = processAllTwodayMacros(story.body, $content);
 
+        // save nice urls for later replacement
+        twodayExport.saveNiceUrlXrefs(story, currStoryIdx);
+
         //--------- save processed comments/replies
         story.comments = [];
         var $comments = $content.find(s.comments);
@@ -843,6 +847,7 @@
           setTimeout(function () { return twodayExport.recursiveComments(currStoryIdx, stories); }, twodayExport.timeoutComments);
         } else {
           document.getElementById('mComments').style.width = '100%';
+          if (twodayExport.params.debugMode) console.log('>>> xrefs:', JSON.stringify(twodayExport.xrefs, null, 2));
           twodayExport.assignNiceUrlsStoryID();
           var xrefKeys = Object.keys(twodayExport.xrefs);
           if (xrefKeys.length > 0) {
