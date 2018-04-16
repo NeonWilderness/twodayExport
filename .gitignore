@@ -2,6 +2,7 @@
 .idea
 .vscode
 *.log
+*.php
 node_modules
 process.md
 todo.md

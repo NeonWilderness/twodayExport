@@ -18,10 +18,5 @@
     "search": "\\u2028+",
     "flags": "gi",
     "replace": ""
-  },
-  {
-    "search": "URL: https?://{blog}\\.twoday\\.net",
-    "flags": "g",
-    "replace": "URL: https://{blog}.wordpress.com"
   }
 ]

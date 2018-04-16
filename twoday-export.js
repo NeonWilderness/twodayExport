@@ -25,6 +25,8 @@
     musSelectionScreen: {
       alias: '<% site.alias %>',
       blog: '<% site.href %>',
+      siteId: '<% site.id %>',
+      user: '<% username %>',
       version: '{{scriptversion}}', // will be set during dev/build stage
       categories: []
     },
@@ -260,23 +262,27 @@
 
     //- converts niceurl story references back to a plain story-id reference (so that they can later be refactored to wordpress urls by means of the import plugin)
     convertNiceUrlToStoryID: function (slug, xref) { // example: slug="videodemo", xref={ storyID: "12345678", refIdx: [ 5, 20, 49 ] }
-      // do the replacement only if there is a valid storyID
-      if (!('storyID' in xref)) {
-        console.log('>>> Missing storyID field in: ' + slug + ' - xref-Object: ' + JSON.stringify(xref));
-        return;
-      }
-      if (xref.storyID.length > 0) {
-        var story,
-          storyHref = twodayExport.params.siteStoriesHref + '/', // e.g. "neonwilderness.twoday.net/stories/"
-          regNiceUrl = new RegExp(storyHref + slug, 'gi'),
-          strStoryidUrl = storyHref + xref.storyID;
-        // for each of the found references for the same slug: get the story's body and replace slug for storyid
-        for (var i = 0, arr = xref.refIdx, len = arr.length; i < len; ++i) {
-          story = twodayExport.stories[arr[i]];
-          story.body = story.body.replace(regNiceUrl, strStoryidUrl);
+      try {
+        // do the replacement only if there is a valid storyID
+        if (!('storyID' in xref)) {
+          console.log('>>> Missing storyID field in: ' + slug + ' - xref-Object: ' + JSON.stringify(xref));
+          return;
         }
+        if (xref.storyID && xref.storyID.length > 0) {
+          var story,
+            storyHref = twodayExport.params.siteStoriesHref + '/', // e.g. "neonwilderness.twoday.net/stories/"
+            regNiceUrl = new RegExp(storyHref + slug, 'gi'),
+            strStoryidUrl = storyHref + xref.storyID;
+          // for each of the found references for the same slug: get the story's body and replace slug for storyid
+          for (var i = 0, arr = xref.refIdx, len = arr.length; i < len; ++i) {
+            story = twodayExport.stories[arr[i]];
+            story.body = story.body.replace(regNiceUrl, strStoryidUrl);
+          }
+        }
+        if (twodayExport.params.debugMode) { console.log("convertNiceUrlToStoryID: slug=" + slug + ", storyID=" + xref.storyID + ", #stories=" + xref.refIdx.length); }
+      } catch(err) {
+        console.log('>>>Error: '+err+', slug: '+slug+', xref:', xref);
       }
-      if (twodayExport.params.debugMode) { console.log("convertNiceUrlToStoryID: slug=" + slug + ", storyID=" + xref.storyID + ", #stories=" + xref.refIdx.length); }
     },
 
     //- find the remaining storyIDs of stories not included in this export package, i.e. explicitely read the story via ajax
@@ -390,6 +396,23 @@
         .replace(/ +/g, '-');
     },
 
+    // converts all googledrive-class elements to plain img sources
+    transformGDRefs: function (body) {
+      // early exit if no googledrive usage in this story
+      if (body.indexOf('googledrive') < 0) return body;
+      // make body a jquery element
+      var $body = $("<div>").html(body);
+      // search and process all googledrive refs
+      $body.find('.googledrive').gdimages().init({
+        gdDomain: 'http://www.s522667522.online.de',
+        gdRootFolder: '/public',
+        gdSubFolder: 'images',
+        addClass: 'neonimg th',
+        titleContent: 'keep'
+      });
+      return $body.html();
+    },
+
     // converts all html5video-class element to real iframes for target plattform
     transformVideoloadRefs: function (body) {
       // early exit if no videoload usage
@@ -429,6 +452,8 @@
         siteReg = new RegExp('"//' + siteRef, 'gi');
       body = body.replace(siteReg, '"https://' + siteRef);
       body = body.replace(new RegExp('//+"'), '/');
+      body = body.replace(new RegExp('\\n-{8}\\n', 'g'), '\n|--------\n');
+      body = body.replace(new RegExp('\\n-{5}\\n', 'g'), '\n|-----\n');
       return body;
     },
 
@@ -443,22 +468,20 @@
         story.body = $admin.find(".formText").text();
         if (twodayExport.params.debugMode) console.log("Read source of story: ", storyEditUrl);
         story.body = twodayExport.sanitizeLinks(story.body);
+        if (twodayExport.params.googleDrive) story.body = twodayExport.transformGDRefs(story.body);
         if (twodayExport.params.videowidth > 0) story.body = twodayExport.transformVideoloadRefs(story.body);
-        if (twodayExport.params.autoLink) story.body = twodayExport.autoLinker.link(story.body);
         if (slug.length === 0) { 
           slug = twodayExport.legitSlugChars(story.title);
           if (slug.length === 0) slug = 'notitle';
         }
         story.basename = slug + "-" + story.id;
         story.allowcomments = Math.abs(!$admin.find("#discussions").prop("checked") - 1).toString();
-        //twodayExport.saveNiceUrlXrefs(story, currStoryIdx);
         twodayExport.musStatusScreen.incValue("styRead");
         currStoryIdx += 1;
         if (currStoryIdx < stories.length) {
           document.getElementById('mStories').style.width = currStoryIdx / stories.length * 100 + '%';
           setTimeout(function () { return twodayExport.recursiveBody(currStoryIdx, stories); }, twodayExport.timeoutBody);
         } else {
-          //if (twodayExport.params.debugMode) console.log('>>> xrefs:', JSON.stringify(twodayExport.xrefs, null, 2));
           document.getElementById('mStories').style.width = '100%';
           return twodayExport.recursiveComments(0, stories);
         }
@@ -819,6 +842,9 @@
         // render important Twoday macros and replace static Twoday url if requested
         story.body = processAllTwodayMacros(story.body, $content);
 
+        // run autolinker if requested by user
+        if (twodayExport.params.autoLink) story.body = twodayExport.autoLinker.link(story.body);
+
         // save nice urls for later replacement
         twodayExport.saveNiceUrlXrefs(story, currStoryIdx);
 
@@ -977,6 +1003,7 @@
         keepImg: $('#chkKeepImg').prop('checked'),
         typeReply: ($('#chkWrdPress').prop('checked') ? 'COMMENT' : 'REPLY'),
         debugMode: $('#chkDebug').prop('checked'),
+        googleDrive: $('#chkGoogleDrive').prop('checked'),
         videowidth: parseInt($('#txtVideoWidth').val()),
         timeouts: $('#txtTimeouts').val(),
         selDate: ($('input[name=selDate]:checked').val() === 'dates'),
@@ -1093,12 +1120,22 @@
       });
     },
 
-    //- displays export selection screen after having loaded font awesome css, chosen.js and pickadate.js script
+    // check if gdImages.js needs to be loaded
+    needsGD: function () {
+      var siteId = twodayExport.musSelectionScreen.siteId;
+      return (siteId == '32208' || siteId == '697892');
+    },
+
+    //- displays export selection screen after having loaded font awesome css, gdimages, videoload, autolinker, chosen.js and pickadate.js script
     showSelectionScreen: function () {
       yepnope([
         {
           test: twodayExport.isFontAwesomePresent(),
           nope: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'
+        },
+        {
+          test: (twodayExport.needsGD() && !$.fn.gdimages),
+          yep: 'https://static.twoday.net/cdn/files/gdimages-min-js.js'
         },
         {
           test: ('videoload' in window),
@@ -1127,6 +1164,7 @@
                 twodayExport.musSelectionScreen.categories.push($(this).text());
               });
               twodayExport.renderScreen('musSelectionScreen');
+              if (twodayExport.needsGD()) $('#pGoogleDrive').css('display', 'block');
               $(".chooseCategory").chosen({ width: '100%' });
               yepnope({
                 test: (typeof $.fn.pickadate === 'undefined'),
