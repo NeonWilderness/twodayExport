@@ -1,6 +1,6 @@
 {
   "name": "twodayexport",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Blog Export on steroids",
   "main": "twoday-export.html",
   "scripts": {
@@ -14,17 +14,18 @@
     "pdf": "node ./tools/resHtml2Pdf --blog=eugenefaust --dir=../clients/",
     "release": "gulp4 release",
     "resources": "node ./tools/resResources --blog=eugenefaust --dir=../clients/",
-    "split": "node ./tools/resSplitFile --blog=eugenefaust --dir=../clients/",
-    "slice": "node ./tools/resSplitWP --blog=eugenefaust --dir=../clients/",
+    "split:td": "node ./tools/resSplitFile --blog=eugenefaust --dir=../clients/",
+    "split:wp": "node ./tools/resSplitWP --blog=eugenefaust --dir=../clients/",
     "static": "node ./tools/resStaticRefs --blog=eugenefaust",
     "download": "node ./tools/resDownload --blog=eugenefaust --dir=../clients/ --download",
     "test": "mocha ./tools/checkExport --blog=eugenefaust --dir=../clients/ --reporter progress --require mocha-clean",
     "missing": "node ./tools/resMissingIDs --blog=eugenefaust --dir=../clients/",
     "wp": "node ./tools/resWordpress --blog=eugenefaust --dir=../clients/ --notfound=list",
-    "wpcat": "node ./tools/resWPCat --blog=omega",
-    "wpdelpost": "node ./tools/resWPDelete --blog=eugenefaust",
-    "wpdeltrash": "node ./tools/resWPDelete --blog=eugenefaust --trash",
-    "wpfix": "node ./tools/resWPFixLinks --blog=eugenefaust --dir=../clients/ --noupdate"
+    "wpcat": "node ./tools/resWPCat --blog=eugenefaust",
+    "wpdel:post": "node ./tools/resWPDelete --blog=eugenefaust",
+    "wpdel:trash": "node ./tools/resWPDelete --blog=eugenefaust --trash",
+    "wpfix:links": "node ./tools/resWPFixLinks --blog=eugenefaust --dir=../clients/ --noupdate",
+    "wpfix:img": "node ./tools/resWPFixImg --blog=eugenefaust --noupdate"
   },
   "author": "NeonWilderness",
   "license": "MIT",

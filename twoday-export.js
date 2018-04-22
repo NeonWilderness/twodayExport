@@ -821,6 +821,7 @@
         var $content = $(data).find('#content');
 
         if (twodayExport.params.debugMode) console.log('Read rendered story: ', storyMainUrl);
+
         //--------- find all static images and remember their filenames (once for multiple references)
         var imgUrl, imgFile;
         story.images = [];
@@ -847,6 +848,11 @@
 
         // save nice urls for later replacement
         twodayExport.saveNiceUrlXrefs(story, currStoryIdx);
+
+        //--------- save story.reads counter
+        if (twodayExport.params.readCount) {
+          story.body += '\n[#' + ($content.find('.story').attr('data-reads') || '0') + ']';
+        }
 
         //--------- save processed comments/replies
         story.comments = [];
@@ -1001,6 +1007,7 @@
         autoLink: $('#chkAutolink').prop('checked'),
         delGuest: $('#chkDelGuest').prop('checked'),
         keepImg: $('#chkKeepImg').prop('checked'),
+        readCount: $('#chkReadCount').prop('checked'),
         typeReply: ($('#chkWrdPress').prop('checked') ? 'COMMENT' : 'REPLY'),
         debugMode: $('#chkDebug').prop('checked'),
         googleDrive: $('#chkGoogleDrive').prop('checked'),
