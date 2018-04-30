@@ -5,7 +5,7 @@
     "replace": "http://"
   },
   {
-    "search": "target=\"blank\"",
+    "search": "target=\\\"blank\\\"",
     "flags": "gi",
     "replace": "target=\"_blank\""
   },

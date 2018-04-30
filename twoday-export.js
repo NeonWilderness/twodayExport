@@ -401,15 +401,25 @@
       // early exit if no googledrive usage in this story
       if (body.indexOf('googledrive') < 0) return body;
       // make body a jquery element
-      var $body = $("<div>").html(body);
+      var $body = $("<div>").html(body), gdOptions;
       // search and process all googledrive refs
-      $body.find('.googledrive').gdimages().init({
-        gdDomain: 'http://www.s522667522.online.de',
-        gdRootFolder: '/public',
-        gdSubFolder: 'images',
-        addClass: 'neonimg th',
-        titleContent: 'keep'
-      });
+      if (twodayExport.musSelectionScreen.siteId == '50425') // doktorp
+        gdOptions = {
+          gdDomain: 'https://static.twoday.net',
+          gdRootFolder: '/doktorp',
+          gdSubFolder: 'images',
+          addClass: 'transformed',
+          titleContent: 'keep'
+        };
+      else // NW
+        gdOptions = {
+          gdDomain: 'http://www.s522667522.online.de',
+          gdRootFolder: '/public',
+          gdSubFolder: 'images',
+          addClass: 'neonimg th',
+          titleContent: 'keep'
+        };
+      $body.find('.googledrive').gdimages().init(gdOptions);
       return $body.html();
     },
 
@@ -898,7 +908,8 @@
 
     //- render a single story including all comments and replies as a mustache partial and update total output length
     renderStory: function (story) {
-      var output = Mustache.render(this.musStory, story, this.musPartials);
+      var extStory = Object.assign({}, story, {url: story.url || this.musSelectionScreen.blog});
+      var output = Mustache.render(this.musStory, extStory, this.musPartials);
       this.filelen += output.length;
       if (twodayExport.params.debugMode) console.log('Render export for story: ', story.basename, 'FileLen: ', this.filelen);
       return output;
@@ -1130,7 +1141,7 @@
     // check if gdImages.js needs to be loaded
     needsGD: function () {
       var siteId = twodayExport.musSelectionScreen.siteId;
-      return (siteId == '32208' || siteId == '697892');
+      return (siteId == '32208' || siteId == '697892' || siteId == '50425');
     },
 
     //- displays export selection screen after having loaded font awesome css, gdimages, videoload, autolinker, chosen.js and pickadate.js script

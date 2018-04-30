@@ -17,7 +17,7 @@ const readFrontmatter = (chunk) => {
   let fm = chunk.split('\n').reduce((all, line, index) => {
     let parts = line.split(': ');
     let key = parts[0].toLowerCase().replace(/\s/g, '');
-    if (key.length) all[key] = parts.slice(1).join('');
+    if (key.length) all[key] = parts.slice(1).join(': ');
     return all;
   }, {});
   let i = fm.basename.lastIndexOf('-');
@@ -43,7 +43,7 @@ const readComments = (chunks) => {
       switch (parts[0]) {
         case 'COMMENT:':
         case 'REPLY:': comment.type = parts[0].charAt(0); break;
-        default: comment[parts[0].toLowerCase()] = parts.slice(1).join('');
+        default: comment[parts[0].toLowerCase()] = parts.slice(1).join(': ');
       }
     }
     comment.body = lines.slice(4).join('\n');
