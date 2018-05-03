@@ -44,8 +44,9 @@ module.exports = (story, global) => {
             basename = basename.split('/')[0];   // eliminate /main or /edit additions
             global.xrefs[basename] = true;
           }
-          //assert.notMatch(link, global.regAlphaNumericStoryId, `link to non-numeric story id: ${link}`);
         }
+        var monthLink = link.match(global.regMonthLink);
+        if (monthLink) global.monthLinks[monthLink[1]] = true;
       });
     });
 

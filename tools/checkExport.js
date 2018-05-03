@@ -118,7 +118,9 @@ var stories = fs.readFileSync(file)
 var global = {
   blog,
   dir,
+  monthLinks: {},
   regAlphaNumericStoryId: new RegExp('https?://' + blog + '\\.twoday\\.net/stories/[^0-9]+'),
+  regMonthLink: new RegExp('https?://' + blog + '\\.twoday\\.net/month\\?date=(\\d{6})', 'i'),
   regNumericStoryId: new RegExp('https?://' + blog + '\\.twoday\\.net/stories/[0-9]+[/"]', 'gi'),
   regStaticResources: new RegExp('https?://static\\.twoday\\.net/' + blog + '/(files|images)/'),
   regStaticImages: new RegExp('https?://static\\.twoday\\.net/' + blog + '/images/'),
