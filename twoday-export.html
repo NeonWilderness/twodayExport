@@ -102,8 +102,8 @@ a.tip { cursor: help; border-radius: 50%; background-color: #eee; width: 18px; d
             <input type="checkbox" id="chkWrdPress"><label for="chkWrdPress">Für wordpress.com exportieren (fortlaufende Kommentare)</label><a class="tip" title="Wordpress.com erlaubt für Free-User keine Installation eigener Plugins. Daher können Kommentare nur fortlaufend, d.h. ohne strukturelle Einrückungen (Twoday: Antwort auf Kommentar) eingespielt werden."><i class="fa fa-question"></i></a><br>
             <input type="checkbox" id="chkDebug"><label for="chkDebug">Testphase: Debug-Nachrichten über Console ausgeben</label><br>
             <div id="pGoogleDrive" style="display:none"><input type="checkbox" id="chkGoogleDrive"><label for="chkGoogleDrive">googledrive-Ressourcen auflösen (gdImages-Anwender)</label></div>
-            <label for="txtVideoWidth">Videobreite (Videoload-Anwender)<input type="text" id="txtVideoWidth" value="600">Pixel (0=keine iframe-Konvertierung)</label><br>
-            <label for="txtTimeouts">Timeout-Grenzen (in ms)<input type="text" id="txtTimeouts" placeholder="500/5/5">(keine Eingabe=Standard)<a class="tip" style="margin-left:1rem" title="Nur für erfahrene Benutzer: Wartezeiten zwischen Serverzugriffen für Stories/Body/Comment; einzugeben in der Form nnnn/nnnn/nnnn, wobei nnnn=Millisekundenzahl"><i class="fa fa-question"></i></a></label>
+            <label for="txtVideoWidth">Videobreite (Videoload-Anwender)<input type="text" id="txtVideoWidth" value="500">Pixel (0=keine iframe-Konvertierung)</label><br>
+            <label for="txtTimeouts">Timeout-Grenzen (in ms)<input type="text" id="txtTimeouts" placeholder="200/5/5">(keine Eingabe=Standard)<a class="tip" style="margin-left:1rem" title="Nur für erfahrene Benutzer: Wartezeiten zwischen Serverzugriffen für Stories/Body/Comment; einzugeben in der Form nnnn/nnnn/nnnn, wobei nnnn=Millisekundenzahl"><i class="fa fa-question"></i></a></label>
         </fieldset>
     </div>
     <div id="selMessage" style="display:none"></div>
@@ -128,8 +128,8 @@ a.tip { cursor: help; border-radius: 50%; background-color: #eee; width: 18px; d
             </select>
         </fieldset>
         <fieldset><legend><i class="fa fa-list-ol"></i>Anzahl</legend>
-            <input type="radio" name="selNumber" value="all" id="radNumberAll"><label for="radNumberAll">Alle</label>
-            <input type="radio" name="selNumber" value="max" id="radNumberMax" checked="checked"><label for="radNumberMax">Maximal<input type="text" id="txtNumberMax" value="10">Beiträge,&nbsp;</label> <label for="txtNumberFrom">Start ab Beitrag<input type="text" id="txtNumberFrom" value="1"></label>
+            <input type="radio" name="selNumber" value="all" id="radNumberAll" checked="checked"><label for="radNumberAll">Alle</label>
+            <input type="radio" name="selNumber" value="max" id="radNumberMax"><label for="radNumberMax">Maximal<input type="text" id="txtNumberMax" value="10">Beiträge,&nbsp;</label> <label for="txtNumberFrom">Start ab Beitrag<input type="text" id="txtNumberFrom" value="1"></label>
         </fieldset>
         <fieldset><legend><i class="fa fa-image"></i>Bildadressen</legend>
             <input type="checkbox" id="chkUrlChange"><label for="chkUrlChange" style="margin-right:0">Twoday-Bild-URLs ändern auf</label>

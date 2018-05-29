@@ -65,7 +65,8 @@
       incValue: function (id, cnt) {
         var add = (typeof cnt === "undefined" ? 1 : cnt);
         this[id] += add;
-        document.getElementById(id).innerText = this[id];
+        var el = document.getElementById(id);
+        if (el) el.innerText = this[id]; else console.log('ID '+id+' not found!');
       },
       startTime: null,
       timeUsed: function () {
@@ -437,7 +438,7 @@
         var widthClass = item.className.match(/width-[0-9]+/);
         var newWidth = 'width-' + twodayExport.params.videowidth;
         if (widthClass) {
-          item.className.replace(widthClass[0], newWidth);
+          item.className = item.className.replace(widthClass[0], newWidth);
         } else {
           item.className += ' ' + newWidth;
         }
@@ -464,6 +465,8 @@
       body = body.replace(new RegExp('//+"'), '/');
       body = body.replace(new RegExp('\\n-{8}\\n', 'g'), '\n|--------\n');
       body = body.replace(new RegExp('\\n-{5}\\n', 'g'), '\n|-----\n');
+      if (this.params.siteId === 53472) // kunstbetrieb
+        body = '<div style="width:500px">'+body+'</div>'; // ugly hard code to limit width
       return body;
     },
 
@@ -642,7 +645,7 @@
 
       // macro: image name="name" align="align" border="border" class="class" height="height" linkto="linkto" href="linkto" width="width"
       function imageMacro(attrSet) {
-        var template = '{{#linkto}}<a{{&target}} href="{{&linkto}}">{{/linkto}}<img src="{{&fullName}}"{{&class}}{{&align}}{{&width}}{{&height}}{{&border}}>{{#linkto}}</a>{{/linkto}}';
+        var template = '{{#linkto}}<a{{&target}} href="{{&linkto}}">{{/linkto}}<img src="{{&fullName}}" alt="{{&name}}"{{&class}}{{&align}}{{&width}}{{&height}}{{&border}}>{{#linkto}}</a>{{/linkto}}';
         var sanitize = function (prop, quote) {
           if (attrSet[prop])
             attrSet[prop] = ' ' + prop + '=' + (quote ? '"' + attrSet[prop] + '"' : attrSet.prop);
@@ -668,6 +671,8 @@
         sanitize('height', true);
         if (attrSet.href) attrSet.linkto = attrSet.href;
         sanitize('target', true);
+        if (p.siteId === 53472) // kunstbetrieb
+          attrSet.width = (story.images.length>1 ? '248' : '500'); // kunstbetrieb special
         sanitize('width', true);
         return Mustache.render(template, attrSet);
       }
@@ -756,7 +761,7 @@
       }
 
       function processTwodayMacro(body, $content, macroName, callback) {
-        var reg = new RegExp('<\\%\\s*' + macroName + '\\s.*\\s*%>', 'gi');
+        var reg = new RegExp('<\\%\\s*' + macroName + '\\s.*?\\s*%>', 'gi');
         var macros = body.match(reg);
         if (macros) macros.map(function (macro, index) {
           var subs = splitMacroParams(macro.substr(2, macro.length - 4).trim());
@@ -838,8 +843,9 @@
         $content.find('img').each(function () {
           imgUrl = this.src || '';
           if (imgUrl.match(p.regStaticImg)) {
+            imgFile = imgUrl.substr(imgUrl.lastIndexOf('/') + 1);
             // eliminates the "_small"-suffix for thumbnail/popup-images
-            imgFile = imgUrl.substr(imgUrl.lastIndexOf('/') + 1).replace('_small.', '.');
+            if (p.siteId !== 53472) imgFile = imgFile.replace('_small.', '.');
             if (story.images.indexOf(imgFile) < 0) story.images.push(imgFile);
           }
         });
@@ -1087,6 +1093,7 @@
         selParams.wpMediaUrl = selParams.newBlogUrl;
       }
       //----- put validated params into the object's top level
+      selParams.siteId = parseInt(this.musSelectionScreen.siteId);
       this.params = selParams;
       //----- we're good to go: now deactivate actionButtons
       $('#btnIntro, .btnContainer .actionButton').off('click');
