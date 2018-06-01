@@ -18,5 +18,10 @@
     "search": "\\u2028+",
     "flags": "gi",
     "replace": ""
+  },
+  {
+    "search": "//+\\\"",
+    "flags": "gi",
+    "replace": "/\""
   }
 ]
