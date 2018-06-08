@@ -2,9 +2,9 @@
   "packages": [
     {
       "name": "twodayExport",
-      "url": "https://rawgit.com/NeonWilderness/twodayExport/master/layouts/twodayExport-v130.zip",
-      "version": "1.3.0",
-      "released": "22.04.2018"
+      "url": "https://rawgit.com/NeonWilderness/twodayExport/master/layouts/twodayExport-v140.zip",
+      "version": "1.4.0",
+      "released": "08.06.2018"
     },
     {
       "name": "N/A"
