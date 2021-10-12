@@ -1,7 +1,8 @@
 'use strict';
 
+import color from 'ansi-colors';
 import fs from 'fs';
-import gulp from 'gulp4';
+import gulp from 'gulp';
 import plugins from 'gulp-load-plugins';
 import semver from 'semver';
 import yargs from 'yargs';
@@ -11,7 +12,7 @@ const $ = plugins();
 
 // Check for --production flag
 const PRODUCTION = !!(yargs.argv.production);
-if (PRODUCTION) console.log($.util.colors.inverse.cyan('--- Production version in progress ---'));
+if (PRODUCTION) console.log(color.inverse.cyan('--- Production version in progress ---'));
 
 const hint = () => {
   gulp.src('./twoday-export.js')

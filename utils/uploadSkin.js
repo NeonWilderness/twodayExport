@@ -1,40 +1,38 @@
 /**
  * uploadSkin: uploads/updates a Twoday skin
  * =========================================
- * 
+ *
  */
+const { argv } = require('yargs');
 const fs = require('fs');
 const path = require('path');
-const { loginTwoday } = require('./_login');
-const getMemberships = require('./_getMemberships');
-const updateSkin = require('./_updateSkin');
-const argv = require('yargs').argv;
+const pkg = require('../package.json');
+const Twoday = require('@neonwilderness/twoday');
 
-/**
- * Request-Promise sequence to update one skin
- * @param story object
- *      name    string skin name, e.g. site.cdnSettings
- *      content string skin content
- */
-if (!argv.blog) {
-  console.log('Blogname must be specified with --blog=blogname or -b blogname.');
-  return;
+require('dotenv-safe').config();
+
+if (!argv.alias) {
+  console.log('Blog alias must be specified with --alias=blogname');
+  process.exit(1);
 }
-let blog = argv.blog.toLowerCase();
-loginTwoday()
-  .then( () => {
-    console.log('Successfully logged into Twoday. Checking Memberships...');
-    return getMemberships();
-  })
-  .then( (adminBlogs) => {
-    if (adminBlogs.indexOf(blog)<0) throw new Error('Blog not found or authorization failed.');
-    console.log(`${blog} blog is authorized.`);
-    let exportSkin = fs.readFileSync(path.resolve(process.cwd(), './dist/twoday-export.html'), 'utf-8');
-    return updateSkin( blog, {
-      name: 'Site.twodayExport',
-      content: exportSkin
+const alias = argv.alias.toLowerCase();
+
+if (!argv.platform) {
+  console.log('Target platform must be specified with --platform=dev|prod');
+  process.exit(1);
+}
+const platform = argv.platform.toLowerCase();
+
+const td = new Twoday(platform);
+td.login()
+  .then(() => td.useLayout(alias, 'export'))
+  .then(() =>
+    td.updateSkin(alias, 'Site.twodayExport', {
+      title: 'Site.twodayExport',
+      description: `Twoday Blog-Export (Version ${pkg.version})`,
+      skin: fs.readFileSync(path.resolve(process.cwd(), './dist/twoday-export.html')).toString()
     })
-  })
-  .catch(function (err) {
-    console.log('Update ***failed*** for blog:', blog, 'with Error', err);
+  )
+  .catch(err => {
+    console.log(`Export skin update failed for alias "${alias}" --> ${err}`);
   });

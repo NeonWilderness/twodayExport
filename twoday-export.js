@@ -414,7 +414,7 @@
         };
       else // NW
         gdOptions = {
-          gdDomain: 'http://www.s522667522.online.de',
+          gdDomain: 'https://neonwilderness.de',
           gdRootFolder: '/public',
           gdSubFolder: 'images',
           addClass: 'neonimg th',
@@ -457,11 +457,8 @@
     staticURL: 'https://static.twoday.net',
 
     sanitizeLinks: function (body) {
-      body = body.replace(/http:\/\/static\.twoday\.net/gi, this.staticURL);
-      body = body.replace(/https?:\/\/twoday\.net\/static/gi, this.staticURL);
-      var siteRef = '<% site.href %>'.match(/https?:\/\/(.+)\//)[1],
-        siteReg = new RegExp('"//' + siteRef, 'gi');
-      body = body.replace(siteReg, '"https://' + siteRef);
+      body = body.replace(/((http|https):\/\/)?static\.twoday\.net/gi, this.staticURL);
+      body = body.replace(/((http|https):\/\/)?twoday\.net\/static/gi, this.staticURL);
       body = body.replace(new RegExp('//+"'), '/');
       body = body.replace(new RegExp('\\n-{8}\\n', 'g'), '\n|--------\n');
       body = body.replace(new RegExp('\\n-{5}\\n', 'g'), '\n|-----\n');
@@ -1167,8 +1164,8 @@
           nope: 'https://static.twoday.net/cdn/files/videoload2-export-min-js.js'
         },
         {
-          test: (typeof Autolinker === 'undefined'),
-          yep: 'https://cdnjs.cloudflare.com/ajax/libs/autolinker/1.6.2/Autolinker.min.js',
+          test: (typeof Autolinker === 'undefined'), // former version 1.6.2
+          yep: 'https://cdnjs.cloudflare.com/ajax/libs/autolinker/3.14.3/Autolinker.min.js',
           complete: function () {
             twodayExport.autoLinker = new Autolinker({
               stripPrefix: false,
@@ -1193,11 +1190,11 @@
               $(".chooseCategory").chosen({ width: '100%' });
               yepnope({
                 test: (typeof $.fn.pickadate === 'undefined'),
-                yep: [ // bump version from 3.5.3 to 3.5.6
-                  'https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.5.6/compressed/themes/classic.css',
-                  'https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.5.6/compressed/themes/classic.date.css',
-                  'https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.5.6/compressed/picker.js',
-                  'https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.5.6/compressed/picker.date.js'
+                yep: [ // bump version from 3.5.6 to 3.6.4
+                  'https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/picker.js',
+                  'https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/picker.date.js',
+                  'https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/themes/classic.css',
+                  'https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/themes/classic.date.css'
                 ],
                 complete: function () {
                   $(".datepicker").pickadate({
@@ -1221,7 +1218,7 @@
                 }
               });
               $('#btnVersion').on('click', function () {
-                $.getJSON('https://rawgit.com/NeonWilderness/twodayExport/master/dist/version.json', function (data) {
+                $.getJSON('https://cdn.jsdelivr.net/gh/NeonWilderness/twodayExport@master/dist/version.json', function (data) {
                   var newVersion = false, release, msgClass, msgText;
                   $.each(data.packages, function () {
                     if (this.name === 'twodayExport') {
@@ -1292,7 +1289,7 @@
           yepnope([
             {
               test: (typeof Mustache === 'undefined'),
-              yep: ['https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js'],
+              yep: ['https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.2/mustache.min.js'],
               complete: function () {
                 // now enable the export feature and wait for further user action
                 twodayExport.enableExportFeature();

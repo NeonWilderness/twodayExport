@@ -2,7 +2,7 @@
   "packages": [
     {
       "name": "twodayExport",
-      "url": "https://rawgit.com/NeonWilderness/twodayExport/master/layouts/twodayExport-{{versionID}}.zip",
+      "url": "https://cdn.jsdelivr.net/gh/NeonWilderness/twodayExport@master/layouts/twodayExport-{{versionID}}.zip",
       "version": "{{version}}",
       "released": "{{date}}"
     },
