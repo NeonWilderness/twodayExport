@@ -1,19 +1,18 @@
 /**
  * checkExport
  * ===========
- * 
+ *
  */
-const argv = require('yargs').argv;
-const cheerio = require('cheerio');
+const { argv } = require('yargs');
 const fs = require('fs');
 const path = require('path');
-const request = require('request-promise-native');
+const Twoday = require('@neonwilderness/twoday');
 const validFmTestcases = require('./checks/validFm');
 const validBodyTestcases = require('./checks/validBody');
 const validCommentsTestcases = require('./checks/validComments');
 const fixNiceUrls = require('./checks/fixNiceUrls');
 
-const readFrontmatter = (chunk) => {
+const readFrontmatter = chunk => {
   let fm = chunk.split('\n').reduce((all, line, index) => {
     let parts = line.split(': ');
     let key = parts[0].toLowerCase().replace(/\s/g, '');
@@ -29,11 +28,11 @@ const readFrontmatter = (chunk) => {
   return fm;
 };
 
-const readBody = (chunk) => {
+const readBody = chunk => {
   return chunk.substr(6); // 'BODY:\n'.length
 };
 
-const readComments = (chunks) => {
+const readComments = chunks => {
   return chunks.reduce((all, chunk, index) => {
     let lines = chunk.split('\n');
     let comment = { type: '?' };
@@ -42,8 +41,11 @@ const readComments = (chunks) => {
       let parts = line.split(': ');
       switch (parts[0]) {
         case 'COMMENT:':
-        case 'REPLY:': comment.type = parts[0].charAt(0); break;
-        default: comment[parts[0].toLowerCase()] = parts.slice(1).join(': ');
+        case 'REPLY:':
+          comment.type = parts[0].charAt(0);
+          break;
+        default:
+          comment[parts[0].toLowerCase()] = parts.slice(1).join(': ');
       }
     }
     comment.body = lines.slice(4).join('\n');
@@ -52,32 +54,16 @@ const readComments = (chunks) => {
   }, []);
 };
 
-const getTopics = (blog => {
-  return new Promise((resolve, reject) => {
-    request.get({
-      uri: `https://${blog}.twoday.net/topics/`,
-      transform: body => cheerio.load(body)
-    })
-      .then($ => {
-        let topics = [];
-        $('.listItem td>a').each(function () {
-          topics.push(this.attribs.href.split('/').reverse()[1]);
-        });
-        resolve(topics);
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
-});
+const getTopics = blog => {
+  const td = new Twoday('prod');
+  return td
+    .getStoryTopics(blog)
+    .then(topics => topics.map(topic => topic.url.split('/').reverse()[1]))
+    .catch(err => console.log(`Error during getTopics --> ${err}`));
+};
 
 const getSortedStoryIDs = () => {
-  return stories
-    .reduce((all, story, index) => {
-      all.push(story.fm.id);
-      return all;
-    }, [])
-    .sort();
+  return stories.map(story => story.fm.id).sort();
 };
 
 if (!argv.blog) {
@@ -85,12 +71,11 @@ if (!argv.blog) {
   return;
 }
 var blog = argv.blog.toLowerCase();
-var dir = (!!argv.dir ? path.resolve(process.cwd(), argv.dir, blog) : '.');
+var dir = !!argv.dir ? path.resolve(process.cwd(), argv.dir, blog) : '.';
 console.log(`Using output directory: ${dir}.`);
 
 let file; // --file="seenia export vx" or undefined
-if (argv.file)
-  file = `${dir}/${argv.file}.txt`;
+if (argv.file) file = `${dir}/${argv.file}.txt`;
 else {
   file = fs.readdirSync(dir).reduce((all, filename, index) => {
     let ext = filename.split('.').pop();
@@ -100,10 +85,11 @@ else {
 }
 
 console.log(`Reading export file: ${file}.`);
-var stories = fs.readFileSync(file)
+var stories = fs
+  .readFileSync(file)
   .toString()
   .split('\n-----\n--------\n')
-  .reduce((all, story, index) => {
+  .reduce((all, story) => {
     if (story.trim().length) {
       let chunks = story.split('\n-----\n');
       all.push({
@@ -131,17 +117,16 @@ var global = {
 };
 
 describe(`validating ${blog} stories...`, () => {
-
-  before(async () => {  // jshint ignore:line
+  before(async () => {
+    // jshint ignore:line
     global.topics = await getTopics(blog); // jshint ignore:line
   }); // jshint ignore:line
 
-  stories.forEach((story) => {
+  stories.forEach(story => {
     validFmTestcases(story, global);
     validBodyTestcases(story, global);
     validCommentsTestcases(story, global);
   });
 
   fixNiceUrls(global);
-
 });

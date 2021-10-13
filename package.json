@@ -29,7 +29,7 @@
     "wpfix:img": "node ./tools/resWPFixImg --blog=blogalias --noupdate",
     "wpfix:vids": "node ./tools/resWPFixVids --blog=blogalias --noupdate"
   },
-  "author": "blogalias",
+  "author": "NeonWilderness",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.15.8",
@@ -38,7 +38,7 @@
     "@hapi/hoek": "^9.2.1",
     "@neonwilderness/twoday": "^0.3.14",
     "@types/chai": "^4.2.22",
-    "@types/jquery": "^3.5.6",
+    "@types/jquery": "^3.5.7",
     "@types/mocha": "^9.0.0",
     "ansi-colors": "^4.1.1",
     "chai": "^4.3.4",
@@ -58,8 +58,6 @@
     "mocha-clean": "^1.0.0",
     "mustache": "^4.2.0",
     "puppeteer": "^10.4.0",
-    "request": "^2.88.2",
-    "request-promise-native": "^1.0.9",
     "semver": "^7.3.5",
     "wordpress": "^1.4.1",
     "yargs": "^17.2.1"
