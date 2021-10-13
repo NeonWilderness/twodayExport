@@ -35,15 +35,11 @@
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
     "@babel/register": "^7.15.3",
-    "@hapi/hoek": "^9.2.1",
     "@neonwilderness/twoday": "^0.3.14",
-    "@types/chai": "^4.2.22",
-    "@types/jquery": "^3.5.7",
     "@types/mocha": "^9.0.0",
     "ansi-colors": "^4.1.1",
     "chai": "^4.3.4",
     "cheerio": "^1.0.0-rc.10",
-    "cp-file": "^9.1.0",
     "dotenv-safe": "^8.2.0",
     "gulp": "^4.0.2",
     "gulp-bump": "^3.2.0",
@@ -56,10 +52,7 @@
     "jshint-stylish": "^2.2.1",
     "mocha": "^9.1.2",
     "mocha-clean": "^1.0.0",
-    "mustache": "^4.2.0",
-    "puppeteer": "^10.4.0",
     "semver": "^7.3.5",
-    "wordpress": "^1.4.1",
     "yargs": "^17.2.1"
   }
 }

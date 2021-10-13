@@ -457,8 +457,8 @@
     staticURL: 'https://static.twoday.net',
 
     sanitizeLinks: function (body) {
-      body = body.replace(/((http|https):\/\/)?static\.twoday\.net/gi, this.staticURL);
-      body = body.replace(/((http|https):\/\/)?twoday\.net\/static/gi, this.staticURL);
+      body = body.replace(/((http|https):)?\/\/static\.twoday\.net/gi, this.staticURL);
+      body = body.replace(/((http|https):)?\/\/twoday\.net\/static/gi, this.staticURL);
       body = body.replace(new RegExp('//+"'), '/');
       body = body.replace(new RegExp('\\n-{8}\\n', 'g'), '\n|--------\n');
       body = body.replace(new RegExp('\\n-{5}\\n', 'g'), '\n|-----\n');
