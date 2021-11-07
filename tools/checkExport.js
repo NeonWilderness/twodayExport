@@ -116,9 +116,8 @@ var global = {
   xrefs: {}
 };
 
-describe(`validating ${blog} stories...`, () => {
-  before(async () => {
-    // jshint ignore:line
+describe(`validating ${blog} stories...`, () => { // jshint ignore:line
+  before(async () => { // jshint ignore:line
     global.topics = await getTopics(blog); // jshint ignore:line
   }); // jshint ignore:line
 

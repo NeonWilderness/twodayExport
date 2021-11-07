@@ -93,7 +93,7 @@
     xrefs: {},
 
     // timeout-specs for recursive ajax reads (milliseconds) to avoid twoday server returning 403-forbidden errors
-    timeoutStories: 500,
+    timeoutStories: 10,
     timeoutBody: 5,
     timeoutComments: 5,
 
@@ -404,7 +404,7 @@
       // make body a jquery element
       var $body = $("<div>").html(body), gdOptions;
       // search and process all googledrive refs
-      if (twodayExport.musSelectionScreen.siteId == '50425') // doktorp
+      if (twodayExport.musSelectionScreen.siteId === '50425') // doktorp
         gdOptions = {
           gdDomain: 'https://static.twoday.net',
           gdRootFolder: '/doktorp',
@@ -1145,7 +1145,7 @@
     // check if gdImages.js needs to be loaded
     needsGD: function () {
       var siteId = twodayExport.musSelectionScreen.siteId;
-      return (siteId == '32208' || siteId == '697892' || siteId == '50425');
+      return (siteId === '32208' || siteId === '697892' || siteId === '50425');
     },
 
     //- displays export selection screen after having loaded font awesome css, gdimages, videoload, autolinker, chosen.js and pickadate.js script
