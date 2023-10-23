@@ -224,7 +224,7 @@
           story.author = y.match(/erstellt von (.*) am/)[1];
           if (twodayExport.params.delGuest) story.author = story.author.replace(" (Gast)", "");
           y = y.match(/ am (.*)/)[1];
-          story.date = y.substr(6, 4) + "-" + y.substr(3, 2) + "-" + y.substr(0, 2) + y.substr(10);
+          story.date = y.slice(6, 4) + "-" + y.slice(3, 2) + "-" + y.slice(0, 2) + y.slice(10);
           y = x.find(">a");
           story.url = (y.length > 0 ? y.attr("href") : "");
           twodayExport.musStatusScreen.incValue(story.status === "publish" ? "pubArtRead" : "offArtRead");
@@ -334,7 +334,7 @@
       var found = 0;
       $.each(this.stories, function (index, story) {
         // extract the slug (basename-string without the story-id)
-        var slug = story.basename.substr(0, story.basename.lastIndexOf("-"));
+        var slug = story.basename.slice(0, story.basename.lastIndexOf("-"));
         // has this slug been used as an internal cross reference link? yes, then add the numeric story.id to the entry
         if (typeof xrefs[slug] !== "undefined") {
           xrefs[slug].storyID = story.id;
@@ -520,10 +520,10 @@
         var x = dateStr.split(" - ")[1],
           day = x.match(/(.*)\./)[1],
           month = this.getMonth(x.match(/\s(.*)\,/)[1]),
-          year = storyDate.substr(0, 4),
+          year = storyDate.slice(0, 4),
           time = x.match(/\, (.*)/)[1];
         x = year + "-" + this.d2(month) + "-" + this.d2(day) + " " + time;
-        return ((Date.parse(x) < Date.parse(storyDate)) ? (parseInt(year, 10) + 1).toString() + x.substr(4) : x);
+        return ((Date.parse(x) < Date.parse(storyDate)) ? (parseInt(year, 10) + 1).toString() + x.slice(4) : x);
       },
       anonymousAuthor: function ($item) { return ($item.find(">.commentDate").text().split(" - ")[0]); }
     },
@@ -555,7 +555,7 @@
       commentBody: ".commentText:first|html",
       reply: ">.reply",
       extractDate: function (dateStr) {
-        return dateStr.substr(0, 16);
+        return dateStr.slice(0, 16);
       },
       anonymousAuthor: function ($item) { return ($item.find(".commentUser:first").text().match(/(.*)\s/)[1]); }
     },
@@ -654,7 +654,7 @@
           if (name.length === 0) return '';
           // is it a deleted img that should be kept as img tag
           if (name.charAt(0) === '|') {
-            name = name.substr(1);
+            name = name.slice(1);
             if (attrSet.class)
               attrSet.class += ' notFound';
             else
@@ -761,12 +761,12 @@
         var reg = new RegExp('<\\%\\s*' + macroName + '\\s.*?\\s*%>', 'gi');
         var macros = body.match(reg);
         if (macros) macros.map(function (macro, index) {
-          var subs = splitMacroParams(macro.substr(2, macro.length - 4).trim());
+          var subs = splitMacroParams(macro.slice(2, macro.length - 4).trim());
           var attrSet = subs.reduce(function (all, item) {
             var i = item.indexOf('=');
             if (i >= 0) {
-              var param = item.substr(0, i);
-              var value = item.substr(i + 1);
+              var param = item.slice(0, i);
+              var value = item.slice(i + 1);
               all[param] = convertInQuoteSpaces(value, false).replace(/^["'](.+)["']$/, '$1');
             }
             return all;
@@ -840,7 +840,7 @@
         $content.find('img').each(function () {
           imgUrl = this.src || '';
           if (imgUrl.match(p.regStaticImg)) {
-            imgFile = imgUrl.substr(imgUrl.lastIndexOf('/') + 1);
+            imgFile = imgUrl.slice(imgUrl.lastIndexOf('/') + 1);
             // eliminates the "_small"-suffix for thumbnail/popup-images
             if (p.siteId !== 53472) imgFile = imgFile.replace('_small.', '.');
             if (story.images.indexOf(imgFile) < 0) story.images.push(imgFile);
@@ -1051,7 +1051,7 @@
         staticImgUrl: '<% staticURL %><% site.alias %>/images/',
         staticFileUrl: '<% staticURL %><% site.alias %>/files/',
         wpMediaUrl: '',
-        siteStoriesHref: '<% site.url action="stories" %>'.substr('<% site.url %>'.indexOf('//') + 2),
+        siteStoriesHref: '<% site.url action="stories" %>'.slice('<% site.url %>'.indexOf('//') + 2),
         sliceFrom: function () { return (parseInt(this.fromNumber, 10) - 1); },
         sliceTo: function () { return (parseInt(this.maxNumber, 10) + this.sliceFrom()); },
         properDates: function () { return (this.selDate ? this.fromDate > 0 && this.toDate > 0 : true); },
@@ -1086,7 +1086,7 @@
       }
       //----- derive wordpress media upload url from new blog address
       if (selParams.urlChange) {
-        if (selParams.newBlogUrl.substr(selParams.newBlogUrl.length - 1) !== '/') selParams.newBlogUrl += '/';
+        if (selParams.newBlogUrl.slice(selParams.newBlogUrl.length - 1) !== '/') selParams.newBlogUrl += '/';
         selParams.wpMediaUrl = selParams.newBlogUrl;
       }
       //----- put validated params into the object's top level
@@ -1132,7 +1132,7 @@
         btnPlace = $(this.test);
         if (btnPlace.length > 0) {
           btnAppend = (this.appendTo === 'self' ? btnPlace.eq(0) : btnPlace.eq(0).parent());
-          switch (this.test.substr(0, 3)) {
+          switch (this.test.slice(0, 3)) {
             case '.me': btnAppend.append('<button id="msgButton" class="startExport actionButton">Blog exportieren...</button>'); break;
             case '.mo': btnAppend.append('<span style="display:inline-block;margin-left:30px">&dArr;<a href="#" id="modToolbar-export" class="startExport" style="margin-left:6px">Blog exportieren</a></span>'); break;
             default: btnAppend.append('<button id="btnExport" class="startExport actionButton">&or;</button>'); break;

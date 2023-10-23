@@ -23,7 +23,7 @@ if (!argv.platform) {
 }
 const platform = argv.platform.toLowerCase();
 
-const td = new Twoday(platform);
+const td = new Twoday.Twoday(platform);
 td.login()
   .then(() => td.useLayout(alias, 'export'))
   .then(() =>

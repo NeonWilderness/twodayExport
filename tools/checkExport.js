@@ -21,15 +21,15 @@ const readFrontmatter = chunk => {
   }, {});
   let i = fm.basename.lastIndexOf('-');
   if (i >= 0) {
-    fm.slug = fm.basename.substr(0, i);
-    fm.id = fm.basename.substr(i + 1);
+    fm.slug = fm.basename.slice(0, i);
+    fm.id = fm.basename.slice(i + 1);
   }
   console.log(`Read basename: ${fm.basename}.`);
   return fm;
 };
 
 const readBody = chunk => {
-  return chunk.substr(6); // 'BODY:\n'.length
+  return chunk.slice(6); // 'BODY:\n'.length
 };
 
 const readComments = chunks => {
@@ -88,6 +88,7 @@ console.log(`Reading export file: ${file}.`);
 var stories = fs
   .readFileSync(file)
   .toString()
+  .replace(/\r\n/g, '\n')
   .split('\n-----\n--------\n')
   .reduce((all, story) => {
     if (story.trim().length) {

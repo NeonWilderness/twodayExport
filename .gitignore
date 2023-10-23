@@ -4,6 +4,7 @@
 *.log
 *.php
 node_modules
+mmm.*
 process.md
 todo.md
 tools/res*.*

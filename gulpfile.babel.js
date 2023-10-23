@@ -47,7 +47,7 @@ const build = () => {
 
 const getShortVersion = () => {
   let version = getPackageJson().version;
-  return version.substr(0, version.lastIndexOf('.'));
+  return version.slice(0, version.lastIndexOf('.'));
 };
 
 const getPackageJson = () => {
@@ -60,7 +60,7 @@ const getPackageJson = () => {
 const bump = (bumpVersion = true) => {
   let pkg = getPackageJson();
   let newVersion;
-  let releaseDate = new Date().toISOString().substr(0, 10).split('-').reverse().join('.');
+  let releaseDate = new Date().toISOString().slice(0, 10).split('-').reverse().join('.');
   if (bumpVersion) {
     newVersion = semver.inc(pkg.version, 'minor');
     console.log('Bumping to new version...');

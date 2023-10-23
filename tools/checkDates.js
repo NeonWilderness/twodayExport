@@ -33,13 +33,13 @@ let lines = fs.readFileSync(file)
   .toString()
   .split('\n')
   .map((line) => {
-    if (line.substr(0,10) === 'BASENAME: ') { 
+    if (line.slice(0,10) === 'BASENAME: ') { 
       pos = 1;
-      basename = line.substr(10);
+      basename = line.slice(10);
     }
-    if (line.substr(0,9) === 'COMMENT: ') pos = 2;
-    if (line.substr(0,6) === 'DATE: ' && pos === 1) {
-      date2 = line.substr(6);
+    if (line.slice(0,9) === 'COMMENT: ') pos = 2;
+    if (line.slice(0,6) === 'DATE: ' && pos === 1) {
+      date2 = line.slice(6);
       if (date2 !== date1) {
         date1 = date2;
         second = 0;

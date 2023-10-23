@@ -31,7 +31,7 @@ module.exports = (global) => {
       }, []);
 
       rulesToFixLinks = Object.keys(global.monthLinks).reduce((all, month, index) => {
-        let relUrl = `/${month.substr(0,4)}/${month.substr(4)}`;
+        let relUrl = `/${month.slice(0,4)}/${month.slice(4)}`;
         all.push({ search: `${mUrl}${month}`, flags: 'gi', replace: relUrl });
         console.log(`Month link: "${month}" changed.`);
         return all;

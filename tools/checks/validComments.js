@@ -16,7 +16,7 @@ module.exports = (story, global) => {
           for (var i = link.length - 1; i >= 0; i--) {
             if (link[i] !== '/' && link[i] !== '"') break;
           };
-          return link.substr(0, i + 1).split('/').pop();
+          return link.slice(0, i + 1).split('/').pop();
         });
 
         before(() => {
@@ -43,10 +43,10 @@ module.exports = (story, global) => {
           $('a').each(function (index, el) {
             var $el = $(el);
             var link = $el.attr('href') || '';
-            if (link.substr(0, 1) === '#' ||
+            if (link.slice(0, 1) === '#' ||
               /[äüöß]/.test(link) ||
-              link.substr(0, 2) === '//' ||
-              link.substr(0, 11) === 'javascript:' ||
+              link.slice(0, 2) === '//' ||
+              link.slice(0, 11) === 'javascript:' ||
               $el.hasClass('tip') ||
               $el.hasClass('googledrive') ||
               $el.hasClass('close-reveal-modal')) return true;
