@@ -4,7 +4,7 @@
   "description": "Blog Export on steroids",
   "main": "twoday-export.html",
   "scripts": {
-    "update": "ncu -u -x cp-file && npm i",
+    "update": "ncu -u -x @wordpress/url && npm i",
     "build": "gulp --production",
     "dev": "gulp",
     "bump": "gulp bump",
@@ -37,19 +37,18 @@
   "author": "NeonWilderness",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.24.0",
-    "@babel/preset-env": "^7.24.0",
-    "@babel/register": "^7.23.7",
-    "@neonwilderness/twoday": "^0.5.4",
-    "@types/mocha": "^10.0.6",
-    "@wordpress/url": "^3.53.0",
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
+    "@babel/register": "^7.28.6",
+    "@neonwilderness/twoday": "^0.5.8",
+    "@types/mocha": "^10.0.10",
+    "@wordpress/url": "^3.59.0",
     "ansi-colors": "^4.1.3",
-    "chai": "^5.1.0",
-    "cheerio": "^1.0.0-rc.12",
-    "cp-file": "^9.1.0",
+    "chai": "^6.2.2",
+    "cheerio": "^1.2.0",
     "csv-writer": "^1.6.0",
     "dotenv-safe": "^9.1.0",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.1",
     "gulp-bump": "^3.2.0",
     "gulp-htmlmin": "^5.0.1",
     "gulp-jshint": "^2.1.0",
@@ -58,15 +57,17 @@
     "isuri": "^2.0.3",
     "jshint": "^2.13.6",
     "jshint-stylish": "^2.2.1",
-    "mocha": "^10.3.0",
+    "mocha": "^11.7.5",
     "mocha-clean": "^1.0.0",
     "mustache": "^4.2.0",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.9",
-    "semver": "^7.6.0",
-    "yargs": "^17.7.2"
+    "semver": "^7.7.4"
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "minimist": "^1.2.8"
   }
 }

@@ -3,9 +3,9 @@
  * ==========
  * 
  */
-const argv = require('yargs').argv;
-const fs = require('fs');
-const path = require('path');
+const argv = require('minimist')(process.argv.slice(2));
+const fs = require('node:fs');
+const path = require('node:path');
 
 if (!argv.blog) {
   console.log('Blogname must be specified with --blog=blogname or -b blogname.');

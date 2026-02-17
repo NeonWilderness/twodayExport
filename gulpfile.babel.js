@@ -1,17 +1,19 @@
 'use strict';
 
 import color from 'ansi-colors';
-import fs from 'fs';
+import fs from 'node:fs';
 import gulp from 'gulp';
 import plugins from 'gulp-load-plugins';
 import semver from 'semver';
-import yargs from 'yargs';
+import minimist from 'minimist';
 
 // Load all Gulp plugins into one variable
 const $ = plugins();
 
+const argv = minimist(process.argv.slice(2));
+
 // Check for --production flag
-const PRODUCTION = !!(yargs.argv.production);
+const PRODUCTION = !!(argv.production);
 if (PRODUCTION) console.log(color.inverse.cyan('--- Production version in progress ---'));
 
 const hint = () => {

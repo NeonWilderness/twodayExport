@@ -3,9 +3,9 @@
  * ===========
  *
  */
-const { argv } = require('yargs');
-const fs = require('fs');
-const path = require('path');
+const argv = require('minimist')(process.argv.slice(2));
+const fs = require('node:fs');
+const path = require('node:path');
 const Twoday = require('@neonwilderness/twoday');
 const validFmTestcases = require('./checks/validFm');
 const validBodyTestcases = require('./checks/validBody');

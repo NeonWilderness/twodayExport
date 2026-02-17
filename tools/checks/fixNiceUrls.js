@@ -1,5 +1,5 @@
 const { assert } = require('chai');
-const fs = require('fs');
+const fs = require('node:fs');
 
 module.exports = (global) => {
 
