@@ -175,4 +175,1322 @@ Die nachstehende Auflistung enthält alle Ressourcen der während des Exportlauf
 </script>
 <style>#msgButton{background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAAEEfUpiAAAACXBIWXMAAFxGAABcRgEUlENBAAAACXRFWHRDb21tZW50AACJKo0GAAAEcklEQVR4nI1XTUxUVxQeCIkGlkBcwKKbbkiEjO1CdIGrBmqNsc5CDG6aYUNDHMIkRhfuSNwMie0CTNMOGd1QRCNGE40NxkXTJo2pojFuABPxB5VgYDTNDHN6v+G78867770ZXnKY9+499zvfPff8XGIiEoMkk8k0fssfLRclc/EfkfKAmRk1A+UHvzG7hIMxu77FTuDjAWYh5n17NJ4VKYkHKkpjOaZ4LIoyAkW7otla1XSIUO+j9ePdgEK3D9JIJ9/PGVmq7EMpnTRySI/ZiU3YU4oDRhKW5FnL4cQNn/0Gq7BiBjYw+O9bT8HIbjNXgMIQBorGVU/fi7T+JPLFRFlhvOxKem7S+uDlRsUfmLuPP43kUFDwKTM+oXcRN7LgujngB+UkoSwYuWNkjd/r1mIAwEzkjZwnnQ4jJUUJMke9OoLFNUXhwja96OEb/9lS8lyTNZLCS7+RMR0xVh6vhgJA0tYw/vQYyWmAUze3F374LJXnTd4H0FsB4MtHI10uizP3RRbXA9YHuWbLSKt2YoLOaSJQu5FfjNwyMqz0po2UIo+RSgiEojpOyLxO36oABDmEesEcCSwMBUCQMFiEwXOHwWRZnIsEUD4YiGBUj8qB5AzL2DgX19GBc47nEZUd1D2PqHUBKhmsF06Z9Pnykg8oQ/0HthJYj2e5OK8B8By7FoiDNh3+eClgf2ZilxuyeI5cDQBsEGAFRVMnUjoM4NuZYC4QYAx5pAEymOyf88IXzzfTIhf+EvlzJQAwhO6hAXqtQmFLZI2J9Hpz+/fA5QBADolYLmyo4e4JlLxElK+nfFuYdJ3YiswiwKDrg87fQvffhQzWcbBsqygqakgBgRRUVIqtjTpUS0hV+40UZiojpdup08TFiahkWgpLGrQ1lVTxqumM1GXu61qA2pCqmc5RQtAUgd1C4xqap25kDdkRAWb4kgKHC9C0Oqus6aSOrkFLrttquTDBAxXW3yY9z1o9rOq1Pehhe9gKq4kYQsxEJAFW02UqTzhGU07zryXQTTlkJoi9nFTt3U42s5SjVXUpw4NRRv5+5WXq99erkhlUJLpoA7aaNQEbtd3K+GS1XT586xE4OlvTI5OKRDdtzdtS0sOBnDLeV8vNj1Y9At+FlNwQ6VMkcrRZLoaj/BhSBMZdgMMz/vb05J1HoPd3b/zgFZE9P4cSGFcEhmhz1F6u8DGmCPiay3Fzxv8Vt42hvMPIs/ceAXSt2efe9+onka+mAgTSisAYbfbbACyyxdWTANrjhruLH26LbOk+4Twgtz8Xuntg7aLxetoqllsqB0fIKKu8gLtqPgRMRv7wG35hGsu+bOTZA6NN7T5LWyOVLOCEvZrjytGgiGSiAuv0PZG9v1YNvIzCbyC2r9mEld88lXCBqlNEcO3Hhcu9+mspUadDYdYRS4hdvZuJV443uQjXwYGk+l+tlvCcB7hWiBUow5EEFFAjj8ZeeK2sJb3/oOwFeM3RWefaxmo2drQjhxRaM67uuLank94VHmM7asFa/gdN40X5ePFv7gAAAABJRU5ErkJggg==) no-repeat #ccc 1em center;padding:16px 16px 17px 4em;opacity:1;border-radius:0;box-shadow:none;margin-left:15px}#msgButton:hover{background-color:#666}</style>
 <div id="exportLoginStatus" style="display:none"><% site.loginstatus %></div>
-<script type="text/javascript">!function(){"use strict";var D={isUserAdministrator:function(){var e=document.getElementById("exportLoginStatus"),t=(e.textContent||e.innerText).match(/\((.*)\)/);return!!t&&"Administrator"===t[1]},isFontAwesomePresent:function(){var e=!1;return $.each(document.styleSheets,function(){return!(e=0<=(this.href||"").indexOf("font-awesome.min.css"))}),e},musSelectionScreen:{alias:"<% site.alias %>",blog:"<% site.href %>",siteId:"<% site.id %>",user:"<% username %>",version:"1.7",categories:[]},musStatusScreen:{pubArtRead:0,pubArtSelected:0,pubArtWrite:0,offArtRead:0,offArtSelected:0,offArtWrite:0,styRead:0,styWrite:0,comRead:0,comWrite:0,repRead:0,repWrite:0,filenameExport:"<% site.alias %> export.txt",filenameResourceList:"<% site.alias %> url liste.html",init:function(e){this.pubArtRead=0,this.pubArtSelected=0,this.pubArtWrite=0,this.offArtRead=0,this.offArtSelected=0,this.offArtWrite=0,this.styRead=0,this.styWrite=0,this.comRead=0,this.comWrite=0,this.repRead=0,this.repWrite=0,this.startTime=(new Date).getTime(),this.isTestRun=e},incValue:function(e,t){var s=void 0===t?1:t;this[e]+=s;var r=document.getElementById(e);r?r.innerText=this[e]:console.log("ID "+e+" not found!")},startTime:null,timeUsed:function(){var e=Math.floor(((new Date).getTime()-this.startTime)/1e3),t=Math.floor(e/3600),s=Math.floor((e-3600*t)/60),r=e-3600*t-60*s;return t<10&&(t="0"+t),s<10&&(s="0"+s),r<10&&(r="0"+r),t+":"+s+":"+r}},musStory:"",musPartials:{},filelen:0,stories:[],blobList:[],resourceList:[],xrefs:{},timeoutStories:10,timeoutBody:5,timeoutComments:5,autoLinker:null,getPicker:function(e){var t=$(e).pickadate().pickadate("picker").get("select");return null===t?0:t.pick},validateSelectionParams:function(e){var t="";return e.properDates()?e.validDates()?e.validCategoryNum()?e.validCategoryMix()?e.validMaxNumber()?e.validFromNumber()?e.validBlogUrl()||(t="validBlogUrl"):t="validFromNumber":t="validMaxNumber":t="validCatMix":t="validCatNum":t="validDates":t="properDates",0<t.length?($("#selMessage").html({properDates:"Bitte geben Sie bei gewählter Zeiteingrenzung ein gültiges Von- und Bis-Datum ein!",validDates:"Das Bis-Datum muss größer als das Von-Datum sein!",validCatNum:"Bitte wählen Sie mindestens eine Kategorie aus (z.B. 'Alle')!",validCatMix:"Entfernen Sie die 'Alle'-Kategorie, wenn Sie einzelne Kategorien selektieren wollen!",validMaxNumber:"Bitte geben Sie bei gewählter Anzahlbegrenzung eine gültige <b>Beitragsanzahl</b> ein!",validFromNumber:"Bitte geben Sie bei gewählter Anzahlbegrenzung eine gültige <b>Startnummer</b> ein!",validBlogUrl:"Zur Adressanpassung der Twoday-Bilder bitte eine gültige neue Blogadresse eingeben!"}[t]).show(),!1):($("#selMessage").html("").hide(),!0)},renderScreen:function(e){var t=Mustache.render($("#"+e).html(),this[e]);$("#selScreen").html(t),$("#btnIntro").on("click",function(e){e.preventDefault();var t=$(this);t.hasClass("onSelect")&&($("#selMessage").html("").attr("class","").hide(),$("#selOptions").toggle(0)),$("#selIntro").toggle(0),t.find("i").toggleClass("fa-question fa-times")})},filterStory:function(e){var t,s=!1;return this.params.selDate&&(s=(t=Date.parse(e.date))<this.params.fromDate||t>this.params.toDate),s||"mystories"!==this.params.selStatus||(s="draft"===e.status),s||(s=!this.params.isSelectedCategory(e.category)),s},closeOverlay:function(){$(document).off("keyup"),$("#selOverlay").hide(400)},renderMessage:function(e,t){$("#selMessage>span:first").text(e).parent().addClass(t).show(400),$("#btnOK").on("click",function(e){e.preventDefault(),D.closeOverlay()})},renderWarning:function(){this.renderMessage("Für die gewählten Filterkriterien wurden keine Beiträge gefunden!","bgYellow")},renderError:function(e){this.renderMessage(e,"")},recursiveStories:function(l,c){var u="/stories/"+this.params.selStatus+"?page="+l,e=$.get(u,function(e){var t,s,r,n,i=$(e).find(".admin");D.params.debugMode&&console.log("Read story overview page: ",u),i.find(".listItem").each(function(){var e=$(this),t=e.find(".leftCol"),s={};s.title=$.trim(e.find("tr>td>b").text()),r=t.text(),s.id=r.match(/id="(.*)"/)[1],n=r.match(/Status: (.*)\s/)[1].split(",")[0].split(" in "),s.status="online"===n[0]?"publish":"draft",r=t.find("a[href*=topics]").eq(0).text(),s.category=0<r.length?r:"publish"===s.status?"Unkategorisiert":"Unveröffentlicht",r=t.find(">span").eq(2),n=r.text(),s.author=n.match(/erstellt von (.*) am/)[1],D.params.delGuest&&(s.author=s.author.replace(" (Gast)","")),n=n.match(/ am (.*)/)[1],s.date=n.slice(6,10)+"-"+n.slice(3,5)+"-"+n.slice(0,2)+n.slice(10),n=r.find(">a"),s.url=0<n.length?n.attr("href"):"",D.musStatusScreen.incValue("publish"===s.status?"pubArtRead":"offArtRead"),D.filterStory(s)||c.push(s)});var a=i.find(".pageNavSummary:first");if(t=0===a.length?0:(s=parseInt(a.text().split(" ")[3],10),Math.floor(s/20)),l<t)document.getElementById("mMain").style.width=20*(l+1)/s*100+"%",setTimeout(function(){return D.recursiveStories(l+1,c)},D.timeoutStories);else{if(0<c.length){document.getElementById("mMain").style.width="100%",c.sort(function(e,t){return Date.parse(t.date)-Date.parse(e.date)});var o=c[c.length-1].id;return D.params.oldestIDLen=o.length,D.params.oldestIDVal=parseInt(o),D.params.selNumber&&(D.stories=c.slice(D.params.sliceFrom(),D.params.sliceTo())),D.recursiveBody(0,D.stories)}D.renderWarning()}}).fail(function(){D.params.debugMode&&console.log(">>>Fail to read storyPage: ",u,e.status,e.statusText),D.renderError("Fehler beim Lesen der Beitragsübersichtsseite: "+u+", status: "+e.status+", text: "+e.statusText)})},convertNiceUrlToStoryID:function(t,s){try{if(!("storyID"in s))return void console.log(">>> Missing storyID field in: "+t+" - xref-Object: "+JSON.stringify(s));if(s.storyID&&0<s.storyID.length)for(var e,r=D.params.siteStoriesHref+"/",n=new RegExp(r+t,"gi"),i=r+s.storyID,a=0,o=s.refIdx,l=o.length;a<l;++a)(e=D.stories[o[a]]).body=e.body.replace(n,i);D.params.debugMode&&console.log("convertNiceUrlToStoryID: slug="+t+", storyID="+s.storyID+", #stories="+s.refIdx.length)}catch(e){console.log(">>>Error: "+e+", slug: "+t+", xref:",s)}},addMissingNiceUrlStoryIDs:function(s,r){var n=r[s],i=D.xrefs[n];if(0<i.storyID.length)return D.convertNiceUrlToStoryID(n,i),(s+=1)<r.length?D.addMissingNiceUrlStoryIDs(s,r):D.renderStories();var e="/stories/"+n,t=$.get(e,function(e){var t=$(e).find(".story");if(i.storyID=t.attr("data-storyid"),D.convertNiceUrlToStoryID(n,i),!((s+=1)<r.length))return D.renderStories();setTimeout(function(){return D.addMissingNiceUrlStoryIDs(s,r)},D.timeoutBody)}).fail(function(){if(D.params.debugMode&&console.log(">>>Fail to read source story: ",e,t.status,t.statusText),!((s+=1)<r.length))return D.renderStories();setTimeout(function(){return D.addMissingNiceUrlStoryIDs(s,r)},D.timeoutBody)})},assignNiceUrlsStoryID:function(){var r=this.xrefs,e=Object.keys(r).length;if(0!==e){var n=0;$.each(this.stories,function(e,t){var s=t.basename.slice(0,t.basename.lastIndexOf("-"));void 0!==r[s]&&(r[s].storyID=t.id,n++)}),D.params.debugMode&&console.log("End of assignNiceUrlsStoryID: #xrefs=",e,"#IDs found=",n)}},isNiceUrl:function(e){return 0!==e.length&&(!$.isNumeric(e)||e.length<D.params.oldestIDLen&&parseInt(e)<D.params.oldestIDVal)},saveNiceUrlXrefs:function(e,t){var s,r,n,i,a;$("<div>").html(e.body).find('a[href*="'+D.params.siteStoriesHref+'"]').each(function(){if(null===(s=this.href.match(/\/stories\/(.*)\/?/)))return!0;if(r=(r=(r=s[1].split("#")[0]).split("?")[0]).split("/")[0],D.isNiceUrl(r))if(void 0===D.xrefs[r])D.xrefs[r]={storyID:"",refIdx:[t]},D.params.debugMode&&console.log("Init xref: "+r+" in basename: "+e.basename);else{for(n=0,a=D.xrefs[r],i=a.refIdx.length;n<i&&a.refIdx[n]!==t;++n);i<=n&&D.xrefs[r].refIdx.push(t)}})},legitSlugChars:function(e){return e.toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^\w ]+/g,"").trim().replace(/ +/g,"-")},transformGDRefs:function(e){if(e.indexOf("googledrive")<0)return e;var t,s=$("<div>").html(e);return t="50425"===D.musSelectionScreen.siteId?{gdDomain:"https://static.twoday.net",gdRootFolder:"/doktorp",gdSubFolder:"images",addClass:"transformed",titleContent:"keep"}:{gdDomain:"https://neonwilderness.de",gdRootFolder:"/public",gdSubFolder:"images",addClass:"neonimg th",titleContent:"keep"},s.find(".googledrive").gdimages().init(t),s.html()},transformVideoloadRefs:function(e){if(e.indexOf("html5video")<0)return e;var n=$("#workDiv"),t=$("<div>").html(e),s=t.find(".html5video");return s.each(function(e,t){var s=t.className.match(/width-[0-9]+/),r="width-"+D.params.videowidth;s?t.className=t.className.replace(s[0],r):t.className+=" "+r,n.append($(t).clone())}),window.video2day.run({exportRun:!0}),n.find(".html5video").each(function(e,t){s.eq(e).html(t.dataset.content)}),n.empty(),t.html()},staticURL:"https://static.twoday.net",sanitizeLinks:function(e){return e=(e=(e=(e=(e=e.replace(/((http|https):)?\/\/static\.twoday\.net/gi,this.staticURL)).replace(/((http|https):)?\/\/twoday\.net\/static/gi,this.staticURL)).replace(new RegExp('//+"'),"/")).replace(new RegExp("\\n-{8}\\n","g"),"\n|--------\n")).replace(new RegExp("\\n-{5}\\n","g"),"\n|-----\n"),53472===this.params.siteId&&(e='<div style="width:500px">'+e+"</div>"),e},recursiveBody:function(r,n){var i=n[r],a="/stories/"+i.id+"/edit";this.musStatusScreen.incValue("publish"===i.status?"pubArtSelected":"offArtSelected");var e=$.get(a,function(e){var t=$(e).find(".admin"),s=t.find("#modNiceUrlsText").text();if(i.body=t.find(".formText").text(),D.params.debugMode&&console.log("Read source of story: ",a),i.body=D.sanitizeLinks(i.body),D.params.googleDrive&&(i.body=D.transformGDRefs(i.body)),0<D.params.videowidth&&(i.body=D.transformVideoloadRefs(i.body)),0===s.length&&0===(s=D.legitSlugChars(i.title)).length&&(s="notitle"),i.basename=s+"-"+i.id,i.allowcomments=Math.abs(!t.find("#discussions").prop("checked")-1).toString(),D.musStatusScreen.incValue("styRead"),!((r+=1)<n.length))return document.getElementById("mStories").style.width="100%",D.recursiveComments(0,n);document.getElementById("mStories").style.width=r/n.length*100+"%",setTimeout(function(){return D.recursiveBody(r,n)},D.timeoutBody)}).fail(function(){D.params.debugMode&&console.log(">>>Fail to read source story: ",a,e.status,e.statusText),D.renderError("Fehler beim Lesen des Beitrags: "+a+", status: "+e.status+", text: "+e.statusText)})},selectorsStandard:{set:"Standard",comments:".comments",commentDate:">.commentDate|text",commentAuthor:">.commentDate>a|text",commentUrl:">.commentDate>a|href",commentTitle:">h4|text",commentBody:">div:nth-child(3)|html",reply:">.reply",d2:function(e){return(""+e).length<2?"0"+e:""+e},months:["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"],getMonth:function(e){return $.inArray(e,this.months)+1},extractDate:function(e,t){var s=e.split(" - ")[1],r=s.match(/(.*)\./)[1],n=this.getMonth(s.match(/\s(.*)\,/)[1]),i=t.slice(0,4),a=s.match(/\, (.*)/)[1];return s=i+"-"+this.d2(n)+"-"+this.d2(r)+" "+a,Date.parse(s)<Date.parse(t)?(parseInt(i,10)+1).toString()+s.slice(4):s},anonymousAuthor:function(e){return e.find(">.commentDate").text().split(" - ")[0]}},selectorsLayout:{set:"Layout",comments:".comments",commentDate:">.commentDate|text",commentAuthor:">.commentDate>a|text",commentUrl:">.commentDate>a|href",commentTitle:">h4|text",commentBody:">div:nth-child(3)|html",reply:">.reply",extractDate:function(e){return e.split(" - ").pop()},anonymousAuthor:function(e){return e.find(">.commentDate").text().split(" - ")[0]}},selectorsFoundation:{set:"Foundation",comments:".comments",commentDate:".commentDate:first>span|title",commentAuthor:".commentUser:first>a|text",commentUrl:".commentUser:first>a|href",commentTitle:".commentTitle:first|text",commentBody:".commentText:first|html",reply:">.reply",extractDate:function(e){return e.slice(0,16)},anonymousAuthor:function(e){return e.find(".commentUser:first").text().match(/(.*)\s/)[1]}},commentSelectors:{sets:[{id:"Layout",checkfor:"#exportLayout"},{id:"Foundation",checkfor:"#f5Body"},{id:"Standard",checkfor:""}],initSet:function(){$.each(this.sets,function(){if(0===this.checkfor.length||0<$(this.checkfor).length)return $.extend(D.commentSelectors,D["selectors"+this.id]),!1})},retrieveDOMValue:function(e,t){var s=this[t].split("|"),r=e.find(s[0]).eq(0);if(!(0<r.length))return"";switch(s[1]){case"text":return r.text();case"html":return r.html();default:return r.attr(s[1])}}},recursiveComments:function(a,o){var l=o[a],c="/stories/"+l.id,u=this.commentSelectors,d=this.params;function r(e){if(!e.length)return"";if(0<=e.indexOf("/")){var t=e.split("/");if("<% site.alias %>"!==t[0])return"";e=t[1]}for(var s,r=0,n=l.images.length;r<n;++r)if(e===(s=l.images[r]).split(".")[0])return s;return d.keepImg?(e+=".jpg",l.images.push(e),"|"+e):""}function n(e){var t=e.name||"";if(t&&l.files.hasOwnProperty(t)){var s=l.files[t];return s.name=t,Mustache.render('<a target="_blank" href="{{&url}}">{{&name}} ({{&ext}})</a>',s)}return""}function i(s){var e=function(e,t){s[e]&&(s[e]=" "+e+"="+(t?'"'+s[e]+'"':s.prop))};if(!s.fullName){var t=r(s.name||"");if(0===t.length)return"";"|"===t.charAt(0)&&(t=t.slice(1),s.class?s.class+=" notFound":s.class="notFound"),s.fullName=d.staticImgUrl+t}return e("align",!0),e("border",!0),e("class",!0),e("height",!0),s.href&&(s.linkto=s.href),e("target",!0),53472===d.siteId&&(s.width=1<l.images.length?"248":"500"),e("width",!0),Mustache.render('{{#linkto}}<a{{&target}} href="{{&linkto}}">{{/linkto}}<img src="{{&fullName}}" alt="{{&name}}"{{&class}}{{&align}}{{&width}}{{&height}}{{&border}}>{{#linkto}}</a>{{/linkto}}',s)}function m(e){return e.to=e.to||"",e.text=e.text||e.to,e.target&&(e.target=' target="'+e.target+'"'),Mustache.render('<a{{#target}}{{&target}}{{/target}} href="{{&to}}">{{&text}}</a>',e)}function h(e,t,s){var r=s.find("table.gallery").eq(t).css("width","100%").addClass("regenerated");return r.find("a").each(function(){this.innerHTML=i({fullName:this.href,width:"100%"})}),r[0].outerHTML}function f(e){if(e.indexOf('"gallery')<0)return e;var t=$("<div>").html(e);return t.find("table.gallery").not(".regenerated").each(function(e,t){$(t).css("width","100%").addClass("manual").find("a").each(function(){var e=this.href.split("/").pop().split(".")[0],t=d.staticImgUrl+r(e);this.outerHTML=i({href:t,fullName:t,width:"100%"})})}),t.html()}function p(e,t,s){e.id=e.id.split("/").reverse()[0];var r=s.find("#twodayPoll-"+e.id);return r.length?r[0].outerHTML:""}function g(e){return m({to:"<% site.href %>stories/"+l.id,text:e.text||"Link zum Beitrag"})}function y(e){return"<% site.href %>stories/"+l.id}function v(t,e){var s=new RegExp(e?" ":" ","g"),r=e?" ":" ",n=t.match(/(".*?")/g);return n&&n.map(function(e){t=t.replace(e,e.replace(s,r))}),t}function b(r,n,e,i){var t=new RegExp("<\\%\\s*"+e+"\\s.*?\\s*%>","gi"),s=r.match(t);return s&&s.map(function(e,t){var s=v(e.slice(2,e.length-4).trim(),!0).split(" ").reduce(function(e,t){var s=t.indexOf("=");if(0<=s){var r=t.slice(0,s),n=t.slice(s+1);e[r]=v(n,!1).replace(/^["'](.+)["']$/,"$1")}return e},{});r=r.replace(e,i(s,t,n))}),r}function x(e){return d.urlChange?e.replace(d.regStaticImg,d.wpMediaUrl):e}function S(t,s){var e;return[{tag:"file",cb:n},{tag:"gallery",cb:h},{tag:"image",cb:i},{tag:"link",cb:m},{tag:"poll",cb:p},{tag:"story\\.link",cb:g},{tag:"story\\.url",cb:y}].map(function(e){t=b(t,s,e.tag,e.cb)}),t=x(t=f(t)),e=t,d.urlChange?e.replace(d.regStaticFile,d.wpMediaUrl):e}function w(e,t,s){var r={},n=u.retrieveDOMValue(e,"commentTitle"),i=u.retrieveDOMValue(e,"commentBody"),a=u.retrieveDOMValue(e,"commentDate");return r.date=u.extractDate(a,l.date),r.type=t,r.author=u.retrieveDOMValue(e,"commentAuthor"),0===r.author.length&&(r.author=u.anonymousAuthor(e)),d.delGuest&&(r.author=r.author.replace(" (Gast)","")),r.url=u.retrieveDOMValue(e,"commentUrl"),r.body=f(0<n.length?n+" "+i:i),r.body=x(r.body),0<d.videowidth&&(r.body=D.transformVideoloadRefs(r.body)),D.musStatusScreen.incValue("C"===s?"comRead":"repRead"),r}var e=$.get(c,function(e){var t,s,r=$(e).find("#content");D.params.debugMode&&console.log("Read rendered story: ",c),l.images=[],r.find("img").each(function(){(t=this.src||"").match(d.regStaticImg)&&(s=t.slice(t.lastIndexOf("/")+1),53472!==d.siteId&&(s=s.replace("_small.",".")),l.images.indexOf(s)<0&&l.images.push(s))}),l.files={},r.find(".fileMacro").each(function(){l.files[this.dataset.name]={url:this.dataset.url,ext:this.dataset.ext}}),l.body=S(l.body,r),D.params.autoLink&&(l.body=D.autoLinker.link(l.body)),D.saveNiceUrlXrefs(l,a),D.params.readCount&&(l.body+="\n[#"+(r.find(".story").attr("data-reads")||"0")+"]"),l.comments=[];var n=r.find(u.comments);if(l.cntComments=n.length,l.cntReplies=0,n.each(function(){var e,t=$(this);if(!(0<=(e=t).text().indexOf("/modTrackback")||0<e.find('a[name="trackbacks"]').length)){l.comments.push(w(t,"COMMENT","C"));var s=t.find(u.reply);l.cntReplies+=s.length,s.each(function(){var e=$(this);l.comments.push(w(e,d.typeReply,"R"))})}}),!((a+=1)<o.length)){document.getElementById("mComments").style.width="100%",D.params.debugMode&&console.log(">>> xrefs:",JSON.stringify(D.xrefs,null,2)),D.assignNiceUrlsStoryID();var i=Object.keys(D.xrefs);return 0<i.length?D.addMissingNiceUrlStoryIDs(0,i):D.renderStories()}document.getElementById("mComments").style.width=a/o.length*100+"%",setTimeout(function(){return D.recursiveComments(a,o)},D.timeoutComments)}).fail(function(){D.params.debugMode&&console.log(">>>Fail to read rendered story: ",c,e.status,e.statusText),D.renderError("Fehler beim Lesen der Beitrags: "+c+", status: "+e.status+", text: "+e.statusText)})},renderStory:function(e){var t=Object.assign({},e,{url:e.url||this.musSelectionScreen.blog}),s=Mustache.render(this.musStory,t,this.musPartials);return this.filelen+=s.length,D.params.debugMode&&console.log("Render export for story: ",e.basename,"FileLen: ",this.filelen),s},mergeImageAndFileResources:function(t){var s,r=[];return t.images.map(function(e){r.push({isImage:!0,name:e,source:this.params.staticImgUrl+e})},this),Object.keys(t.files).map(function(e){s=t.files[e],r.push({isImage:!1,name:e+"."+s.ext,source:s.url})}),r},renderResourceList:function(e){var t={id:e.id,title:e.title,date:e.date,resources:this.mergeImageAndFileResources(e)},s={resource:'<li><a class="resource {{#isImage}}image{{/isImage}}{{^isImage}}file{{/isImage}}" target="_blank" href="{{&source}}">{{name}}</a>{{^isImage}} (Datei){{/isImage}}'+(this.params.urlChange?" geändert in "+this.params.wpMediaUrl+"{{name}}":"")+"</li>"},r=Mustache.render('<p><div>Beitrag: <a target="_blank" href="<% site.href %>stories/{{id}}">{{title}}</a> vom {{date}}:</div><ol>{{#resources}}{{>resource}}{{/resources}}</ol></p>',t,s);this.resourceList.push(r)},renderStories:function(){var e,t=this.blobList,s=this.musStatusScreen,r=!s.isTestRun;$.each(this.stories,function(){e=D.renderStory(this),r&&(t.push(e),s.incValue("publish"===this.status?"pubArtWrite":"offArtWrite"),s.incValue("styWrite"),s.incValue("comWrite",this.cntComments),s.incValue("repWrite",this.cntReplies)),(this.images.length||this.files.length)&&D.renderResourceList(this)}),this.renderInfoMessage()},writeExportFile:function(){var e=new Blob([this.blobList.join("")],{type:"text/plain;charset=utf-8"});window.saveAs(e,this.musStatusScreen.filenameExport);var t,s,r=$("#musResourceList").html(),n=$.extend({},this.musSelectionScreen,{storyResources:this.resourceList},this.params);0===this.resourceList.length&&this.resourceList.push("<p>*** Keine statischen Twoday-Bildadressen gefunden. ***</p>"),t=Mustache.render(r,n),s=new Blob([t],{type:"text/html;charset=utf-8"}),window.saveAs(s,this.musStatusScreen.filenameResourceList)},renderInfoMessage:function(){var e=Mustache.render("Export{{#isTestRun}}testlauf{{/isTestRun}} ohne Fehler beendet nach {{timeUsed}} (hh:mm:ss), "+Math.round(this.filelen/1024)+" KB",this.musStatusScreen);$("#selMessage>span:first").html(e).parent().addClass("bgGreen").show(400),D.params.debugMode&&console.log("--------------- End of blog export process ---------------"),this.musStatusScreen.isTestRun||yepnope([{test:void 0===window.saveAs,yep:["https://static.twoday.net/cdn/files/filesaver-min-js.js"],complete:function(){$("#selHint, #btnFile").show(),$("#btnFile").on("click",function(e){e.preventDefault(),D.writeExportFile()})}}]),$("#btnOK").on("click",function(e){e.preventDefault(),D.closeOverlay(),D.stories.length=0,D.blobList.length=0})},exportArticlesAndComments:function(e){this.musStatusScreen.init(e);var t={autoLink:$("#chkAutolink").prop("checked"),delGuest:$("#chkDelGuest").prop("checked"),keepImg:$("#chkKeepImg").prop("checked"),readCount:$("#chkReadCount").prop("checked"),typeReply:$("#chkWrdPress").prop("checked")?"COMMENT":"REPLY",debugMode:$("#chkDebug").prop("checked"),googleDrive:$("#chkGoogleDrive").prop("checked"),videowidth:parseInt($("#txtVideoWidth").val()),timeouts:$("#txtTimeouts").val(),selDate:"dates"===$("input[name=selDate]:checked").val(),fromDate:this.getPicker("#txtFromDate"),toDate:this.getPicker("#txtToDate"),selStatus:$("input[name=selStatus]:checked").val(),selCategories:$(".chooseCategory").chosen().val()||[],isSelectedCategory:function(e){var t=!1;return $.each(this.selCategories,function(){if(e===this||"Alle"===this)return!(t=!0)}),t},selNumber:"max"===$("input[name=selNumber]:checked").val(),cntNumber:0,maxNumber:$("#txtNumberMax").val(),fromNumber:$("#txtNumberFrom").val(),urlChange:$("#chkUrlChange").prop("checked"),newBlogUrl:$("#txtNewBlogUrl").val(),staticImgUrl:"<% staticURL %><% site.alias %>/images/",staticFileUrl:"<% staticURL %><% site.alias %>/files/",wpMediaUrl:"",siteStoriesHref:"<% site.url action="stories" %>".slice("<% site.url %>".indexOf("//")+2),sliceFrom:function(){return parseInt(this.fromNumber,10)-1},sliceTo:function(){return parseInt(this.maxNumber,10)+this.sliceFrom()},properDates:function(){return!this.selDate||0<this.fromDate&&0<this.toDate},validDates:function(){return!this.selDate||this.fromDate<this.toDate},validCategoryNum:function(){return 0<this.selCategories.length},validCategoryMix:function(){return!(0<=$.inArray("Alle",this.selCategories)&&1<this.selCategories.length)},validMaxNumber:function(){return!this.selNumber||!isNaN(parseInt(this.maxNumber,10))},validFromNumber:function(){return!this.selNumber||!isNaN(parseInt(this.fromNumber,10))},validBlogUrl:function(){return!this.urlChange||this.newBlogUrl.indexOf("localhost")||/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/.test(this.newBlogUrl)}};if(t.regStaticImg=new RegExp(t.staticImgUrl.replace("https:","https?:").replace(/\//gi,"\\/"),"gi"),t.regStaticFile=new RegExp(t.staticFileUrl.replace("https:","https?:").replace(/\//gi,"\\/"),"gi"),!this.validateSelectionParams(t))return!1;if(0<t.timeouts.length){var s=t.timeouts.split("/");$.each(s,function(e,t){switch(e){case 0:D.timeoutStories=parseInt(t,10);break;case 1:D.timeoutBody=parseInt(t,10);break;case 2:D.timeoutComments=parseInt(t,10)}})}t.urlChange&&("/"!==t.newBlogUrl.slice(t.newBlogUrl.length-1)&&(t.newBlogUrl+="/"),t.wpMediaUrl=t.newBlogUrl),t.siteId=parseInt(this.musSelectionScreen.siteId),this.params=t,$("#btnIntro, .btnContainer .actionButton").off("click"),this.musStatusScreen.blog=this.musSelectionScreen.blog,this.renderScreen("musStatusScreen"),this.musStory=$("#musStory").text(),this.musPartials.musComment=$("#musComment").text(),this.filelen=0,this.stories.length=0,this.blobList.length=0,this.resourceList.length=0,Object.keys(this.xrefs).forEach(function(e){delete D.xrefs[e]}),this.commentSelectors.initSet(),this.params.debugMode&&(console.log("--------------- Start of blog export process ---------------"),console.log("timeoutStories:",D.timeoutStories,"timeoutBody:",D.timeoutBody,"timeoutComments:",D.timeoutComments),console.log("--------------- Parameter ---------------"),console.log(JSON.stringify(this.params)),console.log("--------------- URL progress ---------------")),this.recursiveStories(0,this.stories)},addExportMenuButton:function(){var e,t;$.each([{test:".message>a",appendTo:"parent"},{test:".modToolbarLeft",appendTo:"self"},{test:"#wrapper",appendTo:"self"},{test:"body",appendTo:"self"}],function(){if(0<(e=$(this.test)).length){switch(t="self"===this.appendTo?e.eq(0):e.eq(0).parent(),this.test.slice(0,3)){case".me":t.append('<button id="msgButton" class="startExport actionButton">Blog exportieren...</button>');break;case".mo":t.append('<span style="display:inline-block;margin-left:30px">&dArr;<a href="#" id="modToolbar-export" class="startExport" style="margin-left:6px">Blog exportieren</a></span>');break;default:t.append('<button id="btnExport" class="startExport actionButton">&or;</button>')}return!1}})},needsGD:function(){var e=D.musSelectionScreen.siteId;return"32208"===e||"697892"===e||"50425"===e},showSelectionScreen:function(){yepnope([{test:D.isFontAwesomePresent(),nope:"https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"},{test:D.needsGD()&&!$.fn.gdimages,yep:"https://static.twoday.net/cdn/files/gdimages-min-js.js"},{test:"videoload"in window,nope:"https://static.twoday.net/cdn/files/videoload2-export-min-js.js"},{test:"undefined"==typeof Autolinker,yep:"https://cdnjs.cloudflare.com/ajax/libs/autolinker/3.14.3/Autolinker.min.js",complete:function(){D.autoLinker=new Autolinker({stripPrefix:!1,className:"autolinker"})}},{test:void 0===$.fn.chosen,yep:["https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.min.css","https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.jquery.min.js"],complete:function(){var e=$.get("/topics",function(e){D.musSelectionScreen.categories.length=0,$(e).find(".listItem td>a").each(function(){D.musSelectionScreen.categories.push($(this).text())}),D.renderScreen("musSelectionScreen"),D.needsGD()&&$("#pGoogleDrive").css("display","block"),$(".chooseCategory").chosen({width:"100%"}),yepnope({test:void 0===$.fn.pickadate,yep:["https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/picker.js","https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/picker.date.js","https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/themes/classic.css","https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/themes/classic.date.css"],complete:function(){$(".datepicker").pickadate({monthsFull:["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"],monthsShort:["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"],weekdaysFull:["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"],weekdaysShort:["So","Mo","Di","Mi","Do","Fr","Sa"],today:"Heute",clear:"Löschen",close:"Schließen",firstDay:1,format:"dd.mm.yyyy",formatSubmit:"yyyy/mm/dd",labelMonthNext:"Nächster Monat",labelMonthPrev:"Vorheriger Monat",labelMonthSelect:"Bitte Monat auswählen",labelYearSelect:"Bitte Jahr auswählen",selectMonths:!0,selectYears:!0})}}),$("#btnVersion").on("click",function(){$.getJSON("https://cdn.jsdelivr.net/gh/NeonWilderness/twodayExport@master/dist/version.json",function(e){var t,s,r,n=!1;$.each(e.packages,function(){if("twodayExport"===this.name)return n=parseFloat(this.version)>parseFloat(D.musSelectionScreen.version),t=this,!1}),r=n?(s="bgYellow",Mustache.render('<i class="fa fa-info-circle"></i>Es existiert eine neuere Version {{version}} vom {{released}}! Bitte <a target="_blank" href="{{url}}">laden</a> Sie die gepackte Layout-Datei herunter, löschen dann das bisherige Layout "twodayExport" und importieren danach die neue Version!',t)):(s="bgGreen",'<i class="fa fa-check"></i>Es gibt keine neuere Exportversion!'),$("#selMessage").html(r).addClass(s).show(0)}).fail(function(){$("#selMessage").html('<i class="fa fa-medkit"></i>Versionsinfos konnten nicht geladen werden.').addClass("bgRed").show(0)})}),$(".btnContainer .actionButton").on("click",function(e){switch(e.preventDefault(),e.target.id){case"btnCancel":D.closeOverlay();break;default:D.exportArticlesAndComments("btnInfosOnly"===e.target.id)}}),$(document).on("keyup",function(e){27===e.which&&D.closeOverlay()}),$("#selOverlay").show(200)}).fail(function(){alert("Fehler beim Lesen der Themenseite: \topics, status: "+e.status+", text: "+e.statusText)})}}])},enableExportFeature:function(){this.addExportMenuButton(),$("body").append($("#mainExport").html()),$(".startExport").on("click",function(e){e.preventDefault(),D.showSelectionScreen()})}};function e(){yepnope([{test:"undefined"==typeof jQuery,yep:["https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"],complete:function(){yepnope([{test:"undefined"==typeof Mustache,yep:["https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.2/mustache.min.js"],complete:function(){D.enableExportFeature()}}])}}])}if(!D.isUserAdministrator())return;if("undefined"==typeof yepnope){var t=document.getElementsByTagName("head")[0],s=document.createElement("script");s.type="text/javascript",s.src="https://cdnjs.cloudflare.com/ajax/libs/yepnope/1.5.4/yepnope.min.js",s.onload=e,t.appendChild(s)}else e()}()</script>
+<script type="text/javascript">(function () {
+  "use strict";
+  // core object of the blog export function
+  var twodayExport = {
+
+    // check if user is an admin
+    isUserAdministrator: function () {
+      var node = document.getElementById('exportLoginStatus'),
+        text = node.textContent || node.innerText,
+        role = text.match(/\((.*)\)/);
+      return (role ? role[1] === 'Administrator' : false);
+    },
+
+    // check if the Font Awesome css is already loaded
+    isFontAwesomePresent: function () {
+      var isLoaded = false;
+      $.each(document.styleSheets, function () {
+        isLoaded = ((this.href || '').indexOf('font-awesome.min.css') >= 0);
+        return !isLoaded; // isLoaded=false: next iteration(=continue); isLoaded=true: quits each-loop(=break)
+      });
+      return isLoaded;
+    },
+
+    // data models for the mustache templating process
+    musSelectionScreen: {
+      alias: '<% site.alias %>',
+      blog: '<% site.href %>',
+      siteId: '<% site.id %>',
+      user: '<% username %>',
+      version: '1.7.1', // will be set during dev/build stage
+      categories: []
+    },
+
+    musStatusScreen: {
+      pubArtRead: 0,
+      pubArtSelected: 0,
+      pubArtWrite: 0,
+      offArtRead: 0,
+      offArtSelected: 0,
+      offArtWrite: 0,
+      styRead: 0,
+      styWrite: 0,
+      comRead: 0,
+      comWrite: 0,
+      repRead: 0,
+      repWrite: 0,
+      filenameExport: '<% site.alias %> export.txt',
+      filenameResourceList: '<% site.alias %> url liste.html',
+      init: function (isTestRun) {
+        this.pubArtRead = 0;
+        this.pubArtSelected = 0;
+        this.pubArtWrite = 0;
+        this.offArtRead = 0;
+        this.offArtSelected = 0;
+        this.offArtWrite = 0;
+        this.styRead = 0;
+        this.styWrite = 0;
+        this.comRead = 0;
+        this.comWrite = 0;
+        this.repRead = 0;
+        this.repWrite = 0;
+        this.startTime = new Date().getTime();
+        this.isTestRun = isTestRun;
+      },
+      incValue: function (id, cnt) {
+        var add = (typeof cnt === "undefined" ? 1 : cnt);
+        this[id] += add;
+        var el = document.getElementById(id);
+        if (el) el.innerText = this[id]; else console.log('ID '+id+' not found!');
+      },
+      startTime: null,
+      timeUsed: function () {
+        var secInt = Math.floor((new Date().getTime() - this.startTime) / 1000),
+          hrs = Math.floor(secInt / 3600),
+          min = Math.floor((secInt - (hrs * 3600)) / 60),
+          sec = secInt - (hrs * 3600) - (min * 60);
+        if (hrs < 10) { hrs = "0" + hrs; }
+        if (min < 10) { min = "0" + min; }
+        if (sec < 10) { sec = "0" + sec; }
+        return hrs + ':' + min + ':' + sec;
+      }
+    },
+
+    // hold the mustache templates for a story and comment/reply (mustache partial)
+    musStory: '',
+    musPartials: {},
+
+    // output data
+    filelen: 0,
+    stories: [],
+    blobList: [],
+    resourceList: [],
+    xrefs: {},
+
+    // timeout-specs for recursive ajax reads (milliseconds) to avoid twoday server returning 403-forbidden errors
+    timeoutStories: 10,
+    timeoutBody: 5,
+    timeoutComments: 5,
+
+    // Autolinker instance (from Greg Jacobs, https://github.com/gregjacobs/Autolinker.js)
+    autoLinker: null,
+
+    // gets the input date's longint from pickadate js
+    getPicker: function (selector) {
+      var $input = $(selector).pickadate(),
+        picker = $input.pickadate('picker'),
+        item = picker.get('select');
+      return (item === null ? 0 : item.pick);
+    },
+
+    // selection screen input validation
+    validateSelectionParams: function (params) {
+      var selMessage = "",
+        //----- list of potential error messages
+        txtMessages = {
+          properDates: "Bitte geben Sie bei gewählter Zeiteingrenzung ein gültiges Von- und Bis-Datum ein!",
+          validDates: "Das Bis-Datum muss größer als das Von-Datum sein!",
+          validCatNum: "Bitte wählen Sie mindestens eine Kategorie aus (z.B. 'Alle')!",
+          validCatMix: "Entfernen Sie die 'Alle'-Kategorie, wenn Sie einzelne Kategorien selektieren wollen!",
+          validMaxNumber: "Bitte geben Sie bei gewählter Anzahlbegrenzung eine gültige <b>Beitragsanzahl</b> ein!",
+          validFromNumber: "Bitte geben Sie bei gewählter Anzahlbegrenzung eine gültige <b>Startnummer</b> ein!",
+          validBlogUrl: "Zur Adressanpassung der Twoday-Bilder bitte eine gültige neue Blogadresse eingeben!"
+        };
+      // validate user selection parameters and set related message key
+      if (!params.properDates()) selMessage = "properDates";
+      else if (!params.validDates()) selMessage = "validDates";
+      else if (!params.validCategoryNum()) selMessage = "validCatNum";
+      else if (!params.validCategoryMix()) selMessage = "validCatMix";
+      else if (!params.validMaxNumber()) selMessage = "validMaxNumber";
+      else if (!params.validFromNumber()) selMessage = "validFromNumber";
+      else if (!params.validBlogUrl()) selMessage = "validBlogUrl";
+      if (selMessage.length > 0) {
+        $("#selMessage").html(txtMessages[selMessage]).show();
+        return false;
+      }
+      else {
+        $("#selMessage").html("").hide();
+        return true;
+      }
+    },
+
+    // renders the mustache template to the screen
+    renderScreen: function (id) {
+      var html = Mustache.render($("#" + id).html(), this[id]);
+      $("#selScreen").html(html);
+      $("#btnIntro").on("click", function (e) {
+        e.preventDefault();
+        var self = $(this);
+        if (self.hasClass("onSelect")) {
+          $("#selMessage").html("").attr("class", "").hide();
+          $("#selOptions").toggle(0);
+        }
+        $("#selIntro").toggle(0);
+        self.find("i").toggleClass("fa-question fa-times");
+      });
+    },
+
+    // filters/excludes stories based on given user selection criteria
+    filterStory: function (story) {
+      // make a positive assumption
+      var isExcluded = false, sDate;
+      // 1st check: is the story within the given date range if date selection was requested?
+      if (this.params.selDate) {
+        sDate = Date.parse(story.date);
+        isExcluded = sDate < this.params.fromDate || sDate > this.params.toDate;
+      }
+      // 2nd check: check if only public stories are to be selected
+      if (!isExcluded && this.params.selStatus === "mystories") {
+        isExcluded = (story.status === "draft");
+      }
+      // 3rd check: does story have a relevant category?
+      if (!isExcluded) {
+        isExcluded = !this.params.isSelectedCategory(story.category);
+      }
+      return isExcluded;
+    },
+
+    //- folds the overlay screen
+    closeOverlay: function () {
+      $(document).off("keyup");
+      $("#selOverlay").hide(400);
+    },
+
+    //- renders a message text
+    renderMessage: function (msgText, msgClass) {
+      $("#selMessage>span:first")
+        .text(msgText)
+        .parent()
+        .addClass(msgClass)
+        .show(400);
+      $("#btnOK").on("click", function (e) {
+        e.preventDefault();
+        twodayExport.closeOverlay();
+      });
+    },
+
+    //- renders a warning that no stories were selected due to given selection constraints
+    renderWarning: function () {
+      this.renderMessage("Für die gewählten Filterkriterien wurden keine Beiträge gefunden!", "bgYellow");
+    },
+
+    //- renders an error caused by an ajax read issue
+    renderError: function (errMsg) {
+      this.renderMessage(errMsg, "");
+    },
+
+    //- recursively reads story overview pages and extracts core story data
+    recursiveStories: function (currPage, stories) {
+      var pageUrl = "/stories/" + this.params.selStatus + "?page=" + currPage;
+      var xhr = $.get(pageUrl, function (data) {
+        var $admin = $(data).find(".admin"), lastPage, totalFiles, x, y;
+        if (twodayExport.params.debugMode) console.log("Read story overview page: ", pageUrl);
+        $admin.find(".listItem").each(function () {
+          var $this = $(this), $leftCol = $this.find(".leftCol"), story = {};
+          story.title = $.trim($this.find("tr>td>b").text());
+          x = $leftCol.text();
+          story.id = x.match(/id="(.*)"/)[1];
+          y = x.match(/Status: (.*)\s/)[1].split(",")[0].split(" in ");
+          story.status = (y[0] === "online" ? "publish" : "draft");
+          x = $leftCol.find("a[href*=topics]").eq(0).text();
+          story.category = (x.length > 0 ? x : (story.status === "publish" ? "Unkategorisiert" : "Unveröffentlicht"));
+          x = $leftCol.find(">span").eq(2);
+          y = x.text();
+          story.author = y.match(/erstellt von (.*) am/)[1];
+          if (twodayExport.params.delGuest) story.author = story.author.replace(" (Gast)", "");
+          y = y.match(/ am (.*)/)[1];
+          story.date = y.slice(6, 10) + "-" + y.slice(3, 5) + "-" + y.slice(0, 2) + y.slice(10);
+          y = x.find(">a");
+          story.url = (y.length > 0 ? y.attr("href") : "");
+          twodayExport.musStatusScreen.incValue(story.status === "publish" ? "pubArtRead" : "offArtRead");
+          if (!twodayExport.filterStory(story)) stories.push(story);
+        });
+        var $navSummary = $admin.find(".pageNavSummary:first");
+        if ($navSummary.length === 0) {
+          lastPage = 0;
+        } else {
+          totalFiles = parseInt($navSummary.text().split(" ")[3], 10);
+          lastPage = Math.floor(totalFiles / 20);
+        }
+        if (currPage < lastPage) {
+          document.getElementById('mMain').style.width = (currPage + 1) * 20 / totalFiles * 100 + '%';
+          setTimeout(function () { return twodayExport.recursiveStories(currPage + 1, stories); }, twodayExport.timeoutStories);
+        } else if (stories.length > 0) {
+          document.getElementById('mMain').style.width = '100%';
+          // sorts storyarray descending (newest to the top)
+          stories.sort(function (a, b) { return Date.parse(b.date) - Date.parse(a.date); });
+          // save the oldest=first story-id to help filter niceurls
+          var oldestID = stories[stories.length - 1].id;
+          twodayExport.params.oldestIDLen = oldestID.length;
+          twodayExport.params.oldestIDVal = parseInt(oldestID);
+          // crunch down the stories array to the requested number package (if so requested)
+          if (twodayExport.params.selNumber) twodayExport.stories = stories.slice(twodayExport.params.sliceFrom(), twodayExport.params.sliceTo());
+          return twodayExport.recursiveBody(0, twodayExport.stories);
+        } else {
+          twodayExport.renderWarning();
+        }
+      })
+        .fail(function () {
+          if (twodayExport.params.debugMode) console.log(">>>Fail to read storyPage: ", pageUrl, xhr.status, xhr.statusText);
+          twodayExport.renderError("Fehler beim Lesen der Beitragsübersichtsseite: " + pageUrl + ", status: " + xhr.status + ", text: " + xhr.statusText);
+        });
+    },
+
+    //- converts niceurl story references back to a plain story-id reference (so that they can later be refactored to wordpress urls by means of the import plugin)
+    convertNiceUrlToStoryID: function (slug, xref) { // example: slug="videodemo", xref={ storyID: "12345678", refIdx: [ 5, 20, 49 ] }
+      try {
+        // do the replacement only if there is a valid storyID
+        if (!('storyID' in xref)) {
+          console.log('>>> Missing storyID field in: ' + slug + ' - xref-Object: ' + JSON.stringify(xref));
+          return;
+        }
+        if (xref.storyID && xref.storyID.length > 0) {
+          var story,
+            storyHref = twodayExport.params.siteStoriesHref + '/', // e.g. "neonwilderness.twoday.net/stories/"
+            regNiceUrl = new RegExp(storyHref + slug, 'gi'),
+            strStoryidUrl = storyHref + xref.storyID;
+          // for each of the found references for the same slug: get the story's body and replace slug for storyid
+          for (var i = 0, arr = xref.refIdx, len = arr.length; i < len; ++i) {
+            story = twodayExport.stories[arr[i]];
+            story.body = story.body.replace(regNiceUrl, strStoryidUrl);
+          }
+        }
+        if (twodayExport.params.debugMode) { console.log("convertNiceUrlToStoryID: slug=" + slug + ", storyID=" + xref.storyID + ", #stories=" + xref.refIdx.length); }
+      } catch(err) {
+        console.log('>>>Error: '+err+', slug: '+slug+', xref:', xref);
+      }
+    },
+
+    //- find the remaining storyIDs of stories not included in this export package, i.e. explicitely read the story via ajax
+    addMissingNiceUrlStoryIDs: function (currXrefIdx, xrefKeys) {
+      var slug = xrefKeys[currXrefIdx],
+        xref = twodayExport.xrefs[slug];
+      if (xref.storyID.length > 0) {
+        twodayExport.convertNiceUrlToStoryID(slug, xref);
+        currXrefIdx += 1;
+        if (currXrefIdx < xrefKeys.length) {
+          return twodayExport.addMissingNiceUrlStoryIDs(currXrefIdx, xrefKeys);
+        } else {
+          return twodayExport.renderStories();
+        }
+      } else {
+        var xrefUrl = '/stories/' + slug,
+          xhr = $.get(xrefUrl, function (data) {
+            var $story = $(data).find(".story");
+            xref.storyID = $story.attr("data-storyid");
+            twodayExport.convertNiceUrlToStoryID(slug, xref);
+            currXrefIdx += 1;
+            if (currXrefIdx < xrefKeys.length) {
+              setTimeout(function () { return twodayExport.addMissingNiceUrlStoryIDs(currXrefIdx, xrefKeys); }, twodayExport.timeoutBody);
+            } else {
+              return twodayExport.renderStories();
+            }
+          })
+            .fail(function () {
+              if (twodayExport.params.debugMode) console.log(">>>Fail to read source story: ", xrefUrl, xhr.status, xhr.statusText);
+              currXrefIdx += 1;
+              if (currXrefIdx < xrefKeys.length) {
+                setTimeout(function () { return twodayExport.addMissingNiceUrlStoryIDs(currXrefIdx, xrefKeys); }, twodayExport.timeoutBody);
+              } else {
+                return twodayExport.renderStories();
+              }
+            });
+      }
+    },
+
+    //- assigns the numeric storyID to all saved alpha (niceUrls) cross referenced stories
+    assignNiceUrlsStoryID: function () {
+      // pointer to the xref object that holds all cross referenced story urls
+      var xrefs = this.xrefs;
+      // were any alpha xrefs used (and saved)? if no, then return without action
+      var lenXrefs = Object.keys(xrefs).length;
+      if (lenXrefs === 0) return;
+      // loop over all stories
+      var found = 0;
+      $.each(this.stories, function (index, story) {
+        // extract the slug (basename-string without the story-id)
+        var slug = story.basename.slice(0, story.basename.lastIndexOf("-"));
+        // has this slug been used as an internal cross reference link? yes, then add the numeric story.id to the entry
+        if (typeof xrefs[slug] !== "undefined") {
+          xrefs[slug].storyID = story.id;
+          found++;
+        }
+      });
+      if (twodayExport.params.debugMode) console.log("End of assignNiceUrlsStoryID: #xrefs=", lenXrefs, "#IDs found=", found);
+    },
+
+    // returns TRUE if basename is a niceurl
+    isNiceUrl: function(basename) {
+      if (basename.length === 0) return false;
+      if ($.isNumeric(basename))
+        return (basename.length < twodayExport.params.oldestIDLen &&
+          parseInt(basename) < twodayExport.params.oldestIDVal);
+      else return true;
+    },
+
+    //- save all identified nice url cross references to other stories to a global xref array for later processing
+    saveNiceUrlXrefs: function (story, index) {
+      var match, niceUrl, i, l, xref;
+      // find all internal story cross references in this story.body
+      $("<div>").html(story.body).find('a[href*="' + twodayExport.params.siteStoriesHref + '"]').each(function () {
+        // extract the last part of the url
+        match = this.href.match(/\/stories\/(.*)\/?/);
+        if (match === null) return true;
+        // save as niceUrl and reduce urls such as 'stories/6116682/' or 'stories/6116682/main' or 'stories/6116682#6117220' ==> 6116682
+        niceUrl = match[1].split('#')[0]; // eliminate comment-IDs
+        niceUrl = niceUrl.split('?')[0];  // eliminate query params
+        niceUrl = niceUrl.split('/')[0];  // eliminate /main or /edit additions
+        // if it is not a number (i.e. the plain Twoday storyID) but a real alphanumeric niceurl instead
+        if (twodayExport.isNiceUrl(niceUrl)) {
+          // then check if this is the first xref for this niceurl
+          if (typeof twodayExport.xrefs[niceUrl] === "undefined") {
+            // yes, then put initial entry and index reference to the story where it occured
+            twodayExport.xrefs[niceUrl] = { storyID: '', refIdx: [index] };
+            if (twodayExport.params.debugMode) console.log("Init xref: " + niceUrl + " in basename: " + story.basename);
+          } else {
+            // it has been found before: then check if it is a new story index
+            for (i = 0, xref = twodayExport.xrefs[niceUrl], l = xref.refIdx.length; i < l; ++i) {
+              if (xref.refIdx[i] === index) break;
+            }
+            // if the index number is new, then add the reference to the existing entry
+            if (i >= l) twodayExport.xrefs[niceUrl].refIdx.push(index);
+          }
+        }
+      });
+    },
+
+    //- make sure only legit characters are part of the basename (a-z 0-9 _ -)
+    legitSlugChars: function (slug) {
+      return slug
+        .toLowerCase()
+        .replace(/ä/g, "ae")
+        .replace(/ö/g, "oe")
+        .replace(/ü/g, "ue")
+        .replace(/ß/g, "ss")
+        .replace(/[^\w ]+/g, '')
+        .trim()
+        .replace(/ +/g, '-');
+    },
+
+    // converts all googledrive-class elements to plain img sources
+    transformGDRefs: function (body) {
+      // early exit if no googledrive usage in this story
+      if (body.indexOf('googledrive') < 0) return body;
+      // make body a jquery element
+      var $body = $("<div>").html(body), gdOptions;
+      // search and process all googledrive refs
+      if (twodayExport.musSelectionScreen.siteId === '50425') // doktorp
+        gdOptions = {
+          gdDomain: 'https://static.twoday.net',
+          gdRootFolder: '/doktorp',
+          gdSubFolder: 'images',
+          addClass: 'transformed',
+          titleContent: 'keep'
+        };
+      else // NW
+        gdOptions = {
+          gdDomain: 'https://neonwilderness.de',
+          gdRootFolder: '/public',
+          gdSubFolder: 'images',
+          addClass: 'neonimg th',
+          titleContent: 'keep'
+        };
+      $body.find('.googledrive').gdimages().init(gdOptions);
+      return $body.html();
+    },
+
+    // converts all html5video-class element to real iframes for target plattform
+    transformVideoloadRefs: function (body) {
+      // early exit if no videoload usage
+      if (body.indexOf('html5video') < 0) return body;
+      // allocate work div for videoload iframe generation
+      var $work = $('#workDiv');
+      // make body a jquery element
+      var $body = $("<div>").html(body);
+      // search and process all video refs
+      var $vids = $body.find('.html5video');
+      $vids.each(function (index, item) {
+        var widthClass = item.className.match(/width-[0-9]+/);
+        var newWidth = 'width-' + twodayExport.params.videowidth;
+        if (widthClass) {
+          item.className = item.className.replace(widthClass[0], newWidth);
+        } else {
+          item.className += ' ' + newWidth;
+        }
+        $work.append($(item).clone());
+      });
+      window.video2day.run({ exportRun: true });
+      $work
+        .find('.html5video')
+        .each(function (index, item) {
+          $vids.eq(index).html(item.dataset.content);
+        });
+      $work.empty();
+      return $body.html();
+    },
+
+    staticURL: 'https://static.twoday.net',
+
+    sanitizeLinks: function (body) {
+      body = body.replace(/((http|https):)?\/\/static\.twoday\.net/gi, this.staticURL);
+      body = body.replace(/((http|https):)?\/\/twoday\.net\/static/gi, this.staticURL);
+      body = body.replace(new RegExp('//+"'), '/');
+      body = body.replace(new RegExp('\\n-{8}\\n', 'g'), '\n|--------\n');
+      body = body.replace(new RegExp('\\n-{5}\\n', 'g'), '\n|-----\n');
+      if (this.params.siteId === 53472) // kunstbetrieb
+        body = '<div style="width:500px">'+body+'</div>'; // ugly hard code to limit width
+      return body;
+    },
+
+    //- reads the body html of all selected stories
+    recursiveBody: function (currStoryIdx, stories) {
+      var story = stories[currStoryIdx],
+        storyEditUrl = "/stories/" + story.id + "/edit";
+      this.musStatusScreen.incValue(story.status === "publish" ? "pubArtSelected" : "offArtSelected");
+      var xhr = $.get(storyEditUrl, function (data) {
+        var $admin = $(data).find(".admin"),
+          slug = $admin.find("#modNiceUrlsText").text();
+        story.body = $admin.find(".formText").text();
+        if (twodayExport.params.debugMode) console.log("Read source of story: ", storyEditUrl);
+        story.body = twodayExport.sanitizeLinks(story.body);
+        if (twodayExport.params.googleDrive) story.body = twodayExport.transformGDRefs(story.body);
+        if (twodayExport.params.videowidth > 0) story.body = twodayExport.transformVideoloadRefs(story.body);
+        if (slug.length === 0) { 
+          slug = twodayExport.legitSlugChars(story.title);
+          if (slug.length === 0) slug = 'notitle';
+        }
+        story.basename = slug + "-" + story.id;
+        story.allowcomments = Math.abs(!$admin.find("#discussions").prop("checked") - 1).toString();
+        twodayExport.musStatusScreen.incValue("styRead");
+        currStoryIdx += 1;
+        if (currStoryIdx < stories.length) {
+          document.getElementById('mStories').style.width = currStoryIdx / stories.length * 100 + '%';
+          setTimeout(function () { return twodayExport.recursiveBody(currStoryIdx, stories); }, twodayExport.timeoutBody);
+        } else {
+          document.getElementById('mStories').style.width = '100%';
+          return twodayExport.recursiveComments(0, stories);
+        }
+      })
+        .fail(function () {
+          if (twodayExport.params.debugMode) console.log(">>>Fail to read source story: ", storyEditUrl, xhr.status, xhr.statusText);
+          twodayExport.renderError("Fehler beim Lesen des Beitrags: " + storyEditUrl + ", status: " + xhr.status + ", text: " + xhr.statusText);
+        });
+
+    },
+
+    //- comment data extraction selectors/functions for plain twoday standard
+    selectorsStandard: {
+      set: "Standard",
+      comments: ".comments",
+      commentDate: ">.commentDate|text",
+      commentAuthor: ">.commentDate>a|text",
+      commentUrl: ">.commentDate>a|href",
+      commentTitle: ">h4|text",
+      commentBody: ">div:nth-child(3)|html",
+      reply: ">.reply",
+      d2: function (digit) { return (("" + digit).length < 2 ? "0" + digit : "" + digit); },
+      months: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
+      getMonth: function (strMonth) { return $.inArray(strMonth, this.months) + 1; },
+      extractDate: function (dateStr, storyDate) {
+        var x = dateStr.split(" - ")[1],
+          day = x.match(/(.*)\./)[1],
+          month = this.getMonth(x.match(/\s(.*)\,/)[1]),
+          year = storyDate.slice(0, 4),
+          time = x.match(/\, (.*)/)[1];
+        x = year + "-" + this.d2(month) + "-" + this.d2(day) + " " + time;
+        return ((Date.parse(x) < Date.parse(storyDate)) ? (parseInt(year, 10) + 1).toString() + x.slice(4) : x);
+      },
+      anonymousAuthor: function ($item) { return ($item.find(">.commentDate").text().split(" - ")[0]); }
+    },
+
+    //- comment data extraction selectors/functions for imported export layout usage
+    selectorsLayout: {
+      set: "Layout",
+      comments: ".comments",
+      commentDate: ">.commentDate|text",
+      commentAuthor: ">.commentDate>a|text",
+      commentUrl: ">.commentDate>a|href",
+      commentTitle: ">h4|text",
+      commentBody: ">div:nth-child(3)|html",
+      reply: ">.reply",
+      extractDate: function (dateStr) {
+        return dateStr.split(" - ").pop();
+      },
+      anonymousAuthor: function ($item) { return ($item.find(">.commentDate").text().split(" - ")[0]); }
+    },
+
+    //- comment data extraction selectors/functions for a foundation blog
+    selectorsFoundation: {
+      set: "Foundation",
+      comments: ".comments",
+      commentDate: ".commentDate:first>span|title",
+      commentAuthor: ".commentUser:first>a|text",
+      commentUrl: ".commentUser:first>a|href",
+      commentTitle: ".commentTitle:first|text",
+      commentBody: ".commentText:first|html",
+      reply: ">.reply",
+      extractDate: function (dateStr) {
+        return dateStr.slice(0, 16);
+      },
+      anonymousAuthor: function ($item) { return ($item.find(".commentUser:first").text().match(/(.*)\s/)[1]); }
+    },
+
+    //- define the relevant jquery selectors to extract data from comments and replies
+    commentSelectors: {
+      //----- define different sets and how to recognize them in the core domain html
+      sets: [
+        { id: "Layout", checkfor: "#exportLayout" },
+        { id: "Foundation", checkfor: "#f5Body" },
+        { id: "Standard", checkfor: "" }
+      ],
+      //----- determine the set type for this blog and integrate the related selector set
+      initSet: function () {
+        $.each(this.sets, function () {
+          if (this.checkfor.length === 0 || $(this.checkfor).length > 0) {
+            $.extend(twodayExport.commentSelectors, twodayExport["selectors" + this.id]);
+            return false;
+          }
+        });
+      },
+      //----- retrieve a selectors first element content: text, html or specific attribute
+      retrieveDOMValue: function ($item, selector) {
+        var select = this[selector].split("|"),
+          elem = $item.find(select[0]).eq(0);
+        if (elem.length > 0) {
+          switch (select[1]) {
+            case "text": return elem.text();
+            case "html": return elem.html();
+            default: return elem.attr(select[1]);
+          }
+        } else {
+          return "";
+        }
+      }
+    },
+
+    //- reads the body/date of comments and replies of all selected stories
+    recursiveComments: function (currStoryIdx, stories) {
+
+      var story = stories[currStoryIdx],
+        storyMainUrl = "/stories/" + story.id,
+        s = this.commentSelectors,
+        p = this.params;
+
+      function getFullImgName(imgName) {
+        // early exit if no name given
+        if (!imgName.length) return '';
+        // check if alias name was used, e.g. name="seenia/IMG_12345"
+        if (imgName.indexOf('/') >= 0) {
+          var imgParts = imgName.split('/');
+          if (imgParts[0] === '<% site.alias %>')
+            imgName = imgParts[1];
+          else
+            // return if alias is not self
+            return '';
+        }
+        // finds the full image name (incl. extension) or returns an empty string
+        for (var i = 0, len = story.images.length, fullname; i < len; ++i) {
+          fullname = story.images[i];
+          if (imgName === fullname.split('.')[0]) return fullname;
+        }
+        // img was not found: does user want to keep img tag?
+        if (p.keepImg) {
+          // yes, then just assume a jpg extension
+          imgName += '.jpg';
+          // and add the img to the url list
+          story.images.push(imgName);
+          return '|' + imgName;
+        } else return '';
+      }
+
+      // macro: file name="name"
+      function fileMacro(attrSet) {
+        var template = '<a target="_blank" href="{{&url}}">{{&name}} ({{&ext}})</a>';
+        var name = attrSet.name || '';
+        if (name && story.files.hasOwnProperty(name)) {
+          var file = story.files[name];
+          file.name = name;
+          return Mustache.render(template, file);
+        } else
+          return '';
+      }
+
+      // macro: image name="name" align="align" border="border" class="class" height="height" linkto="linkto" href="linkto" width="width"
+      function imageMacro(attrSet) {
+        var template = '{{#linkto}}<a{{&target}} href="{{&linkto}}">{{/linkto}}<img src="{{&fullName}}" alt="{{&name}}"{{&class}}{{&align}}{{&width}}{{&height}}{{&border}}>{{#linkto}}</a>{{/linkto}}';
+        var sanitize = function (prop, quote) {
+          if (attrSet[prop])
+            attrSet[prop] = ' ' + prop + '=' + (quote ? '"' + attrSet[prop] + '"' : attrSet.prop);
+        };
+        if (!attrSet.fullName) {
+          // try to find the name/ext of the image
+          var name = getFullImgName(attrSet.name || '');
+          // not found and user does not want to keep the tag
+          if (name.length === 0) return '';
+          // is it a deleted img that should be kept as img tag
+          if (name.charAt(0) === '|') {
+            name = name.slice(1);
+            if (attrSet.class)
+              attrSet.class += ' notFound';
+            else
+              attrSet.class = 'notFound';
+          }
+          attrSet.fullName = p.staticImgUrl + name;
+        }
+        sanitize('align', true);
+        sanitize('border', true);
+        sanitize('class', true);
+        sanitize('height', true);
+        if (attrSet.href) attrSet.linkto = attrSet.href;
+        sanitize('target', true);
+        if (p.siteId === 53472) // kunstbetrieb
+          attrSet.width = (story.images.length>1 ? '248' : '500'); // kunstbetrieb special
+        sanitize('width', true);
+        return Mustache.render(template, attrSet);
+      }
+
+      // macro: link to="to" text="text"
+      function linkMacro(attrSet) {
+        var template = '<a{{#target}}{{&target}}{{/target}} href="{{&to}}">{{&text}}</a>';
+        attrSet.to = attrSet.to || '';
+        attrSet.text = attrSet.text || attrSet.to;
+        if (attrSet.target) attrSet.target = ' target="' + attrSet.target + '"';
+        return Mustache.render(template, attrSet);
+      }
+
+      // macro: gallery images="imagename, imagename, imagename, imagename..."
+      function galleryMacro(attrSet, index, $content) {
+        // find the matching entire table gallery in the rendered html
+        var $gallery = $content.find('table.gallery')
+          .eq(index)
+          .css('width', '100%')
+          .addClass('regenerated');
+        // find all links in the table  
+        $gallery.find('a').each(function () {
+          this.innerHTML = imageMacro({
+            fullName: this.href,
+            width: '100%'
+          });
+        });
+        return $gallery[0].outerHTML;
+      }
+
+      function fixManualTableGalleries(body) {
+        if (body.indexOf('"gallery') < 0) return body; // early exit if nothing to do
+        var $body = $('<div>').html(body);
+        $body.find('table.gallery').not('.regenerated').each(function (index, gallery) {
+          $(gallery)
+            .css('width', '100%')
+            .addClass('manual')
+            .find('a').each(function () {
+              var imageName = this.href.split('/').pop().split('.')[0];
+              var fullName = p.staticImgUrl + getFullImgName(imageName);
+              this.outerHTML = imageMacro({
+                href: fullName,
+                fullName: fullName,
+                width: '100%'
+              });
+            });
+        });
+        return $body.html();
+      }
+
+      // macro: poll id="alias/id" as="results"
+      function pollMacro(attrSet, index, $content) {
+        // isolate poll-id (eliminate potential alias)
+        attrSet.id = attrSet.id.split('/').reverse()[0];
+        // get the rendered poll div
+        var $renderedPoll = $content.find('#twodayPoll-' + attrSet.id);
+        // found? then replace poll macro with actual rendered poll HTML
+        return ($renderedPoll.length ? $renderedPoll[0].outerHTML : '');
+      }
+
+      // macro: story.link text="text"
+      function storyLinkMacro(attrSet) {
+        return linkMacro({
+          to: '<% site.href %>stories/' + story.id,
+          text: attrSet.text || 'Link zum Beitrag'
+        });
+      }
+
+      // macro: story.url
+      function storyUrlMacro(attrSet) {
+        return '<% site.href %>stories/' + story.id;
+      }
+
+      function convertInQuoteSpaces(param, hide) {
+        var search = new RegExp(hide ? ' ' : '\xa0', 'g');
+        var replace = (hide ? '\xa0' : ' ');
+        var literals = param.match(/(".*?")/g);
+        if (literals) literals.map(function (literal) {
+          param = param.replace(literal, literal.replace(search, replace));
+        });
+        return param;
+      }
+
+      function splitMacroParams(macro) {
+        return convertInQuoteSpaces(macro, true).split(' '); // hide in-quote-spaces then split by space
+      }
+
+      function processTwodayMacro(body, $content, macroName, callback) {
+        var reg = new RegExp('<\\%\\s*' + macroName + '\\s.*?\\s*%>', 'gi');
+        var macros = body.match(reg);
+        if (macros) macros.map(function (macro, index) {
+          var subs = splitMacroParams(macro.slice(2, macro.length - 4).trim());
+          var attrSet = subs.reduce(function (all, item) {
+            var i = item.indexOf('=');
+            if (i >= 0) {
+              var param = item.slice(0, i);
+              var value = item.slice(i + 1);
+              all[param] = convertInQuoteSpaces(value, false).replace(/^["'](.+)["']$/, '$1');
+            }
+            return all;
+          }, {});
+          body = body.replace(macro, callback(attrSet, index, $content));
+        });
+        return body;
+      }
+
+      function changeStaticImgUrls(body) {
+        // change all actual static img references if user requested an URL change
+        return (p.urlChange ? body.replace(p.regStaticImg, p.wpMediaUrl) : body);
+      }
+
+      function changeStaticFileUrls(body) {
+        // change all actual static file references if user requested an URL change
+        return (p.urlChange ? body.replace(p.regStaticFile, p.wpMediaUrl) : body);
+      }
+
+      function processAllTwodayMacros(body, $content) {
+        var tdMacros = [
+          { tag: 'file', cb: fileMacro },
+          { tag: 'gallery', cb: galleryMacro },
+          { tag: 'image', cb: imageMacro },
+          { tag: 'link', cb: linkMacro },
+          { tag: 'poll', cb: pollMacro },
+          { tag: 'story\\.link', cb: storyLinkMacro },
+          { tag: 'story\\.url', cb: storyUrlMacro }
+        ];
+        tdMacros.map(function (macro) {
+          body = processTwodayMacro(body, $content, macro.tag, macro.cb);
+        });
+        body = fixManualTableGalleries(body);
+        body = changeStaticImgUrls(body);
+        return changeStaticFileUrls(body);
+      }
+
+      // processes a comment or reply block and extracts relevant information
+      function processCommentOrReply($item, type, counter) {
+        var comment = {},
+          title = s.retrieveDOMValue($item, 'commentTitle'),
+          body = s.retrieveDOMValue($item, 'commentBody'),
+          dateStr = s.retrieveDOMValue($item, 'commentDate');
+        comment.date = s.extractDate(dateStr, story.date);
+        comment.type = type;
+        comment.author = s.retrieveDOMValue($item, 'commentAuthor');
+        if (comment.author.length === 0) comment.author = s.anonymousAuthor($item);
+        if (p.delGuest) comment.author = comment.author.replace(' (Gast)', '');
+        comment.url = s.retrieveDOMValue($item, 'commentUrl');
+        comment.body = fixManualTableGalleries(title.length > 0 ? title + ' ' + body : body);
+        comment.body = changeStaticImgUrls(comment.body);
+        if (p.videowidth > 0) comment.body = twodayExport.transformVideoloadRefs(comment.body);
+        twodayExport.musStatusScreen.incValue(counter === 'C' ? 'comRead' : 'repRead');
+        return comment;
+      }
+
+      //----- checks if a comment is a Trackback-URL or a list of actual trackbacks; these will be skipped
+      function isTrackbackComment($comment) {
+        return (($comment.text().indexOf('/modTrackback') >= 0) || ($comment.find('a[name="trackbacks"]').length > 0));
+      }
+
+      //----- reads the story (now in rendered mode) to take over comments and replies
+      var xhr = $.get(storyMainUrl, function (data) {
+        var $content = $(data).find('#content');
+
+        if (twodayExport.params.debugMode) console.log('Read rendered story: ', storyMainUrl);
+
+        //--------- find all static images and remember their filenames (once for multiple references)
+        var imgUrl, imgFile;
+        story.images = [];
+        $content.find('img').each(function () {
+          imgUrl = this.src || '';
+          if (imgUrl.match(p.regStaticImg)) {
+            imgFile = imgUrl.slice(imgUrl.lastIndexOf('/') + 1);
+            // eliminates the "_small"-suffix for thumbnail/popup-images
+            if (p.siteId !== 53472) imgFile = imgFile.replace('_small.', '.');
+            if (story.images.indexOf(imgFile) < 0) story.images.push(imgFile);
+          }
+        });
+
+        //--------- find all static files and remember their data (once for multiple references)
+        story.files = {};
+        $content.find('.fileMacro').each(function () {
+          story.files[this.dataset.name] = { url: this.dataset.url, ext: this.dataset.ext };
+        });
+
+        // render important Twoday macros and replace static Twoday url if requested
+        story.body = processAllTwodayMacros(story.body, $content);
+
+        // run autolinker if requested by user
+        if (twodayExport.params.autoLink) story.body = twodayExport.autoLinker.link(story.body);
+
+        // save nice urls for later replacement
+        twodayExport.saveNiceUrlXrefs(story, currStoryIdx);
+
+        //--------- save story.reads counter
+        if (twodayExport.params.readCount) {
+          story.body += '\n[#' + ($content.find('.story').attr('data-reads') || '0') + ']';
+        }
+
+        //--------- save processed comments/replies
+        story.comments = [];
+        var $comments = $content.find(s.comments);
+        story.cntComments = $comments.length;
+        story.cntReplies = 0;
+        $comments.each(function () {
+          var $comment = $(this);
+          if (!isTrackbackComment($comment)) {
+            story.comments.push(processCommentOrReply($comment, 'COMMENT', 'C'));
+            var $replies = $comment.find(s.reply);
+            story.cntReplies += $replies.length;
+            $replies.each(function () {
+              var $reply = $(this);
+              story.comments.push(processCommentOrReply($reply, p.typeReply, 'R'));
+            });
+          }
+        });
+
+        //--------- recursively process all stories
+        currStoryIdx += 1;
+        if (currStoryIdx < stories.length) {
+          document.getElementById('mComments').style.width = currStoryIdx / stories.length * 100 + '%';
+          setTimeout(function () { return twodayExport.recursiveComments(currStoryIdx, stories); }, twodayExport.timeoutComments);
+        } else {
+          document.getElementById('mComments').style.width = '100%';
+          if (twodayExport.params.debugMode) console.log('>>> xrefs:', JSON.stringify(twodayExport.xrefs, null, 2));
+          twodayExport.assignNiceUrlsStoryID();
+          var xrefKeys = Object.keys(twodayExport.xrefs);
+          if (xrefKeys.length > 0) {
+            return twodayExport.addMissingNiceUrlStoryIDs(0, xrefKeys);
+          } else {
+            return twodayExport.renderStories();
+          }
+        }
+      })
+        .fail(function () {
+          if (twodayExport.params.debugMode) console.log('>>>Fail to read rendered story: ', storyMainUrl, xhr.status, xhr.statusText);
+          twodayExport.renderError('Fehler beim Lesen der Beitrags: ' + storyMainUrl + ', status: ' + xhr.status + ', text: ' + xhr.statusText);
+        });
+
+    },
+
+    //- render a single story including all comments and replies as a mustache partial and update total output length
+    renderStory: function (story) {
+      var extStory = Object.assign({}, story, {url: story.url || this.musSelectionScreen.blog});
+      var output = Mustache.render(this.musStory, extStory, this.musPartials);
+      this.filelen += output.length;
+      if (twodayExport.params.debugMode) console.log('Render export for story: ', story.basename, 'FileLen: ', this.filelen);
+      return output;
+    },
+
+    mergeImageAndFileResources: function (story) {
+      var resources = [], file;
+      story.images.map(function (imageName) {
+        resources.push({ isImage: true, name: imageName, source: this.params.staticImgUrl + imageName });
+      }, this);
+      Object.keys(story.files).map(function (fileName) {
+        file = story.files[fileName];
+        resources.push({ isImage: false, name: fileName + '.' + file.ext, source: file.url });
+      });
+      return resources;
+    },
+
+    //- render the list of static twoday images as a html report
+    renderResourceList: function (story) {
+      var musResources = '<p><div>Beitrag: <a target="_blank" href="<% site.href %>stories/{{id}}">{{title}}</a> vom {{date}}:</div><ol>{{#resources}}{{>resource}}{{/resources}}</ol></p>',
+        dataResources = {
+          id: story.id,
+          title: story.title,
+          date: story.date,
+          resources: this.mergeImageAndFileResources(story)
+        },
+        partials = { resource: '<li><a class="resource {{#isImage}}image{{/isImage}}{{^isImage}}file{{/isImage}}" target="_blank" href="{{&source}}">{{name}}</a>{{^isImage}} (Datei){{/isImage}}' + (this.params.urlChange ? ' geändert in ' + this.params.wpMediaUrl + '{{name}}' : '') + '</li>' },
+        output = Mustache.render(musResources, dataResources, partials);
+      this.resourceList.push(output);
+    },
+
+    //- renders all stories into the extended movable type format and pushes the output text into a blob array
+    renderStories: function () {
+      var output,
+        blobs = this.blobList,
+        status = this.musStatusScreen,
+        isExportRun = !status.isTestRun;
+      //----- renders sorted stories
+      $.each(this.stories, function () {
+        output = twodayExport.renderStory(this);
+        if (isExportRun) {
+          blobs.push(output);
+          status.incValue(this.status === 'publish' ? 'pubArtWrite' : 'offArtWrite');
+          status.incValue('styWrite');
+          status.incValue('comWrite', this.cntComments);
+          status.incValue('repWrite', this.cntReplies);
+        }
+        if (this.images.length || this.files.length) twodayExport.renderResourceList(this);
+      });
+      //----- displays final wrap-up message
+      this.renderInfoMessage();
+    },
+
+    //- write the blob array to a file by using "saveAs" provided by the awesome FileSaver.js
+    writeExportFile: function () {
+      var blob = new Blob([this.blobList.join('')], { type: 'text/plain;charset=utf-8' });
+      window.saveAs(blob, this.musStatusScreen.filenameExport);
+
+      var musResourceList = $('#musResourceList').html(), docList, resList,
+        listParams = $.extend({}, this.musSelectionScreen, {
+          storyResources: this.resourceList
+        }, this.params);
+      if (this.resourceList.length === 0) this.resourceList.push('<p>*** Keine statischen Twoday-Bildadressen gefunden. ***</p>');
+      docList = Mustache.render(musResourceList, listParams);
+      resList = new Blob([docList], { type: 'text/html;charset=utf-8' });
+      window.saveAs(resList, this.musStatusScreen.filenameResourceList);
+    },
+
+    //- render the final status message along with processing time, calculated size of output file
+    renderInfoMessage: function () {
+      var tmpl = 'Export{{#isTestRun}}testlauf{{/isTestRun}} ohne Fehler beendet nach {{timeUsed}} (hh:mm:ss), ',
+        html = Mustache.render(tmpl + Math.round(this.filelen / 1024) + ' KB', this.musStatusScreen);
+      $('#selMessage>span:first').html(html).parent().addClass('bgGreen').show(400);
+      if (twodayExport.params.debugMode) console.log('--------------- End of blog export process ---------------');
+      //----- load Filesaver.js and do the file export if this is not a test run
+      if (!this.musStatusScreen.isTestRun) {
+        yepnope([
+          {
+            test: (typeof window.saveAs === 'undefined'),
+            yep: ['https://static.twoday.net/cdn/files/filesaver-min-js.js'],
+            complete: function () {
+              $('#selHint, #btnFile').show();
+              $('#btnFile').on('click', function (e) {
+                e.preventDefault();
+                twodayExport.writeExportFile();
+              });
+            }
+          }
+        ]);
+      }
+      //----- activate OK button, close screen once clicked and free up used space from the big arrays
+      $('#btnOK').on('click', function (e) {
+        e.preventDefault();
+        twodayExport.closeOverlay();
+        twodayExport.stories.length = 0;
+        twodayExport.blobList.length = 0;
+      });
+    },
+
+    //- get/validate selection screen parameters and prepare export procedure
+    exportArticlesAndComments: function (isTestRun) {
+      //----- initialize counters and set the start time
+      this.musStatusScreen.init(isTestRun);
+      //----- save user selection parameters and define validation functions
+      var selParams = {
+        autoLink: $('#chkAutolink').prop('checked'),
+        delGuest: $('#chkDelGuest').prop('checked'),
+        keepImg: $('#chkKeepImg').prop('checked'),
+        readCount: $('#chkReadCount').prop('checked'),
+        typeReply: ($('#chkWrdPress').prop('checked') ? 'COMMENT' : 'REPLY'),
+        debugMode: $('#chkDebug').prop('checked'),
+        googleDrive: $('#chkGoogleDrive').prop('checked'),
+        videowidth: parseInt($('#txtVideoWidth').val()),
+        timeouts: $('#txtTimeouts').val(),
+        selDate: ($('input[name=selDate]:checked').val() === 'dates'),
+        fromDate: this.getPicker('#txtFromDate'),
+        toDate: this.getPicker('#txtToDate'),
+        selStatus: $('input[name=selStatus]:checked').val(),
+        selCategories: $(".chooseCategory").chosen().val() || [],
+        isSelectedCategory: function (category) {
+          var isIncluded = false;
+          $.each(this.selCategories, function () {
+            if (category === this || this === 'Alle') {
+              isIncluded = true;
+              return false;
+            }
+          });
+          return isIncluded;
+        },
+        selNumber: ($('input[name=selNumber]:checked').val() === 'max'),
+        cntNumber: 0,
+        maxNumber: $('#txtNumberMax').val(),
+        fromNumber: $('#txtNumberFrom').val(),
+        urlChange: $('#chkUrlChange').prop('checked'),
+        newBlogUrl: $('#txtNewBlogUrl').val(),
+        staticImgUrl: '<% staticURL %><% site.alias %>/images/',
+        staticFileUrl: '<% staticURL %><% site.alias %>/files/',
+        wpMediaUrl: '',
+        siteStoriesHref: '<% site.url action="stories" %>'.slice('<% site.url %>'.indexOf('//') + 2),
+        sliceFrom: function () { return (parseInt(this.fromNumber, 10) - 1); },
+        sliceTo: function () { return (parseInt(this.maxNumber, 10) + this.sliceFrom()); },
+        properDates: function () { return (this.selDate ? this.fromDate > 0 && this.toDate > 0 : true); },
+        validDates: function () { return (!this.selDate || this.fromDate < this.toDate); },
+        validCategoryNum: function () { return (this.selCategories.length > 0); },
+        validCategoryMix: function () { return !($.inArray('Alle', this.selCategories) >= 0 && this.selCategories.length > 1); },
+        validMaxNumber: function () { return (!this.selNumber || !isNaN(parseInt(this.maxNumber, 10))); },
+        validFromNumber: function () { return (!this.selNumber || !isNaN(parseInt(this.fromNumber, 10))); },
+        validBlogUrl: function () {
+          return !this.urlChange || this.newBlogUrl.indexOf('localhost') ||
+            (/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/.test(this.newBlogUrl));
+        },
+      };
+      selParams.regStaticImg = new RegExp(selParams.staticImgUrl
+        .replace('https:', 'https?:')
+        .replace(/\//gi, '\\/'), 'gi');
+      selParams.regStaticFile = new RegExp(selParams.staticFileUrl
+        .replace('https:', 'https?:')
+        .replace(/\//gi, '\\/'), 'gi');
+      //----- validate parameters and exit if input check has raised errors
+      if (!this.validateSelectionParams(selParams)) return false;
+      //----- modify timeout-specs if user has entered individual values
+      if (selParams.timeouts.length > 0) {
+        var msTimeout = selParams.timeouts.split('/');
+        $.each(msTimeout, function (index, value) {
+          switch (index) {
+            case 0: twodayExport.timeoutStories = parseInt(value, 10); break;
+            case 1: twodayExport.timeoutBody = parseInt(value, 10); break;
+            case 2: twodayExport.timeoutComments = parseInt(value, 10); break;
+          }
+        });
+      }
+      //----- derive wordpress media upload url from new blog address
+      if (selParams.urlChange) {
+        if (selParams.newBlogUrl.slice(selParams.newBlogUrl.length - 1) !== '/') selParams.newBlogUrl += '/';
+        selParams.wpMediaUrl = selParams.newBlogUrl;
+      }
+      //----- put validated params into the object's top level
+      selParams.siteId = parseInt(this.musSelectionScreen.siteId);
+      this.params = selParams;
+      //----- we're good to go: now deactivate actionButtons
+      $('#btnIntro, .btnContainer .actionButton').off('click');
+      //----- and render export status screen
+      this.musStatusScreen.blog = this.musSelectionScreen.blog;
+      this.renderScreen('musStatusScreen');
+      //----- get the mustache templates for the movable type export layout
+      this.musStory = $('#musStory').text();
+      this.musPartials.musComment = $('#musComment').text();
+      //----- initialize output data
+      this.filelen = 0;
+      this.stories.length = 0;
+      this.blobList.length = 0;
+      this.resourceList.length = 0;
+      Object.keys(this.xrefs).forEach(function (key) { delete twodayExport.xrefs[key]; });
+      //----- change selectors depending on the actual type of blog (e.g. standard vs foundation)
+      this.commentSelectors.initSet();
+      //----- Log timeouts when debugMode
+      if (this.params.debugMode) {
+        console.log('--------------- Start of blog export process ---------------');
+        console.log('timeoutStories:', twodayExport.timeoutStories, 'timeoutBody:', twodayExport.timeoutBody, 'timeoutComments:', twodayExport.timeoutComments);
+        console.log('--------------- Parameter ---------------');
+        console.log(JSON.stringify(this.params));
+        console.log('--------------- URL progress ---------------');
+      }
+      //----- start to read and analyze stories
+      this.recursiveStories(0, this.stories);
+    },
+
+    //- adds a "blog export"-button to either the layout test message, the twoday menu, the wrapper id or the body, depending on what is found first
+    addExportMenuButton: function () {
+      var btnPlaces = [
+        { test: '.message>a', appendTo: 'parent' },    // tested layout scenario
+        { test: '.modToolbarLeft', appendTo: 'self' }, // embedded as individual skin and twoday toolbar is present
+        { test: '#wrapper', appendTo: 'self' },        // no toolbar found, then use wrapper container
+        { test: 'body', appendTo: 'self' }             // no wrapper found, then use body
+      ], btnPlace, btnAppend;
+      $.each(btnPlaces, function () {
+        btnPlace = $(this.test);
+        if (btnPlace.length > 0) {
+          btnAppend = (this.appendTo === 'self' ? btnPlace.eq(0) : btnPlace.eq(0).parent());
+          switch (this.test.slice(0, 3)) {
+            case '.me': btnAppend.append('<button id="msgButton" class="startExport actionButton">Blog exportieren...</button>'); break;
+            case '.mo': btnAppend.append('<span style="display:inline-block;margin-left:30px">&dArr;<a href="#" id="modToolbar-export" class="startExport" style="margin-left:6px">Blog exportieren</a></span>'); break;
+            default: btnAppend.append('<button id="btnExport" class="startExport actionButton">&or;</button>'); break;
+          }
+          return false;
+        }
+      });
+    },
+
+    // check if gdImages.js needs to be loaded
+    needsGD: function () {
+      var siteId = twodayExport.musSelectionScreen.siteId;
+      return (siteId === '32208' || siteId === '697892' || siteId === '50425');
+    },
+
+    //- displays export selection screen after having loaded font awesome css, gdimages, videoload, autolinker, chosen.js and pickadate.js script
+    showSelectionScreen: function () {
+      yepnope([
+        {
+          test: twodayExport.isFontAwesomePresent(),
+          nope: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'
+        },
+        {
+          test: (twodayExport.needsGD() && !$.fn.gdimages),
+          yep: 'https://static.twoday.net/cdn/files/gdimages-min-js.js'
+        },
+        {
+          test: ('videoload' in window),
+          nope: 'https://static.twoday.net/cdn/files/videoload2-export-min-js.js'
+        },
+        {
+          test: (typeof Autolinker === 'undefined'), // former version 1.6.2
+          yep: 'https://cdnjs.cloudflare.com/ajax/libs/autolinker/3.14.3/Autolinker.min.js',
+          complete: function () {
+            twodayExport.autoLinker = new Autolinker({
+              stripPrefix: false,
+              className: 'autolinker'
+            });
+          }
+        },
+        {
+          test: (typeof $.fn.chosen === 'undefined'),
+          yep: [
+            'https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.min.css',
+            'https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.jquery.min.js'
+          ],
+          complete: function () {
+            var xhr = $.get('/topics', function (data) {
+              twodayExport.musSelectionScreen.categories.length = 0;
+              $(data).find('.listItem td>a').each(function () {
+                twodayExport.musSelectionScreen.categories.push($(this).text());
+              });
+              twodayExport.renderScreen('musSelectionScreen');
+              if (twodayExport.needsGD()) $('#pGoogleDrive').css('display', 'block');
+              $(".chooseCategory").chosen({ width: '100%' });
+              yepnope({
+                test: (typeof $.fn.pickadate === 'undefined'),
+                yep: [ // bump version from 3.5.6 to 3.6.4
+                  'https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/picker.js',
+                  'https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/compressed/picker.date.js',
+                  'https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/themes/classic.css',
+                  'https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.6.4/themes/classic.date.css'
+                ],
+                complete: function () {
+                  $(".datepicker").pickadate({
+                    monthsFull: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+                    monthsShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
+                    weekdaysFull: ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
+                    weekdaysShort: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+                    today: "Heute",
+                    clear: "Löschen",
+                    close: "Schließen",
+                    firstDay: 1,
+                    format: "dd.mm.yyyy",
+                    formatSubmit: "yyyy/mm/dd",
+                    labelMonthNext: "Nächster Monat",
+                    labelMonthPrev: "Vorheriger Monat",
+                    labelMonthSelect: "Bitte Monat auswählen",
+                    labelYearSelect: "Bitte Jahr auswählen",
+                    selectMonths: true,
+                    selectYears: true
+                  });
+                }
+              });
+              $('#btnVersion').on('click', function () {
+                $.getJSON('https://cdn.jsdelivr.net/gh/NeonWilderness/twodayExport@master/dist/version.json', function (data) {
+                  var newVersion = false, release, msgClass, msgText;
+                  const parsedVersion = v => (Number(v.split('.').join('')));
+                  $.each(data.packages, function () {
+                    if (this.name === 'twodayExport') {
+                      newVersion = (parsedVersion(this.version) > parsedVersion(twodayExport.musSelectionScreen.version));
+                      release = this;
+                      return false;
+                    }
+                  });
+                  if (newVersion) {
+                    msgClass = 'bgYellow';
+                    msgText = Mustache.render('<i class="fa fa-info-circle"></i>Es existiert eine neuere Version {{version}} vom {{released}}! Bitte <a target="_blank" href="{{url}}">laden</a> Sie die gepackte Layout-Datei herunter, löschen dann das bisherige Layout "twodayExport" und importieren danach die neue Version!', release);
+                  } else {
+                    msgClass = 'bgGreen';
+                    msgText = '<i class="fa fa-check"></i>Es gibt keine neuere Exportversion!';
+                  }
+                  $("#selMessage").html(msgText).addClass(msgClass).show(0);
+                })
+                  .fail(function () {
+                    var msgText = '<i class="fa fa-medkit"></i>Versionsinfos konnten nicht geladen werden.';
+                    $("#selMessage").html(msgText).addClass('bgRed').show(0);
+                  });
+              });
+              $('.btnContainer .actionButton').on('click', function (e) {
+                e.preventDefault();
+                switch (e.target.id) {
+                  case "btnCancel": twodayExport.closeOverlay(); break;
+                  default: twodayExport.exportArticlesAndComments(e.target.id === 'btnInfosOnly');
+                }
+              });
+              $(document).on('keyup', function (e) {
+                if (e.which === 27) {
+                  twodayExport.closeOverlay();
+                }
+              });
+              $('#selOverlay').show(200);
+            })
+              .fail(function () {
+                alert('Fehler beim Lesen der Themenseite: \topics' + ', status: ' + xhr.status + ', text: ' + xhr.statusText);
+              });
+
+          }
+        }
+      ]);
+    },
+
+    // enables the blog export feature and establishes related button click event
+    enableExportFeature: function () {
+      // adds an additional menu button for blog export
+      this.addExportMenuButton();
+      // inserts the core export screen into the DOM
+      $('body').append($('#mainExport').html());
+      // activates click function to show the selection screen
+      $('.startExport').on('click', function (e) {
+        e.preventDefault();
+        twodayExport.showSelectionScreen();
+      });
+    }
+  };
+
+  // called when yepnope becomes available
+  function yepnopeIsLoaded() {
+    // load necessary scripts for blog export function: jQuery & mustache templating
+    yepnope([
+      {
+        test: (typeof jQuery === 'undefined'),
+        yep: ['https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js'],
+        complete: function () {
+          yepnope([
+            {
+              test: (typeof Mustache === 'undefined'),
+              yep: ['https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.2/mustache.min.js'],
+              complete: function () {
+                // now enable the export feature and wait for further user action
+                twodayExport.enableExportFeature();
+              }
+            }
+          ]);
+        }
+      }
+    ]);
+  }
+
+  //- do nothing if user is not an administrator of this blog
+  if (!twodayExport.isUserAdministrator()) {
+    return false;
+  }
+  //- load yepnope if not already active
+  if (typeof yepnope === 'undefined') {
+    var head = document.getElementsByTagName('head')[0], yn = document.createElement('script');
+    yn.type = 'text/javascript';
+    yn.src = 'https://cdnjs.cloudflare.com/ajax/libs/yepnope/1.5.4/yepnope.min.js';
+    yn.onload = yepnopeIsLoaded;
+    head.appendChild(yn);
+  } else {
+    yepnopeIsLoaded();
+  }
+})();</script>

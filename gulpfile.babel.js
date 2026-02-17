@@ -12,6 +12,10 @@ const $ = plugins();
 
 const argv = minimist(process.argv.slice(2));
 
+const getPackageJson = () => {
+  return JSON.parse(fs.readFileSync('./package.json'));
+};
+
 // Check for --production flag
 const PRODUCTION = !!(argv.production);
 if (PRODUCTION) console.log(color.inverse.cyan('--- Production version in progress ---'));
@@ -43,18 +47,9 @@ const build = () => {
       preserveLineBreaks: true,
       processScripts: ['text/html', 'text/x-mustache-html']
     }))
-    .pipe($.replace('{{scriptversion}}', getShortVersion()))
+    .pipe($.replace('{{scriptversion}}', getPackageJson().version))
     .pipe(gulp.dest('dist'));
 }
-
-const getShortVersion = () => {
-  let version = getPackageJson().version;
-  return version.slice(0, version.lastIndexOf('.'));
-};
-
-const getPackageJson = () => {
-  return JSON.parse(fs.readFileSync('./package.json'));
-};
 
 /**
  * Bump minor version and update package.json and version.json
@@ -65,13 +60,13 @@ const bump = (bumpVersion = true) => {
   let releaseDate = new Date().toISOString().slice(0, 10).split('-').reverse().join('.');
   if (bumpVersion) {
     newVersion = semver.inc(pkg.version, 'minor');
-    console.log('Bumping to new version...');
+    console.log(`Bumping to new version "${newVersion}"...`);
     gulp.src(['./package.json'])
       .pipe($.bump({ version: newVersion }))
       .pipe(gulp.dest('./'));
   } else {
     newVersion = pkg.version;
-    console.log('Setting new release date only...');
+    console.log(`Keeping version ${newVersion}. Setting new release date only...`);
   }
 
   return gulp.src(['./version.json'])

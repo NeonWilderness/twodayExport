@@ -9,6 +9,7 @@
     "dev": "gulp",
     "bump": "gulp bump",
     "date": "node ./tools/checkDates --blog=blogalias --dir=../clients/",
+    "//": "Deploy to ts blog and export layout zip (changes only) to ./layouts",
     "deploy": "node ./utils/uploadSkin --alias=talkstraight --platform=prod",
     "hint": "gulp hint",
     "init": "node ./tools/resInit --blog=mmm",

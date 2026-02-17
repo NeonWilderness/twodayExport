@@ -1220,9 +1220,10 @@
               $('#btnVersion').on('click', function () {
                 $.getJSON('https://cdn.jsdelivr.net/gh/NeonWilderness/twodayExport@master/dist/version.json', function (data) {
                   var newVersion = false, release, msgClass, msgText;
+                  const parsedVersion = v => (Number(v.split('.').join('')));
                   $.each(data.packages, function () {
                     if (this.name === 'twodayExport') {
-                      newVersion = (parseFloat(this.version) > parseFloat(twodayExport.musSelectionScreen.version));
+                      newVersion = (parsedVersion(this.version) > parsedVersion(twodayExport.musSelectionScreen.version));
                       release = this;
                       return false;
                     }
