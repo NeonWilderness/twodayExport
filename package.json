@@ -1,6 +1,6 @@
 {
   "name": "twodayexport",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "Blog Export on steroids",
   "main": "twoday-export.html",
   "scripts": {
@@ -9,7 +9,7 @@
     "dev": "gulp",
     "bump": "gulp bump",
     "date": "node ./tools/checkDates --blog=blogalias --dir=../clients/",
-    "deploy": "node ./utils/uploadSkin --alias=mmm --platform=prod",
+    "deploy": "node ./utils/uploadSkin --alias=talkstraight --platform=prod",
     "hint": "gulp hint",
     "init": "node ./tools/resInit --blog=mmm",
     "external": "node ./tools/resExternal --blog=blogalias --dir=../clients/",

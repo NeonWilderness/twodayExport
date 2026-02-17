@@ -224,7 +224,7 @@
           story.author = y.match(/erstellt von (.*) am/)[1];
           if (twodayExport.params.delGuest) story.author = story.author.replace(" (Gast)", "");
           y = y.match(/ am (.*)/)[1];
-          story.date = y.slice(6, 4) + "-" + y.slice(3, 2) + "-" + y.slice(0, 2) + y.slice(10);
+          story.date = y.slice(6, 10) + "-" + y.slice(3, 5) + "-" + y.slice(0, 2) + y.slice(10);
           y = x.find(">a");
           story.url = (y.length > 0 ? y.attr("href") : "");
           twodayExport.musStatusScreen.incValue(story.status === "publish" ? "pubArtRead" : "offArtRead");
