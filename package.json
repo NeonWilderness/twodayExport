@@ -39,9 +39,9 @@
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.29.0",
-    "@babel/preset-env": "^7.29.0",
+    "@babel/preset-env": "^7.29.2",
     "@babel/register": "^7.28.6",
-    "@neonwilderness/twoday": "^0.5.8",
+    "@neonwilderness/twoday": "^0.6.1",
     "@types/mocha": "^10.0.10",
     "@wordpress/url": "^3.59.0",
     "ansi-colors": "^4.1.3",
