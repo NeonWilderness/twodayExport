@@ -55,7 +55,7 @@ const readComments = chunks => {
 };
 
 const getTopics = blog => {
-  const td = new Twoday('prod');
+  const td = new Twoday.Twoday('prod');
   return td
     .getStoryTopics(blog)
     .then(topics => topics.map(topic => topic.url.split('/').reverse()[1]))
