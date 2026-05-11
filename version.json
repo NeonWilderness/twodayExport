@@ -5,9 +5,6 @@
       "url": "https://cdn.jsdelivr.net/gh/NeonWilderness/twodayExport@master/layouts/twodayExport-{{versionID}}.zip",
       "version": "{{version}}",
       "released": "{{date}}"
-    },
-    {
-      "name": "N/A"
     }
   ]
 }
