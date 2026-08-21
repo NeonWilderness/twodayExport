@@ -8,7 +8,9 @@ import semver from 'semver';
 import minimist from 'minimist';
 
 // Load all Gulp plugins into one variable
-const $ = plugins();
+const $ = plugins({
+  config: process.env.npm_package_json
+});
 
 const argv = minimist(process.argv.slice(2));
 
@@ -22,14 +24,15 @@ if (PRODUCTION) console.log(color.inverse.cyan('--- Production version in progre
 
 const hint = () => {
   gulp.src('./twoday-export.js')
-    .pipe($.jshint(require('./.jshintrc'))) // ES5 (target is Browser)
+    .pipe($.jshint(require('./.jshintrc')))
     .pipe($.jshint.reporter('jshint-stylish', { beep: true }));
+    
   return gulp.src(['./tools/res*.js', './tools/checkExport.js'])
     .pipe($.jshint(Object.assign(
       {}, 
       require('./.jshintrc'),
-      { esversion: 6, browser: false, latedef: false, node: true }
-    ))) // ES6 (target is Node)
+      { browser: false, latedef: false, node: true }
+    )))
     .pipe($.jshint.reporter('jshint-stylish', { beep: false }));
 };
 
@@ -37,7 +40,7 @@ const build = () => {
   let js = fs.readFileSync('./twoday-export.js', 'utf-8');
   return gulp.src(['./twoday-export.html'])
     .pipe($.replace('{{twodayExport-js}}', js))
-    .pipe($.htmlmin({
+    .pipe($.htmlMinifierTerser({
       collapseWhitespace: true,
       conservativeCollapse: true,
       html5: true,

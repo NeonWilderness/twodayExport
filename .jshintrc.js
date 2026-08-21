@@ -30,7 +30,7 @@ module.exports = {
 
 
     // ECMAScript
-    "esversion"     : 5,      // Allow ECMAScript 5 syntax.
+    "esversion"     : 9,      // Allow ECMAScript 5 syntax.
     "strict"        : false,  // Require `use strict` pragma  in every file.
     "globalstrict"  : false,  // Allow global "use strict" (also enables 'strict').
 
