@@ -1,11 +1,11 @@
 'use strict';
 
-import color from 'ansi-colors';
+import { styleText } from 'node:util';
 import fs from 'node:fs';
 import gulp from 'gulp';
+import minimist from 'minimist';
 import plugins from 'gulp-load-plugins';
 import semver from 'semver';
-import minimist from 'minimist';
 
 // Load all Gulp plugins into one variable
 const $ = plugins({
@@ -19,40 +19,38 @@ const getPackageJson = () => {
 };
 
 // Check for --production flag
-const PRODUCTION = !!(argv.production);
-if (PRODUCTION) console.log(color.inverse.cyan('--- Production version in progress ---'));
+const PRODUCTION = !!argv.production;
+if (PRODUCTION) console.log(styleText(['inverse', 'cyan'], '--- Production version in progress ---'));
 
-const hint = () => {
-  gulp.src('./twoday-export.js')
-    .pipe($.jshint(require('./.jshintrc')))
-    .pipe($.jshint.reporter('jshint-stylish', { beep: true }));
-    
-  return gulp.src(['./tools/res*.js', './tools/checkExport.js'])
-    .pipe($.jshint(Object.assign(
-      {}, 
-      require('./.jshintrc'),
-      { browser: false, latedef: false, node: true }
-    )))
-    .pipe($.jshint.reporter('jshint-stylish', { beep: false }));
+const lint = () => {
+  return gulp
+    .src(['./twoday-export.js', './tools/*.js', './utils/*.js'])
+    .pipe($.eslintNew({ fix: true })) // Lint files, create fixes.
+    .pipe($.eslintNew.fix()) // Fix files if necessary.
+    .pipe($.eslintNew.format()) // Output lint results to the console.
+    .pipe($.eslintNew.failAfterError()); // Exit with an error if problems are found.
 };
 
 const build = () => {
   let js = fs.readFileSync('./twoday-export.js', 'utf-8');
-  return gulp.src(['./twoday-export.html'])
+  return gulp
+    .src(['./twoday-export.html'])
     .pipe($.replace('{{twodayExport-js}}', js))
-    .pipe($.htmlMinifierTerser({
-      collapseWhitespace: true,
-      conservativeCollapse: true,
-      html5: true,
-      keepClosingSlash: true,
-      minifyCSS: PRODUCTION,
-      minifyJS: PRODUCTION,
-      preserveLineBreaks: true,
-      processScripts: ['text/html', 'text/x-mustache-html']
-    }))
+    .pipe(
+      $.htmlMinifierTerser({
+        collapseWhitespace: true,
+        conservativeCollapse: true,
+        html5: true,
+        keepClosingSlash: true,
+        minifyCSS: PRODUCTION,
+        minifyJS: PRODUCTION,
+        preserveLineBreaks: true,
+        processScripts: ['text/html', 'text/x-mustache-html']
+      })
+    )
     .pipe($.replace('{{scriptversion}}', getPackageJson().version))
     .pipe(gulp.dest('dist'));
-}
+};
 
 /**
  * Bump minor version and update package.json and version.json
@@ -64,7 +62,8 @@ const bump = (bumpVersion = true) => {
   if (bumpVersion) {
     newVersion = semver.inc(pkg.version, 'minor');
     console.log(`Bumping to new version "${newVersion}"...`);
-    gulp.src(['./package.json'])
+    gulp
+      .src(['./package.json'])
       .pipe($.bump({ version: newVersion }))
       .pipe(gulp.dest('./'));
   } else {
@@ -72,14 +71,18 @@ const bump = (bumpVersion = true) => {
     console.log(`Keeping version ${newVersion}. Setting new release date only...`);
   }
 
-  return gulp.src(['./version.json'])
+  return gulp
+    .src(['./version.json'])
     .pipe($.replace('{{versionID}}', `v${newVersion.replace(/\./g, '')}`))
     .pipe($.replace('{{version}}', newVersion))
     .pipe($.replace('{{date}}', releaseDate))
     .pipe(gulp.dest('dist'));
-}
+};
 
 gulp.task('default', build);
 gulp.task('bump', bump);
-gulp.task('hint', hint);
-gulp.task('release', (done) => { bump(false); done(); });
+gulp.task('lint', lint);
+gulp.task('release', done => {
+  bump(false);
+  done();
+});

@@ -68,7 +68,7 @@ const getSortedStoryIDs = () => {
 
 if (!argv.blog) {
   console.log('Blogname must be specified with --blog=blogname or -b blogname.');
-  return;
+  process.exit();
 }
 var blog = argv.blog.toLowerCase();
 var dir = !!argv.dir ? path.resolve(process.cwd(), argv.dir, blog) : '.';
