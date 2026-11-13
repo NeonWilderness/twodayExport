@@ -9,7 +9,7 @@ const path = require('node:path');
 const pkg = require('../package.json');
 const Twoday = require('@neonwilderness/twoday');
 
-require('dotenv-safe').config();
+require('node:process').loadEnvFile();
 
 if (!argv.alias) {
   console.log('Blog alias must be specified with --alias=blogname');
